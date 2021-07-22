@@ -5,9 +5,9 @@ const P_categorySchema = new mongoose.Schema({
 		required: [true, 'Please add a name'],
 		maxlength: [50, 'name cannot be more than of 30 characters'],
 	},
-	Product_id: {
+	product_id: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'product.model',
+		ref: 'Products',
 		required: true,
 	},
 });
