@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const P_categorySchema = new mongoose.Schema({
-	product_C_name: {
+const BrandSchema = new mongoose.Schema({
+	Brand_name: {
 		type: String,
 		required: [true, 'Please add a name'],
 		maxlength: [50, 'name cannot be more than of 30 characters'],
@@ -12,4 +12,4 @@ const P_categorySchema = new mongoose.Schema({
 	},
 });
 
-module.exports = mongoose.model('ProductCategory', P_categorySchema);
+module.exports = mongoose.model('BrandName', BrandSchema);
