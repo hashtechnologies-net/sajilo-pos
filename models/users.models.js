@@ -1,49 +1,46 @@
 const mongoose = require('mongoose');
 const usersSchema = new mongoose.Schema({
-	first_name: {
+	firstName: {
 		type: String,
 		required: [true, 'Please add the first name'],
-		trim: true,
-		maxlength: [30, 'first name cannot be more than of 30 characters'],
 	},
-	last_name: {
+	lastName: {
 		type: String,
 		required: [true, 'Please add the last name'],
-		trim: true,
-		maxlength: [30, 'last name cannot be more than of 30 characters'],
 	},
 	email: {
 		type: String,
+		required: [true, 'please add email'],
+		unique: [true, 'Email already registered'],
 		match: [
 			/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
 			'Please enter a valid email',
 		],
 	},
+	password: {
+		type: String,
+		required: [true, 'please add a password'],
+		minlength: 6,
+	},
 	gender: {
-		type: [String],
-		required: true,
+		type: String,
+		required: [true, 'Please enter your gender'],
 		enum: ['Male', 'Female', 'Others'],
 	},
-
 	dob: {
 		type: Date,
-		required: true,
-		trim: true,
+		required: [true, 'enter the date of birth in the format YY-MM-DD'],
 	},
-
 	address: {
-		formattedAddress: String,
-		street: String,
-		wardNo: Number,
-		city: String,
-		district: String,
-		required: true,
+		type: String,
+		required: [true, 'Please add an address'],
 	},
-	account_type: {
-		type: [String],
+	accountType: {
+		type: String,
 		required: true,
 		enum: ['Customer', 'Merchant', 'Admin'],
+		default: 'Customer',
 	},
 });
 
-module.exports = mongoose.model('Users', usersSchema);
+module.exports = mongoose.model('User', usersSchema);
