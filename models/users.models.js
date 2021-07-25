@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const mongoose = require('mongoose');
 const usersSchema = new mongoose.Schema({
 	firstName: {
@@ -21,6 +23,7 @@ const usersSchema = new mongoose.Schema({
 		type: String,
 		required: [true, 'please add a password'],
 		minlength: 6,
+		select: false,
 	},
 	gender: {
 		type: String,
@@ -41,6 +44,11 @@ const usersSchema = new mongoose.Schema({
 		enum: ['Customer', 'Merchant', 'Admin'],
 		default: 'Customer',
 	},
+});
+
+usersSchema.pre('save', async function (next) {
+	const salt = await bcrypt.genSalt(10);
+	this.password = await bcrypt.hash(this.password, salt);
 });
 
 module.exports = mongoose.model('User', usersSchema);

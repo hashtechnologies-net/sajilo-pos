@@ -30,11 +30,11 @@ exports.createPayment = asyncHandler(async (req, res, next) => {
 	if (!Cpayment) {
 		return next(new ErrorResponse());
 	}
-	res.status(201).json({ success: true, data: Cproduct });
+	res.status(201).json({ success: true, data: Cpayment });
 });
 // @desc  update  Payment
 //@route  PUT /api/v1/payments/:id
-exports.updatePayment = asyncHandler(async (req, res) => {
+exports.updatePayment = asyncHandler(async (req, res, next) => {
 	const Upayment = await Payment.findByIdAndUpdate(req.params.id, req.body, {
 		new: true,
 		runValidators: true,
@@ -51,7 +51,7 @@ exports.updatePayment = asyncHandler(async (req, res) => {
 });
 // @desc  Delete  Payment
 //@route  DELETE /api/v1/payments/:id
-exports.deletePayment = asyncHandler(async (req, res) => {
+exports.deletePayment = asyncHandler(async (req, res, next) => {
 	const deletePayment = await Payment.findByIdAndDelete(req.params.id);
 	if (!deletePayment) {
 		return next(

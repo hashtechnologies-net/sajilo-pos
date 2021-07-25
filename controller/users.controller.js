@@ -1,12 +1,12 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
+const bcrypt = require('bcrypt');
 const User = require('../models/users.models');
 
 // @desc  get all users
 //@route  GET /api/v1/users
 exports.getAllUsers = asyncHandler(async (req, res, next) => {
-	const users = await User.find();
-	res.status(200).json({ success: true, data: users });
+	res.status(200).json(res.allqueryresults);
 });
 // @desc  get single user
 //@route  GET /api/v1/users/:id
@@ -66,4 +66,34 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 		);
 	}
 	res.status(200).json({ success: true, data: {} });
+});
+
+// @desc      Login user
+// @route     POST /api/v1/users/login
+// @access    Public
+exports.login = asyncHandler(async (req, res, next) => {
+	const { email, password } = req.body;
+
+	// Validate emil & password
+	if (!email || !password) {
+		return next(
+			new ErrorResponse('Please provide an email and password', 400)
+		);
+	}
+
+	// Check for user
+	const user = await User.findOne({ email }).select('+password');
+
+	if (!user) {
+		return next(new ErrorResponse('Invalid email', 401));
+	}
+
+	// // Check if password matches
+	const isMatch = await bcrypt.compare(password, user.password);
+
+	if (!isMatch) {
+		return next(new ErrorResponse('Invalid password', 401));
+	}
+
+	res.status(200).json({ success: true, status: 'logged in' });
 });

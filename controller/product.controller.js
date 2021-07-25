@@ -6,8 +6,7 @@ const Product = require('../models/products.models');
 // @desc  get all products
 //@route  GET /api/v1/products
 exports.getAllProducts = asyncHandler(async (req, res, next) => {
-	const products = await Product.find();
-	res.status(200).json({ success: true, data: products });
+	res.status(200).json(res.allqueryresults);
 });
 // @desc  get single Product
 //@route  GET /api/v1/products/:id

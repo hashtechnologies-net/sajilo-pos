@@ -2,9 +2,12 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controller/users.controller');
 
+const User = require('../models/users.models');
+const allqueryresults = require('../middleware/allqueryresults');
+
 router
 	.route('/')
-	.get(userController.getAllUsers)
+	.get(allqueryresults(User), userController.getAllUsers)
 	.post(userController.createUser);
 
 router
@@ -12,5 +15,7 @@ router
 	.get(userController.getSingleUser)
 	.put(userController.updateUser)
 	.delete(userController.deleteUser);
+
+router.route('/login').post(userController.login);
 
 module.exports = router;
