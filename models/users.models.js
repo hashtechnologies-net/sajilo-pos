@@ -1,14 +1,14 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const mongoose = require('mongoose');
 const usersSchema = new mongoose.Schema({
-	firstName: {
+	Name: {
 		type: String,
-		required: [true, 'Please add the first name'],
+		required: [true, 'Please add the Name'],
 	},
-	lastName: {
+	photo: {
 		type: String,
-		required: [true, 'Please add the last name'],
 	},
 	email: {
 		type: String,
@@ -27,20 +27,16 @@ const usersSchema = new mongoose.Schema({
 	},
 	gender: {
 		type: String,
-		required: [true, 'Please enter your gender'],
 		enum: ['Male', 'Female', 'Others'],
 	},
 	dob: {
 		type: Date,
-		required: [true, 'enter the date of birth in the format YY-MM-DD'],
 	},
 	address: {
 		type: String,
-		required: [true, 'Please add an address'],
 	},
 	accountType: {
 		type: String,
-		required: true,
 		enum: ['Customer', 'Merchant', 'Admin'],
 		default: 'Customer',
 	},
@@ -51,4 +47,10 @@ usersSchema.pre('save', async function (next) {
 	this.password = await bcrypt.hash(this.password, salt);
 });
 
+// Sign JWT and return
+usersSchema.methods.getSignedJwtToken = function () {
+	return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+		expiresIn: process.env.JWT_EXPIRE,
+	});
+};
 module.exports = mongoose.model('User', usersSchema);

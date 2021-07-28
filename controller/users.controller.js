@@ -1,6 +1,6 @@
+const path = require('path');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const bcrypt = require('bcrypt');
 const User = require('../models/users.models');
 
 // @desc  get all users
@@ -37,6 +37,7 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 		});
 	}
 	const Cuser = await User.create(req.body);
+	Cuser.password = undefined;
 	res.status(201).json({ success: true, data: Cuser });
 });
 // @desc  update  user
@@ -68,32 +69,47 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 	res.status(200).json({ success: true, data: {} });
 });
 
-// @desc      Login user
-// @route     POST /api/v1/users/login
-// @access    Public
-exports.login = asyncHandler(async (req, res, next) => {
-	const { email, password } = req.body;
-
-	// Validate emil & password
-	if (!email || !password) {
+// @desc  uplaod  photo
+//@route  PUT /api/v1/users/:id/photo
+exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
+	const user = await User.findById(req.params.id);
+	if (!user) {
 		return next(
-			new ErrorResponse('Please provide an email and password', 400)
+			new ErrorResponse(
+				` User not found with id of ${req.params.id}`,
+				404
+			)
 		);
 	}
-
-	// Check for user
-	const user = await User.findOne({ email }).select('+password');
-
-	if (!user) {
-		return next(new ErrorResponse('Invalid email', 401));
+	if (!req.files) {
+		return next(new ErrorResponse(`Please upload a file`, 400));
 	}
+	const file = req.files.Photo;
 
-	// // Check if password matches
-	const isMatch = await bcrypt.compare(password, user.password);
-
-	if (!isMatch) {
-		return next(new ErrorResponse('Invalid password', 401));
+	//Image is photo check
+	if (!file.mimetype.startsWith('image')) {
+		return next(new ErrorResponse(`Please upload an image file`, 400));
 	}
+	//check filesize
+	if (file.size > process.env.FILE_MAX_SIZE) {
+		return next(
+			new ErrorResponse(`file size cannot be more than 1mb`, 400)
+		);
+	}
+	//Create custom filename
+	file.name = `photo_${user._id}${path.parse(file.name).ext}`;
 
-	res.status(200).json({ success: true, status: 'logged in' });
+	file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+		if (err) {
+			console.error(err);
+			return next(new ErrorResponse(`Problem with file upload`, 500));
+		}
+
+		await User.findByIdAndUpdate(req.params.id, { photo: file.name });
+
+		res.status(200).json({
+			success: true,
+			data: file.name,
+		});
+	});
 });

@@ -4,6 +4,7 @@ const productController = require('../controller/product.controller');
 
 const Product = require('../models/products.models');
 const allqueryresults = require('../middleware/allqueryresults');
+const authprotect = require('../middleware/auth');
 
 router
 	.route('/')
@@ -14,12 +15,16 @@ router
 		}),
 		productController.getAllProducts
 	)
-	.post(productController.createProduct);
+	.post(
+		authprotect.protect,
+		authprotect.authorize('Admin', 'Merchant'),
+		productController.createProduct
+	);
 
 router
 	.route('/:id')
 	.get(productController.getSingleProduct)
-	.put(productController.updateProduct)
-	.delete(productController.deleteProduct);
+	.put(authprotect.protect, productController.updateProduct)
+	.delete(authprotect.protect, productController.deleteProduct);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const paymentcontroller = require('../controller/payment.controller');
+const authprotect = require('../middleware/auth');
 
 router
 	.route('/')
@@ -10,7 +11,7 @@ router
 router
 	.route('/:id')
 	.get(paymentcontroller.getSinglePayment)
-	.put(paymentcontroller.updatePayment)
+	.put(authprotect.protect, paymentcontroller.updatePayment)
 	.delete(paymentcontroller.deletePayment);
 
 module.exports = router;

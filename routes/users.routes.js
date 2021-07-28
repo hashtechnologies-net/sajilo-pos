@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controller/users.controller');
-
 const User = require('../models/users.models');
 const allqueryresults = require('../middleware/allqueryresults');
+const authprotect = require('../middleware/auth');
 
 router
 	.route('/')
@@ -16,6 +16,8 @@ router
 	.put(userController.updateUser)
 	.delete(userController.deleteUser);
 
-router.route('/login').post(userController.login);
+router
+	.route('/:id/photo')
+	.put(authprotect.protect, userController.userPhotoUpload);
 
 module.exports = router;
