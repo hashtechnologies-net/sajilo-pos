@@ -1,24 +1,24 @@
 const mongoose = require('mongoose');
 const PaymentSchema = new mongoose.Schema({
-	payamount: {
-		type: Number,
-		required: [true, 'Please add a name'],
-	},
-	paymenttype: {
+	paymentType: {
 		type: String,
-		enum: [
-			'Cash',
-			'Debit cards',
-			'Credit cards',
-			'Mobile payments',
-			'Electronic bank transfers',
-		],
+		enum: ['Cash', 'Bank'],
 		required: true,
 	},
-	paymentdate: {
+	Created_at: {
 		type: Date,
+		default: Date.now,
 	},
-	user_id: {
+	cash: {
+		type: Number,
+	},
+	Bank: {
+		type: Number,
+	},
+	credit: {
+		type: Number,
+	},
+	invoice_id: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'User',
 		required: true,

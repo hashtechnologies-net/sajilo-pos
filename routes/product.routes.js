@@ -11,7 +11,7 @@ router
 	.get(
 		allqueryresults(Product, {
 			path: 'user_id',
-			select: 'firstName lastName email',
+			select: 'Name email gender accountType',
 		}),
 		productController.getAllProducts
 	)

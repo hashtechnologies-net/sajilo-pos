@@ -1,16 +1,29 @@
 const mongoose = require('mongoose');
-const BookSchema = new mongoose.Schema({
-	title: {
+const ProductSchema = new mongoose.Schema({
+	product_name: {
 		type: String,
 		required: [true, 'Please add a name'],
-		unique: true,
 		trim: true,
-		maxlength: [50, 'name cannot be more than of 30 characters'],
+		maxlength: [50, 'name cannot be more than of 50 characters'],
 	},
-	authors: {
+	product_code: {
 		type: String,
+		required: [true, 'please enter the product code'],
+		unique: true,
+	},
+	unit: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'unit',
 		required: true,
+	},
+	unit_price: {
+		type: Number,
+		required: true,
+	},
+	created_at: {
+		type: Date,
+		default: Date.now,
 	},
 });
 
-module.exports = mongoose.model('Book', BookSchema);
+module.exports = mongoose.model('Products', ProductSchema);

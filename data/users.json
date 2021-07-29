@@ -1,0 +1,9 @@
+{
+    "Name": "Pawan Subedi",
+    "email": "pawan123@gmail.com",
+    "password": "123456",
+    "gender": "Male",
+    "dob": "2010-5-28",
+    "address": "Biratnagar",
+    "accountType":"Admin"
+}
