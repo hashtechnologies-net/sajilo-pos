@@ -3,23 +3,14 @@ const InvoiceSchema = new mongoose.Schema({
 	total_amount: {
 		type: Number,
 		required: true,
-		$sum: { $multiply: ['$unit_price', '$quantity'] },
 	},
-	tendered_amount: {
-		type: Number,
-		required: true,
-	},
-	date: {
+	created_at: {
 		type: Date,
-		required: true,
+		default: Date.now,
 	},
-	quantity: {
-		type: Number,
-		required: true,
-	},
-	product_id: {
+	sales_id: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'Products',
+		ref: 'sales',
 		required: true,
 	},
 	user_id: {
@@ -27,11 +18,8 @@ const InvoiceSchema = new mongoose.Schema({
 		ref: 'Users',
 		required: true,
 	},
-	payment_id: {
-		type: mongoose.Schema.ObjectId,
-		ref: 'Payment',
-		required: true,
+	counter_name: {
+		type: String,
 	},
 });
-
 module.exports = mongoose.model('Invoice', InvoiceSchema);

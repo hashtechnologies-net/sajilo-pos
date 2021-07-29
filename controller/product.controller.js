@@ -1,7 +1,7 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Product = require('../models/products.models');
-// const asyncHandler = require('../middleware/async');
+const getUserId = require('../middleware/getuserId');
 
 // @desc  get all products
 //@route  GET /api/v1/products
@@ -11,7 +11,7 @@ exports.getAllProducts = asyncHandler(async (req, res, next) => {
 // @desc  get single Product
 //@route  GET /api/v1/products/:id
 exports.getSingleProduct = asyncHandler(async (req, res, next) => {
-	const product1 = await Product.findById(req.params.id);
+	const product1 = await Product.findById(req.params.id).populate('user_id');
 
 	if (!product1) {
 		return next(
@@ -39,6 +39,8 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
+
+	req.body.user_id = getUserId(req.headers);
 	const Cproduct = await Product.create(req.body);
 	res.status(201).json({ success: true, data: Cproduct });
 });

@@ -11,15 +11,18 @@ const ProductSchema = new mongoose.Schema({
 		required: [true, 'please enter the product code'],
 		unique: true,
 	},
-
+	unit: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'unit',
+		required: true,
+	},
 	unit_price: {
 		type: Number,
 		required: true,
 	},
-	user_id: {
-		type: mongoose.Schema.ObjectId,
-		ref: 'User',
-		required: true,
+	created_at: {
+		type: Date,
+		default: Date.now,
 	},
 });
 

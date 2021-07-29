@@ -6,7 +6,7 @@ require('dotenv').config('./env');
 
 // @desc      Register user
 // @route     POST /api/v1/auth/register
-// @access    Public
+// @access    Admin
 exports.register = asyncHandler(async (req, res, next) => {
 	const { Name, email, password, accountType } = req.body;
 	const userExists = await User.findOne({ email });
