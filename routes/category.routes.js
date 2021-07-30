@@ -1,7 +1,7 @@
 /** @format */
 
 const express = require('express');
-
+const router = express.Router();
 const categoryController = require('../controller/category.controller');
 
 const Admin = require('../models/admin.model');
@@ -9,8 +9,10 @@ const Category = require('../models/category.model');
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/auth');
 
-const router = express.Router({ mergeParams: true });
+const productRouter = require('./product.routes');
 
+//re-routing to the product
+router.use('/:categoryId/products', productRouter);
 router
 	.route('/')
 	.get(allqueryresults(Category), categoryController.getAllCategory)
