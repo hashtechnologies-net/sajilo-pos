@@ -35,18 +35,3 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		);
 	}
 });
-
-// Get authorization for specific roles
-exports.authorize = (...roles) => {
-	return (req, res, next) => {
-		if (!roles.includes(req.user.accountType)) {
-			return next(
-				new ErrorResponse(
-					`User role ${req.user.accountType} is not authorized to access this route`,
-					403
-				)
-			);
-		}
-		next();
-	};
-};

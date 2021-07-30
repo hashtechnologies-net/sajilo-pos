@@ -8,13 +8,13 @@ const authprotect = require('../middleware/auth');
 router
 	.route('/')
 	.get(allqueryresults(User), userController.getAllUsers)
-	.post(userController.createUser);
+	.post(authprotect.protect, userController.createUser);
 
 router
 	.route('/:id')
 	.get(userController.getSingleUser)
-	.put(userController.updateUser)
-	.delete(userController.deleteUser);
+	.put(authprotect.protect, userController.updateUser)
+	.delete(authprotect.protect, userController.deleteUser);
 
 router
 	.route('/:id/photo')
