@@ -26,7 +26,8 @@ exports.getSingleUser = asyncHandler(async (req, res, next) => {
 // @desc  create new user
 //@route  POST /api/v1/users
 exports.createUser = asyncHandler(async (req, res, next) => {
-	const { email } = req.body;
+	const { email, password, username } = req.body;
+	// const { password } = req.body;
 	const userExists = await User.findOne({ email });
 
 	//check duplicate email
@@ -37,8 +38,12 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 		});
 	}
 	const Cuser = await User.create(req.body);
-	Cuser.password = undefined;
-	res.status(201).json({ success: true, data: Cuser });
+	const data = {
+		username,
+		password,
+		email,
+	};
+	res.status(201).json({ success: true, data });
 });
 // @desc  update  user
 //@route  PUT /api/v1/users/:id

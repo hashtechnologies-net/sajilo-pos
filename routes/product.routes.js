@@ -17,11 +17,7 @@ router
 		}),
 		productController.getAllProducts
 	)
-	.post(
-		authprotect.protect,
-		authprotect.authorize('Admin', 'Merchant'),
-		productController.createProduct
-	);
+	.post(authprotect.protect, productController.createProduct);
 
 router
 	.route('/:id')
