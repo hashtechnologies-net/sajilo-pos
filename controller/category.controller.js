@@ -7,7 +7,6 @@ const Category = require('../models/category.model');
 // @desc  get all Product Category
 //@route  GET /api/v1/productcategory
 exports.getAllCategory = asyncHandler(async (req, res, next) => {
-	//missing your model 
 	res.status(200).json(res.allqueryresults);
 });
 
