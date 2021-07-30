@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 const BrandSchema = new mongoose.Schema({
-	Brand_name: {
+	productCat_name: {
 		type: String,
 		required: [true, 'Please add a name'],
 		maxlength: [50, 'name cannot be more than of 30 characters'],
 	},
 	Product_id: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'Product',
+		ref: 'product',
 		required: true,
 	},
 });
