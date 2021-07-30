@@ -12,7 +12,6 @@ const router = express.Router({ mergeParams: true });
 
 router.route('/').get(categoryController.getAllCategory).post(
 	authprotect.protect,
-	//authprotect.authorize('Admin'),
 	categoryController.createCategory
 );
 
