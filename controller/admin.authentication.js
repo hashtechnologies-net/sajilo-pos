@@ -4,12 +4,12 @@ const bcrypt = require('bcrypt');
 const Admin = require('../models/admin.model');
 require('dotenv').config('./env');
 
-// @desc      Register user
+// @desc      Register admin
 // @route     POST /api/v1/admin/register
 // @access    Admin
 exports.register = asyncHandler(async (req, res, next) => {
 	const { full_name, username, email, password } = req.body;
-	const userExists = await User.findOne({ username });
+	const userExists = await Admin.findOne({ username });
 
 	//check duplicate email
 	if (userExists) {
@@ -50,7 +50,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 	}
 
 	// // Check if password matches
-	const isMatch = await bcrypt.compare(password, user.password);
+	const isMatch = await bcrypt.compare(password, admin.password);
 	if (!isMatch) {
 		return next(new ErrorResponse('Invalid email or password', 401));
 	}
@@ -85,6 +85,7 @@ const sendTokenResponse = (admin, statusCode, res) => {
 // @access    Private
 
 exports.getMe = asyncHandler(async (req, res, next) => {
-	const user = await Admin.findById(req.user.id);
-	res.status(200).json({ success: true, data: user });
+	console.log(req.admin);
+	const admin = await Admin.findById(req.admin.id);
+	res.status(200).json({ success: true, data: admin });
 });
