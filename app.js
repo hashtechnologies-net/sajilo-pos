@@ -1,4 +1,6 @@
-const bodyParser = require('body-parser');
+/** @format */
+
+//const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
@@ -11,7 +13,7 @@ const connectDB = require('./db');
 connectDB();
 
 // Body parser
-app.use(bodyParser.json());
+app.use(express.json());
 
 //cookie parser
 app.use(cookieParser());
@@ -26,6 +28,7 @@ const userRouter = require('./routes/users.routes');
 const productRouter = require('./routes/product.routes');
 // const paymentRouter = require('./routes/payment.routes');
 const authRouter = require('./routes/auth.routes');
+const categoryRouter = require('./routes/category.routes');
 const adminRouter = require('./routes/admin.routes');
 
 // Mount routers
@@ -33,6 +36,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/products', productRouter);
 // app.use('/api/v1/payments', paymentRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/category', categoryRouter);
 app.use('/api/v1/admin', adminRouter);
 
 //mount errprhandler

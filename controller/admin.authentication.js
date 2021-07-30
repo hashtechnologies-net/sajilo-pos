@@ -1,3 +1,5 @@
+/** @format */
+
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const bcrypt = require('bcrypt');
@@ -80,8 +82,8 @@ const sendTokenResponse = (admin, statusCode, res) => {
 	});
 };
 
-// @desc      Login admin
-// @route     POST /api/v1/admin/get_admin
+// @desc      Get admin
+// @route     GET /api/v1/admin/get_admin
 // @access    Private
 
 exports.getMe = asyncHandler(async (req, res, next) => {
