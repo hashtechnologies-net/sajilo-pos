@@ -28,7 +28,7 @@ const userRouter = require('./routes/users.routes');
 const productRouter = require('./routes/product.routes');
 // const paymentRouter = require('./routes/payment.routes');
 const authRouter = require('./routes/auth.routes');
-//const categoryRouter = require('./routes/category.routes');
+const categoryRouter = require('./routes/category.routes');
 const adminRouter = require('./routes/admin.routes');
 
 // Mount routers
@@ -36,7 +36,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/products', productRouter);
 // app.use('/api/v1/payments', paymentRouter);
 app.use('/api/v1/auth', authRouter);
-//app.use('/api/v1/category', categoryRouter);
+app.use('/api/v1/category', categoryRouter);
 app.use('/api/v1/admin', adminRouter);
 
 //mount errprhandler

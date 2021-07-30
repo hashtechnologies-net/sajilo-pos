@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const Admin = require('../models/admin.model');
 require('dotenv').config('./env');
 
-// @desc      Register user
+// @desc      Register admin
 // @route     POST /api/v1/admin/register
 // @access    Admin
 exports.register = asyncHandler(async (req, res, next) => {
@@ -87,6 +87,7 @@ const sendTokenResponse = (admin, statusCode, res) => {
 // @access    Private
 
 exports.getMe = asyncHandler(async (req, res, next) => {
-	const admin = await Admin.findById(req.user.id);
+	console.log(req.admin);
+	const admin = await Admin.findById(req.admin.id);
 	res.status(200).json({ success: true, data: admin });
 });
