@@ -1,15 +1,21 @@
+/** @format */
+
 const mongoose = require('mongoose');
-const BrandSchema = new mongoose.Schema({
-	Brand_name: {
+const CategorySchema = new mongoose.Schema({
+	Category_name: {
 		type: String,
 		required: [true, 'Please add a name'],
 		maxlength: [50, 'name cannot be more than of 30 characters'],
 	},
-	Product_id: {
+	created_at: {
+		type: Date,
+		default: Date.now,
+	},
+	created_by: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'Product',
+		ref: 'User',
 		required: true,
 	},
 });
 
-module.exports = mongoose.model('BrandName', BrandSchema);
+module.exports = mongoose.model('Category', CategorySchema);

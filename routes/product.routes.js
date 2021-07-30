@@ -1,8 +1,10 @@
+/** @format */
+
 const express = require('express');
 const router = express.Router();
 const productController = require('../controller/product.controller');
 
-const Product = require('../models/products.models');
+const Product = require('../models/product.models');
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/auth');
 
@@ -10,8 +12,8 @@ router
 	.route('/')
 	.get(
 		allqueryresults(Product, {
-			path: 'user_id',
-			select: 'Name email gender accountType',
+			path: 'category_id',
+			select: 'product_name product_code unit unit_price',
 		}),
 		productController.getAllProducts
 	)

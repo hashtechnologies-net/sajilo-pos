@@ -1,10 +1,12 @@
+/** @format */
+
 const fs = require('fs');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const asyncHandler = require('./middleware/async');
 
 // Load models
-const Products = require('./models/products.models');
+const Products = require('./models/product.models');
 const User = require('./models/users.models');
 
 // Connect to DB
