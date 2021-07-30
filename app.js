@@ -37,7 +37,7 @@ app.use('/api/v1/products', productRouter);
 // app.use('/api/v1/payments', paymentRouter);
 app.use('/api/v1/auth', authRouter);
 //app.use('/api/v1/category', categoryRouter);
-app.use('/api/v1/auth', adminRouter);
+app.use('/api/v1/admin', adminRouter);
 
 //mount errprhandler
 app.use(errorHandler);

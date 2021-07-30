@@ -1,3 +1,5 @@
+/** @format */
+
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const bcrypt = require('bcrypt');
@@ -9,7 +11,7 @@ require('dotenv').config('./env');
 // @access    Admin
 exports.register = asyncHandler(async (req, res, next) => {
 	const { full_name, username, email, password } = req.body;
-	const userExists = await User.findOne({ username });
+	const userExists = await Admin.findOne({ username });
 
 	//check duplicate email
 	if (userExists) {
@@ -50,7 +52,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 	}
 
 	// // Check if password matches
-	const isMatch = await bcrypt.compare(password, user.password);
+	const isMatch = await bcrypt.compare(password, admin.password);
 	if (!isMatch) {
 		return next(new ErrorResponse('Invalid email or password', 401));
 	}
@@ -80,11 +82,11 @@ const sendTokenResponse = (admin, statusCode, res) => {
 	});
 };
 
-// @desc      Login admin
-// @route     POST /api/v1/admin/get_admin
+// @desc      Get admin
+// @route     GET /api/v1/admin/get_admin
 // @access    Private
 
 exports.getMe = asyncHandler(async (req, res, next) => {
-	const user = await Admin.findById(req.user.id);
-	res.status(200).json({ success: true, data: user });
+	const admin = await Admin.findById(req.user.id);
+	res.status(200).json({ success: true, data: admin });
 });
