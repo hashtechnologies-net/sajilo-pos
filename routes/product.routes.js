@@ -4,6 +4,7 @@ const express = require('express');
 const productController = require('../controller/product.controller');
 
 const Product = require('../models/product.models');
+const Unit = require('../models/unit.model');
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/auth');
 const router = express.Router();
@@ -15,6 +16,11 @@ router
 			path: 'category_id',
 			select: 'category_name',
 		}),
+		allqueryresults(Product, {
+			path: 'unit_id',
+			select: 'unit_name',
+		}),
+
 		productController.getAllProducts
 	)
 	.post(authprotect.protect, productController.createProduct);

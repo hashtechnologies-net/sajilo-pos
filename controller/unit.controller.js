@@ -8,16 +8,6 @@ const Product = require('../models/product.models');
 // @desc  get all units
 //@route  GET /api/v1/units
 exports.getAllUnit = asyncHandler(async (req, res, next) => {
-	if (req.params.productId) {
-		const units = await Unit.find({
-			product_id: req.params.productId,
-		});
-		res.status(200).json({
-			status: true,
-			count: units.length,
-			data: units,
-		});
-	}
 	res.status(200).json(res.allqueryresults);
 });
 

@@ -7,18 +7,7 @@ const Category = require('../models/category.model');
 
 // @desc  get all products
 //@route  GET /api/v1/products
-//@route  GET /api/v1/category/:categoryId/products
 exports.getAllProducts = asyncHandler(async (req, res, next) => {
-	if (req.params.categoryId) {
-		const products = await Product.find({
-			category_id: req.params.categoryId,
-		});
-		res.status(200).json({
-			status: true,
-			count: products.length,
-			data: products,
-		});
-	}
 	res.status(200).json(res.allqueryresults);
 });
 
@@ -35,17 +24,17 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 	res.status(200).json({ success: true, data: product1 });
 });
 // @desc  create new Product
-//@route  POST /api/v1/category/:categoryId/products
+//@route  POST /api/v1/products
 
 exports.createProduct = asyncHandler(async (req, res, next) => {
-	req.body.category_id = req.params.categoryId;
 	req.body.created_by = req.admin.id;
-	const category = await Category.findById(req.params.categoryId);
+
+	const category = await Category.findById(req.body.category_id);
 
 	if (!category) {
 		return next(
 			new ErrorResponse(
-				`Category with id ${req.params.categoryId} not found`,
+				`Category with id ${req.body.category_id} not found`,
 				404
 			)
 		);

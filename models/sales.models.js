@@ -1,3 +1,5 @@
+/** @format */
+
 const mongoose = require('mongoose');
 const PaymentSchema = new mongoose.Schema({
 	product_id: {
@@ -10,7 +12,7 @@ const PaymentSchema = new mongoose.Schema({
 	},
 	user_id: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'User',
+		ref: 'user',
 		required: true,
 	},
 	customer: {
