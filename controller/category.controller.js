@@ -2,7 +2,7 @@
 
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const Category = require('../models/category.model');
+const Category = require('../models/category.models');
 
 // @desc  get all Product Category
 //@route  GET /api/v1/category
