@@ -20,3 +20,10 @@ const CategorySchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('category', CategorySchema);
+
+//Cascade deleting products when a category is deleted
+CategorySchema.pre('remove', async function (next) {
+	console.log('The products are being deleted');
+	await this.model('product').deleteMany({ category_id: this._id });
+	next();
+});
