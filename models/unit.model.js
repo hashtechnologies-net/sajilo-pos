@@ -2,15 +2,13 @@
 
 const mongoose = require('mongoose');
 const UnitSchema = new mongoose.Schema({
-	unit: {
+	unit_name: {
 		type: String,
-		enum: ['kg', 'litre'],
-		default: 'kg',
 		unique: true,
 	},
 	created_by: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'Admin',
+		ref: 'admin',
 		required: true,
 	},
 
@@ -20,4 +18,4 @@ const UnitSchema = new mongoose.Schema({
 	},
 });
 
-module.exports = mongoose.model('Unit', UnitSchema);
+module.exports = mongoose.model('units', UnitSchema);

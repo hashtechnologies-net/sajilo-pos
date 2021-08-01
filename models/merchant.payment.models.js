@@ -1,3 +1,5 @@
+/** @format */
+
 const mongoose = require('mongoose');
 const merchantPaymentSchema = new mongoose.Schema({
 	merchant_id: {

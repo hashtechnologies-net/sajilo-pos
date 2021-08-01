@@ -8,16 +8,6 @@ const Product = require('../models/product.models');
 // @desc  get all units
 //@route  GET /api/v1/units
 exports.getAllUnit = asyncHandler(async (req, res, next) => {
-	if (req.params.productId) {
-		const units = await Unit.find({
-			product_id: req.params.productId,
-		});
-		res.status(200).json({
-			status: true,
-			count: units.length,
-			data: units,
-		});
-	}
 	res.status(200).json(res.allqueryresults);
 });
 
@@ -38,7 +28,7 @@ exports.getSingleUnit = asyncHandler(async (req, res, next) => {
 
 exports.createUnit = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.admin.id;
-
+	// console.log(req.body.unit_name);
 	const Cunit = await Unit.create(req.body);
 	res.status(201).json({ success: true, data: Cunit });
 });
