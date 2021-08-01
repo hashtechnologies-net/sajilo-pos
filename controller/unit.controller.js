@@ -28,7 +28,7 @@ exports.getSingleUnit = asyncHandler(async (req, res, next) => {
 
 exports.createUnit = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.admin.id;
-
+	// console.log(req.body.unit_name);
 	const Cunit = await Unit.create(req.body);
 	res.status(201).json({ success: true, data: Cunit });
 });

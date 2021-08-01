@@ -16,7 +16,7 @@ const ProductSchema = new mongoose.Schema({
 	},
 	unit_id: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'unit',
+		ref: 'units',
 		required: true,
 	},
 	unit_price: {
