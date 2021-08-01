@@ -12,10 +12,16 @@ const router = express.Router();
 router
 	.route('/')
 	.get(
-		allqueryresults(Product, {
-			path: 'unit_id',
-			select: 'unit_name',
-		}),
+		allqueryresults(Product, [
+			{
+				path: 'unit_id',
+				select: 'unit_name',
+			},
+			{
+				path: 'category_id',
+				select: 'category_name',
+			},
+		]),
 
 		productController.getAllProducts
 	)

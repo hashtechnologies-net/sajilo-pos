@@ -9,29 +9,34 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	if (
 		req.headers.authorization &&
-		req.headers.authorization.startsWith('Bearer')
+		req.headers.authorization.startsWith('Bearer user-')
 	) {
 		// Set token from Bearer token in header
-		token = req.headers.authorization.split(' ')[1];
+		token = req.headers.authorization.split('-')[1];
+		console.log(token);
 	}
 
 	// Make sure token exists
 	if (!token) {
 		return next(
-			new ErrorResponse('Not authorized to access this route', 401)
+			new ErrorResponse(
+				'Please login as a user to access this resources',
+				401
+			)
 		);
 	}
 
 	try {
 		// Verify token
-		const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-		req.admin = await Admin.findById(decoded.id);
-
+		const decoded = jwt.verify(token, process.env.JWT_USER_SECRET);
+		const user = await User.findById(decoded.id);
+		if (!user) {
+			return next(
+				new ErrorResponse('Not authorized to access this route', 401)
+			);
+		}
 		next();
 	} catch (err) {
-		return next(
-			new ErrorResponse('Not authorized to access this route', 401)
-		);
+		return next(new ErrorResponse('Internal server error', 500));
 	}
 });
