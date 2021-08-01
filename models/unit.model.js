@@ -5,6 +5,7 @@ const UnitSchema = new mongoose.Schema({
 	unit_name: {
 		type: String,
 		unique: true,
+		required: true,
 	},
 	created_by: {
 		type: mongoose.Schema.ObjectId,
