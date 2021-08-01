@@ -3,7 +3,7 @@ const router = express.Router();
 const userController = require('../controller/users.controller');
 const User = require('../models/users.models');
 const allqueryresults = require('../middleware/allqueryresults');
-const authprotect = require('../middleware/auth');
+const authprotect = require('../middleware/authAdmin');
 
 router
 	.route('/')

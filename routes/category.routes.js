@@ -4,10 +4,10 @@ const express = require('express');
 const router = express.Router();
 const categoryController = require('../controller/category.controller');
 
-const Admin = require('../models/admin.model');
-const Category = require('../models/category.model');
+const Admin = require('../models/admin.models');
+const Category = require('../models/category.models');
 const allqueryresults = require('../middleware/allqueryresults');
-const authprotect = require('../middleware/auth');
+const authprotect = require('../middleware/authAdmin');
 
 const productRouter = require('./product.routes');
 
