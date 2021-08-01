@@ -11,8 +11,11 @@ const authprotect = require('../middleware/auth');
 
 const productRouter = require('./product.routes');
 
+const unitRouter = require('./unit.routes');
+
 //re-routing to the product
 router.use('/:categoryId/products', productRouter);
+
 router
 	.route('/')
 	.get(allqueryresults(Category), categoryController.getAllCategory)
