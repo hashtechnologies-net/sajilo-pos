@@ -1,3 +1,5 @@
+/** @format */
+
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('./async');
 const ErrorResponse = require('../utils/errorResponse');
@@ -26,7 +28,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		// Verify token
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-		req.admin = await Admin.findById(decoded.id);
+		req.admin = await User.findById(decoded.id);
 
 		next();
 	} catch (err) {
