@@ -8,9 +8,18 @@ const Category = require('../models/category.models');
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
 
+const productRouter = require('./product.routes');
+const unitRouter = require('./unit.routes');
+
+//re-routing to the product
+router.use('/:categoryId/products', productRouter);
+
 router
 	.route('/')
-	.get(allqueryresults(Category), categoryController.getAllCategory)
+	.get(
+		allqueryresults(Category, { path: 'created_by', select: 'username' }),
+		categoryController.getAllCategory
+	)
 	.post(authprotect.protect, categoryController.createCategory);
 
 router

@@ -12,7 +12,6 @@ const UnitSchema = new mongoose.Schema({
 		ref: 'admin',
 		required: true,
 	},
-
 	created_at: {
 		type: Date,
 		default: Date.now,

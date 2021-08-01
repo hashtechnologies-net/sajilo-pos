@@ -1,13 +1,11 @@
-/** @format */
-
 // const ErrorResponse = require('../utils/errorResponse');
 // const asyncHandler = require('../middleware/async');
-// const Payment = require('../models/payment.models');
+// const SalesPayment = require('../models/sales.payment.models');
 
 // // @desc  get all Payments
 // //@route  GET /api/v1/payments
-// exports.getAllPayments = asyncHandler(async (req, res, next) => {
-// 	const payments = await Payment.find().populate('user_id');
+// exports.getAllSPayments = asyncHandler(async (req, res, next) => {
+// 	const Spayments = await SalesPayment.find().populate('user_id');
 // 	res.status(200).json({ success: true, data: payments });
 // });
 // // @desc  get single Payment
