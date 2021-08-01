@@ -1,7 +1,7 @@
 /** @format */
 
 const mongoose = require('mongoose');
-const ProductCategorySchema = new mongoose.Schema({
+const merchantPaymentSchema = new mongoose.Schema({
 	merchant_id: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'merchant',
@@ -27,4 +27,4 @@ const ProductCategorySchema = new mongoose.Schema({
 	},
 });
 
-module.exports = mongoose.model('merchants', ProductCategorySchema);
+module.exports = mongoose.model('merchantPayment', merchantPaymentSchema);

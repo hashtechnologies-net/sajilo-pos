@@ -2,7 +2,7 @@
 
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const Category = require('../models/category.model');
+const Category = require('../models/category.models');
 
 // @desc  get all Product Category
 //@route  GET /api/v1/category
@@ -43,10 +43,14 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
 // @desc  update  Category
 //@route  PUT /api/v1/category/:id
 exports.updateCategory = asyncHandler(async (req, res, next) => {
-	const Ucategory = await Category.findByIdAndUpdate(req.params.id, req.body, {
-		new: true,
-		runValidators: true,
-	});
+	const Ucategory = await Category.findByIdAndUpdate(
+		req.params.id,
+		req.body,
+		{
+			new: true,
+			runValidators: true,
+		}
+	);
 	if (!Ucategory) {
 		return next(
 			new ErrorResponse(

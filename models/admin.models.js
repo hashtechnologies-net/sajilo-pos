@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const mongoose = require('mongoose');
-const usersSchema = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({
 	full_name: {
 		type: String,
 		required: [true, 'Please add the Name'],
@@ -31,15 +31,15 @@ const usersSchema = new mongoose.Schema({
 	},
 });
 
-usersSchema.pre('save', async function (next) {
+adminSchema.pre('save', async function (next) {
 	const salt = await bcrypt.genSalt(10);
 	this.password = await bcrypt.hash(this.password, salt);
 });
 
 // Sign JWT and return
-usersSchema.methods.getSignedJwtToken = function () {
+adminSchema.methods.getSignedJwtToken = function () {
 	return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
 		expiresIn: process.env.JWT_EXPIRE,
 	});
 };
-module.exports = mongoose.model('admin', usersSchema);
+module.exports = mongoose.model('admin', adminSchema);

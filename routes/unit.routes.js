@@ -5,7 +5,7 @@ const unitController = require('../controller/unit.controller');
 
 const Unit = require('../models/unit.model');
 const allqueryresults = require('../middleware/allqueryresults');
-const authprotect = require('../middleware/auth');
+const authprotect = require('../middleware/authAdmin');
 
 const router = express.Router();
 

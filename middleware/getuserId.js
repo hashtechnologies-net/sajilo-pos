@@ -3,7 +3,6 @@ const User = require('../models/users.models');
 
 function getUserId(headers) {
 	let token;
-	// console.log(req);
 
 	if (headers.authorization && headers.authorization.startsWith('Bearer')) {
 		// Set token from Bearer token in header

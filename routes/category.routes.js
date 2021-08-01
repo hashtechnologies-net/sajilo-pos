@@ -6,7 +6,7 @@ const categoryController = require('../controller/category.controller');
 
 const Category = require('../models/category.model');
 const allqueryresults = require('../middleware/allqueryresults');
-const authprotect = require('../middleware/auth');
+const authprotect = require('../middleware/authAdmin');
 
 router
 	.route('/')

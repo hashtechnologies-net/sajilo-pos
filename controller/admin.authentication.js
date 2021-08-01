@@ -3,7 +3,7 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const bcrypt = require('bcrypt');
-const Admin = require('../models/admin.model');
+const Admin = require('../models/admin.models');
 require('dotenv').config('./env');
 
 // @desc      Register admin
