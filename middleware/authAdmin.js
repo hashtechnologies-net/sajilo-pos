@@ -18,20 +18,24 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	// Make sure token exists
 	if (!token) {
 		return next(
-			new ErrorResponse('Not authorized to access this route', 401)
+			new ErrorResponse(
+				'Please login as admin to access this resources',
+				401
+			)
 		);
 	}
 
 	try {
 		// Verify token
-		const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-		req.admin = await Admin.findById(decoded.id);
+		const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
+		console.log(decoded);
+		admin = await Admin.findById(decoded.id);
+		if (!admin) {
+			return next(new ErrorResponse('Admin not found', 401));
+		}
 
 		next();
 	} catch (err) {
-		return next(
-			new ErrorResponse('Not authorized to access this route', 401)
-		);
+		return next(new ErrorResponse('Internal server error', 500));
 	}
 });

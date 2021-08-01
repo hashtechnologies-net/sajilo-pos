@@ -2,33 +2,34 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const bcrypt = require('bcrypt');
 const User = require('../models/users.models');
+const jwt = require('jsonwebtoken');
 require('dotenv').config('./env');
 
 // @desc      Register user
 // @route     POST /api/v1/auth/register
 // @access    Admin
-exports.register = asyncHandler(async (req, res, next) => {
-	const { Name, email, password, accountType } = req.body;
-	const userExists = await User.findOne({ email });
+// exports.register = asyncHandler(async (req, res, next) => {
+// 	const { Name, email, password, accountType } = req.body;
+// 	const userExists = await User.findOne({ email });
 
-	//check duplicate email
-	if (userExists) {
-		return res.json({
-			Status: false,
-			reason: `${userExists.email} is already registered`,
-		});
-	}
+// 	//check duplicate email
+// 	if (userExists) {
+// 		return res.json({
+// 			Status: false,
+// 			reason: `${userExists.email} is already registered`,
+// 		});
+// 	}
 
-	// Create user
-	const user = await User.create({
-		Name,
-		email,
-		password,
-		accountType,
-	});
+// 	// Create user
+// 	const user = await User.create({
+// 		Name,
+// 		email,
+// 		password,
+// 		accountType,
+// 	});
 
-	sendTokenResponse(user, 200, res);
-});
+// 	sendTokenResponse(user, 200, res);
+// });
 
 // @desc      Login user
 // @route     POST /api/v1/auth/login
@@ -61,7 +62,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
 	// Create token
-	const token = user.getSignedJwtToken();
+	const token = 'user-' + user.getSignedJwtToken();
 
 	const options = {
 		expires: new Date(
@@ -89,4 +90,43 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 	const user = await User.findById(req.user.id);
 	console.log(req.user.id);
 	res.status(200).json({ success: true, data: user });
+});
+
+exports.protect = asyncHandler(async (req, res, next) => {
+	let token;
+
+	if (
+		req.headers.authorization &&
+		req.headers.authorization.startsWith('Bearer user-')
+	) {
+		// Set token from Bearer token in header
+		token = req.headers.authorization.split('-')[1];
+	}
+
+	// Make sure token exists
+	if (!token) {
+		return next(
+			new ErrorResponse(
+				'Please login as user to access this resource.',
+				401
+			)
+		);
+	}
+
+	try {
+		// Verify token
+		const decoded = jwt.verify(token, process.env.JWT_USER_SECRET);
+		console.log(decoded);
+		const user = await User.findById(decoded.id);
+
+		if (!user) {
+			return next(
+				new ErrorResponse('User not found with that that token', 401)
+			);
+		}
+		req.user = user;
+		next();
+	} catch (err) {
+		return next(new ErrorResponse('Inernal Server Error', 500));
+	}
 });
