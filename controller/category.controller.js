@@ -5,7 +5,7 @@ const asyncHandler = require('../middleware/async');
 const Category = require('../models/category.models');
 
 // @desc  get all Product Category
-//@route  GET /api/v1/productcategory
+//@route  GET /api/v1/category
 exports.getAllCategory = asyncHandler(async (req, res, next) => {
 	res.status(200).json(res.allqueryresults);
 });

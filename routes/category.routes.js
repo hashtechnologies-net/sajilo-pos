@@ -4,19 +4,14 @@ const express = require('express');
 const router = express.Router();
 const categoryController = require('../controller/category.controller');
 
-const Admin = require('../models/admin.models');
-const Category = require('../models/category.models');
+const Category = require('../models/category.model');
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
 
 router
 	.route('/')
 	.get(allqueryresults(Category), categoryController.getAllCategory)
-	.post(
-		authprotect.protect,
-		//authprotect.authorize('Admin'),
-		categoryController.createCategory
-	);
+	.post(authprotect.protect, categoryController.createCategory);
 
 router
 	.route('/:id')
