@@ -6,8 +6,6 @@ const productController = require('../controller/product.controller');
 const Product = require('../models/product.models');
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
-
-const router = express.Router({ mergeParams: true });
 const router = express.Router();
 
 router

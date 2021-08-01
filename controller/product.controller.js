@@ -39,8 +39,7 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/category/:categoryId/products
 
 exports.createProduct = asyncHandler(async (req, res, next) => {
-	req.body.category_id = req.params.categoryId;
-	req.body.created_by = req.admin.id;
+	req.body.category_id = req.body.categoryId;
 	const category = await Category.findById(req.params.categoryId);
 
 	if (!category) {
