@@ -10,7 +10,7 @@ const PaymentSchema = new mongoose.Schema({
 	},
 	user_id: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'User',
+		ref: 'user',
 		required: true,
 	},
 	customer: {
@@ -18,3 +18,5 @@ const PaymentSchema = new mongoose.Schema({
 		default: 'Cash',
 	},
 });
+
+module.exports = mongoose.model('sales', PaymentSchema);

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const PaymentSchema = new mongoose.Schema({
+const salesPaymentSchema = new mongoose.Schema({
 	paymentType: {
 		type: String,
 		enum: ['Cash', 'Bank'],
@@ -20,9 +20,9 @@ const PaymentSchema = new mongoose.Schema({
 	},
 	invoice_id: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'User',
+		ref: 'user',
 		required: true,
 	},
 });
 
-module.exports = mongoose.model('payment', PaymentSchema);
+module.exports = mongoose.model('salesPayment', salesPaymentSchema);

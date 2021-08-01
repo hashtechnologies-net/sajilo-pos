@@ -29,12 +29,12 @@ const ProductSchema = new mongoose.Schema({
 	},
 	category_id: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'Category',
+		ref: 'category',
 		required: true,
 	},
 	created_by: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'Admin',
+		ref: 'admin',
 		required: true,
 	},
 	created_at: {
