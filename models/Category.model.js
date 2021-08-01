@@ -10,7 +10,7 @@ const CategorySchema = new mongoose.Schema({
 	},
 	created_by: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'Admin',
+		ref: 'admin',
 		required: true,
 	},
 	created_at: {
@@ -19,4 +19,4 @@ const CategorySchema = new mongoose.Schema({
 	},
 });
 
-module.exports = mongoose.model('Category', CategorySchema);
+module.exports = mongoose.model('category', CategorySchema);

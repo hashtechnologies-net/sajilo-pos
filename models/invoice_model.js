@@ -15,11 +15,11 @@ const InvoiceSchema = new mongoose.Schema({
 	},
 	user_id: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'Users',
+		ref: 'user',
 		required: true,
 	},
 	counter_name: {
 		type: String,
 	},
 });
-module.exports = mongoose.model('Invoice', InvoiceSchema);
+module.exports = mongoose.model('invoice', InvoiceSchema);
