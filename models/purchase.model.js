@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 const PurchaseSchema = new mongoose.Schema({
-	description: {
+	description: [{
 		product: {
 			type: mongoose.Schema.ObjectId,
 			ref: 'product',
@@ -12,7 +12,7 @@ const PurchaseSchema = new mongoose.Schema({
 			type: Number,
 			required: [true, 'Please add the stock number'],
 		},
-	},
+	}],
 
 	merchant_id: {
 		type: mongoose.Schema.ObjectId,
@@ -31,8 +31,3 @@ const PurchaseSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('purchase', PurchaseSchema);
-
-/*
-        type: [Object],
-		required: [true, 'Please add the description'],
-        */

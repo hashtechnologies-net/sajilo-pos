@@ -58,7 +58,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 			new ErrorResponse(`User not found with id of ${req.params.id}`, 404)
 		);
 	}
-	console.log(req.body.length);
+	
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
