@@ -1,6 +1,7 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Invoice = require('../models/invoice.models');
+const Stock = require('../models/stockEntry.models');
 const { getID } = require('../middleware/getuserId');
 
 // @desc  get all Invoice
@@ -29,9 +30,14 @@ exports.getSingleInvoice = asyncHandler(async (req, res, next) => {
 exports.createInvoice = asyncHandler(async (req, res, next) => {
 	req.body.user_id = req.user.id;
 	const CInvoice = await Invoice.create(req.body);
-	if (!CInvoice) {
-		return next(new ErrorResponse());
-	}
+	CInvoice.description.forEach(async (sales) => {
+		let stock = {
+			product_id: sales.product,
+			stockOut: sales.stock,
+			invoice_id: CInvoice.id,
+		};
+		const stockEntry = await Stock.create(stock);
+	});
 	res.status(201).json({ success: true, data: CInvoice });
 });
 // @desc  update  Invoice

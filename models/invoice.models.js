@@ -8,10 +8,19 @@ const InvoiceSchema = new mongoose.Schema({
 		type: Date,
 		default: Date.now,
 	},
-	description: {
-		type: [],
-		required: true,
-	},
+	description: [
+		{
+			product: {
+				type: mongoose.Schema.ObjectId,
+				ref: 'product',
+				required: true,
+			},
+			stock: {
+				type: Number,
+				required: [true, 'Please add the stock number'],
+			},
+		},
+	],
 	user_id: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'user',
