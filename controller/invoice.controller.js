@@ -40,6 +40,7 @@ exports.createInvoice = asyncHandler(async (req, res, next) => {
 	});
 	res.status(201).json({ success: true, data: CInvoice });
 });
+
 // @desc  update  Invoice
 //@route  PUT /api/v1/invoices/:id
 exports.updateInvoice = asyncHandler(async (req, res, next) => {

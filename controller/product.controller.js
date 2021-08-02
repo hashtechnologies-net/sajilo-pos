@@ -18,7 +18,10 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 
 	if (!product1) {
 		return next(
-			new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
+			new ErrorResponse(
+				`Product not found with id of ${req.params.id}`,
+				404
+			)
 		);
 	}
 	res.status(200).json({ success: true, data: product1 });
@@ -27,7 +30,6 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/products
 
 exports.createProduct = asyncHandler(async (req, res, next) => {
-	console.log(req.admin.id);
 	req.body.created_by = req.admin.id;
 
 	const category = await Category.findById(req.body.category_id);
@@ -66,7 +68,10 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 	});
 	if (!Uproduct) {
 		return next(
-			new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
+			new ErrorResponse(
+				`Product not found with id of ${req.params.id}`,
+				404
+			)
 		);
 	}
 	if (Object.keys(req.body).length === 0) {

@@ -34,11 +34,11 @@ const adminRouter = require('./routes/admin.routes');
 const merchantRouter = require('./routes/merchant.routes');
 const invoiceRouter = require('./routes/invoice.routes');
 const purchaseRouter = require('./routes/purchase.routes');
+const sPaymentRouter = require('./routes/salesPayment.routes');
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/products', productRouter);
-// app.use('/api/v1/payments', paymentRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/category', categoryRouter);
 app.use('/api/v1/units', unitRouter);
@@ -46,6 +46,7 @@ app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/merchants', merchantRouter);
 app.use('/api/v1/invoices', invoiceRouter);
 app.use('/api/v1/purchases', purchaseRouter);
+app.use('/api/v1/salespayments', sPaymentRouter);
 
 //mount errprhandler
 app.use(errorHandler);

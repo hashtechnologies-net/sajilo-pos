@@ -20,7 +20,7 @@ const salesPaymentSchema = new mongoose.Schema({
 	},
 	invoice_id: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'user',
+		ref: 'invoice',
 		required: true,
 	},
 });
