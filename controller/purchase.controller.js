@@ -14,7 +14,9 @@ exports.getAllPurchases = asyncHandler(async (req, res, next) => {
 // @desc  get single Purchase
 //@route  GET /api/v1/purchases/:id
 exports.getSinglePurchase = asyncHandler(async (req, res, next) => {
-	const purchase = await Purchase.findById(req.params.id).populate('admin_id');
+	const purchase = await Purchase.findById(req.params.id).populate(
+		'admin_id'
+	);
 
 	if (!purchase) {
 		return next(
