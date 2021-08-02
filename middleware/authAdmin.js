@@ -1,3 +1,5 @@
+/** @format */
+
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('./async');
 const ErrorResponse = require('../utils/errorResponse');
@@ -27,10 +29,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	try {
 		// Verify token
+
 		const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
-		console.log(decoded);
-		admin = await Admin.findById(decoded.id);
-		if (!admin) {
+
+		req.admin = await Admin.findById(decoded.id);
+
+		if (!req.admin) {
 			return next(new ErrorResponse('Admin not found', 401));
 		}
 

@@ -33,6 +33,7 @@ const unitRouter = require('./routes/unit.routes');
 const adminRouter = require('./routes/admin.routes');
 const merchantRouter = require('./routes/merchant.routes');
 const invoiceRouter = require('./routes/invoice.routes');
+const purchaseRouter = require('./routes/purchase.route');
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
@@ -44,6 +45,7 @@ app.use('/api/v1/units', unitRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/merchants', merchantRouter);
 app.use('/api/v1/invoices', invoiceRouter);
+app.use('/api/v1/purchases', purchaseRouter);
 
 //mount errprhandler
 app.use(errorHandler);
