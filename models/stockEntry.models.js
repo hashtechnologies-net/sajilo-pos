@@ -1,3 +1,5 @@
+/** @format */
+
 const mongoose = require('mongoose');
 const StockEntrySchema = new mongoose.Schema({
 	stockIn: {

@@ -55,6 +55,9 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
+	if (Object.keys(req.body).length === 0) {
+		return next(new ErrorResponse(`Nothing to update`, 200));
+	}
 	res.status(200).json({ success: true, data: Ucategory });
 });
 

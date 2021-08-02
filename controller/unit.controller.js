@@ -45,6 +45,9 @@ exports.updateUnit = asyncHandler(async (req, res, next) => {
 			new ErrorResponse(`Unit not found with id of ${req.params.id}`, 404)
 		);
 	}
+	if (Object.keys(req.body).length === 0) {
+		return next(new ErrorResponse(`Nothing to update`, 200));
+	}
 	res.status(200).json({ success: true, data: Uunit });
 });
 
