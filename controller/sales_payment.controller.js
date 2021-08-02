@@ -5,8 +5,7 @@ const SalesPayment = require('../models/sales.payment.models');
 // @desc  get all salesPayments
 //@route  GET /api/v1/salespayments
 exports.getAllSPayments = asyncHandler(async (req, res, next) => {
-	const Spayments = await SalesPayment.find().populate('user_id');
-	res.status(200).json({ success: true, data: Spayments });
+	res.status(200).json(res.allqueryresults);
 });
 // @desc  get single salesPayment
 //@route  GET /api/v1/salespayments/:id
@@ -51,9 +50,9 @@ exports.updateSPayment = asyncHandler(async (req, res, next) => {
 	res.status(200).json({ success: true, data: USpayment });
 });
 // @desc  Delete  Payment
-//@route  DELETE /api/v1/payments/:id
+//@route  DELETE /api/v1/salespayments/:id
 exports.deleteSPayment = asyncHandler(async (req, res, next) => {
-	const deleteSPayment = await Payment.findByIdAndDelete(req.params.id);
+	const deleteSPayment = await SalesPayment.findByIdAndDelete(req.params.id);
 	if (!deleteSPayment) {
 		return next(
 			new ErrorResponse(

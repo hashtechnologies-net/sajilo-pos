@@ -2,7 +2,6 @@ const path = require('path');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const User = require('../models/users.models');
-const { isNullOrUndefined, isNull } = require('util');
 
 // @desc  get all users
 //@route  GET /api/v1/users
@@ -58,7 +57,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 			new ErrorResponse(`User not found with id of ${req.params.id}`, 404)
 		);
 	}
-	
+
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
