@@ -1,65 +1,66 @@
-// const ErrorResponse = require('../utils/errorResponse');
-// const asyncHandler = require('../middleware/async');
-// const SalesPayment = require('../models/sales.payment.models');
+const ErrorResponse = require('../utils/errorResponse');
+const asyncHandler = require('../middleware/async');
+const SalesPayment = require('../models/sales.payment.models');
 
-// // @desc  get all Payments
-// //@route  GET /api/v1/payments
-// exports.getAllSPayments = asyncHandler(async (req, res, next) => {
-// 	const Spayments = await SalesPayment.find().populate('user_id');
-// 	res.status(200).json({ success: true, data: payments });
-// });
-// // @desc  get single Payment
-// //@route  GET /api/v1/payments/:id
-// exports.getSinglePayment = asyncHandler(async (req, res, next) => {
-// 	const payment1 = await Payment.findById(req.params.id);
-// 	if (!payment1) {
-// 		return next(
-// 			new ErrorResponse(
-// 				`Payment not found with id of ${req.params.id}`,
-// 				404
-// 			)
-// 		);
-// 	}
-// 	res.status(200).json({ success: true, data: payment1 });
-// });
-// // @desc  create new Payment
-// //@route  POST /api/v1/payments
+// @desc  get all salesPayments
+//@route  GET /api/v1/salespayments
+exports.getAllSPayments = asyncHandler(async (req, res, next) => {
+	const Spayments = await SalesPayment.find().populate('user_id');
+	res.status(200).json({ success: true, data: Spayments });
+});
+// @desc  get single salesPayment
+//@route  GET /api/v1/salespayments/:id
+exports.getSinglePayment = asyncHandler(async (req, res, next) => {
+	const spayment1 = await SalesPayment.findById(req.params.id);
+	if (!spayment1) {
+		return next(
+			new ErrorResponse(
+				`Payment not found with id of ${req.params.id}`,
+				404
+			)
+		);
+	}
+	res.status(200).json({ success: true, data: spayment1 });
+});
+// @desc  create new salesPayment
+//@route  POST /api/v1/salespayments
 
-// exports.createPayment = asyncHandler(async (req, res, next) => {
-// 	const Cpayment = await Payment.create(req.body);
-// 	if (!Cpayment) {
-// 		return next(new ErrorResponse());
-// 	}
-// 	res.status(201).json({ success: true, data: Cpayment });
-// });
-// // @desc  update  Payment
-// //@route  PUT /api/v1/payments/:id
-// exports.updatePayment = asyncHandler(async (req, res, next) => {
-// 	const Upayment = await Payment.findByIdAndUpdate(req.params.id, req.body, {
-// 		new: true,
-// 		runValidators: true,
-// 	});
-// 	if (!Upayment) {
-// 		return next(
-// 			new ErrorResponse(
-// 				`Payment not found with id of ${req.params.id}`,
-// 				404
-// 			)
-// 		);
-// 	}
-// 	res.status(200).json({ success: true, data: Upayment });
-// });
-// // @desc  Delete  Payment
-// //@route  DELETE /api/v1/payments/:id
-// exports.deletePayment = asyncHandler(async (req, res, next) => {
-// 	const deletePayment = await Payment.findByIdAndDelete(req.params.id);
-// 	if (!deletePayment) {
-// 		return next(
-// 			new ErrorResponse(
-// 				`Payment not found with id of ${req.params.id}`,
-// 				404
-// 			)
-// 		);
-// 	}
-// 	res.status(200).json({ success: true, data: {} });
-// });
+exports.createSPayment = asyncHandler(async (req, res, next) => {
+	const CSpayment = await SalesPayment.create(req.body);
+	res.status(201).json({ success: true, data: CSpayment });
+});
+// @desc  update  salesPayment
+//@route  PUT /api/v1/salespayments/:id
+exports.updateSPayment = asyncHandler(async (req, res, next) => {
+	const USpayment = await SalesPayment.findByIdAndUpdate(
+		req.params.id,
+		req.body,
+		{
+			new: true,
+			runValidators: true,
+		}
+	);
+	if (!USpayment) {
+		return next(
+			new ErrorResponse(
+				`Payment not found with id of ${req.params.id}`,
+				404
+			)
+		);
+	}
+	res.status(200).json({ success: true, data: USpayment });
+});
+// @desc  Delete  Payment
+//@route  DELETE /api/v1/payments/:id
+exports.deleteSPayment = asyncHandler(async (req, res, next) => {
+	const deleteSPayment = await Payment.findByIdAndDelete(req.params.id);
+	if (!deleteSPayment) {
+		return next(
+			new ErrorResponse(
+				`Payment not found with id of ${req.params.id}`,
+				404
+			)
+		);
+	}
+	res.status(200).json({ success: true, data: {} });
+});
