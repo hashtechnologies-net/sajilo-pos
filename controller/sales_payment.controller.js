@@ -51,9 +51,9 @@ exports.updateSPayment = asyncHandler(async (req, res, next) => {
 	res.status(200).json({ success: true, data: USpayment });
 });
 // @desc  Delete  Payment
-//@route  DELETE /api/v1/payments/:id
+//@route  DELETE /api/v1/salespayments/:id
 exports.deleteSPayment = asyncHandler(async (req, res, next) => {
-	const deleteSPayment = await Payment.findByIdAndDelete(req.params.id);
+	const deleteSPayment = await SalesPayment.findByIdAndDelete(req.params.id);
 	if (!deleteSPayment) {
 		return next(
 			new ErrorResponse(
