@@ -13,19 +13,17 @@ exports.getAllCategory = asyncHandler(async (req, res, next) => {
 // @desc  get a single Product Category
 //@route  GET /api/v1/productcategory/:id
 exports.getSingleCategory = asyncHandler(async (req, res, next) => {
-	const category1 = await Category.findById(req.params.id).populate(
-		'admin_id'
-	);
+	const category = await Category.findById(req.params.id).populate('admin_id');
 
-	if (!category1) {
+	if (!category) {
 		return next(
 			new ErrorResponse(
-				`Category not found with id of ${req.params.id}`,
+				`Category with id ${req.params.id} could not be found`,
 				404
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: category1 });
+	res.status(200).json({ success: true, data: category });
 });
 
 // @desc  create new Product Category
@@ -43,37 +41,43 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
 // @desc  update  Category
 //@route  PUT /api/v1/category/:id
 exports.updateCategory = asyncHandler(async (req, res, next) => {
-	const Ucategory = await Category.findByIdAndUpdate(req.params.id, req.body, {
-		new: true,
-		runValidators: true,
-	});
-	if (!Ucategory) {
+	let category = await Category.findById(req.params.id);
+	if (!category) {
 		return next(
 			new ErrorResponse(
-				`Category not found with id of ${req.params.id}`,
+				`Category with id ${req.params.id} could not be found`,
 				404
 			)
 		);
 	}
+	category = await Category.findByIdAndUpdate(req.params.id, req.body, {
+		new: true,
+		runValidators: true,
+	});
+
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
-	res.status(200).json({ success: true, data: Ucategory });
+	res.status(200).json({
+		success: true,
+		data: category,
+		message: 'Successfully Updated!!',
+	});
 });
 
 // @desc  Delete  Category
 //@route  DELETE /api/v1/category/:id
 exports.deleteCategory = asyncHandler(async (req, res, next) => {
-	const categories = await Category.findById(req.params.id);
-	if (!categories) {
+	const category = await Category.findById(req.params.id);
+	if (!category) {
 		return next(
 			new ErrorResponse(
-				`Already deleted Category with id of ${req.params.id}`,
+				`Category with id ${req.params.id} has already been deleted`,
 				404
 			)
 		);
 	}
-	categories.remove();
+	category.remove();
 	res.status(200).json({
 		success: true,
 		data: {},

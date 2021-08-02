@@ -17,7 +17,7 @@ exports.getSingleMerchant = asyncHandler(async (req, res, next) => {
 	if (!merchant1) {
 		return next(
 			new ErrorResponse(
-				`Merchant not found with id of ${req.params.id}`,
+				`Merchant with id ${req.params.id} could not be found`,
 				404
 			)
 		);
@@ -33,32 +33,39 @@ exports.createMerchant = asyncHandler(async (req, res, next) => {
 // @desc  update  merchant
 //@route  PUT /api/v1/merchants/:id
 exports.updateMerchant = asyncHandler(async (req, res, next) => {
-	const Umerchant = await Merchant.findByIdAndUpdate(req.params.id, req.body, {
-		new: true,
-		runValidators: true,
-	});
+	let Umerchant = await Merchant.findById(req.params.id);
 	if (!Umerchant) {
 		return next(
 			new ErrorResponse(
-				`Merchant not found with id of ${req.params.id}`,
+				`Merchant with id ${req.params.id} could not be found`,
 				404
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: Umerchant });
+	Umerchant = await Merchant.findByIdAndUpdate(req.params.id, req.body, {
+		new: true,
+		runValidators: true,
+	});
+
+	res.status(200).json({
+		success: true,
+		data: Umerchant,
+		message: 'Successfully Updated!!',
+	});
 });
 // @desc  Delete  Merchant
 //@route  DELETE /api/v1/merchants/:id
 exports.deleteMerchant = asyncHandler(async (req, res, next) => {
-	const deleteMerchant = await Merchant.findByIdAndDelete(req.params.id);
+	let deleteMerchant = await Merchant.findById(req.params.id);
 	if (!deleteMerchant) {
 		return next(
 			new ErrorResponse(
-				`Already deleted merchant with id of ${req.params.id}`,
+				`Merchant with id ${req.params.id} has already been deleted`,
 				404
 			)
 		);
 	}
+	deleteMerchant.remove();
 	res.status(200).json({
 		success: true,
 		data: {},

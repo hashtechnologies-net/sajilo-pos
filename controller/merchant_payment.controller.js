@@ -7,22 +7,21 @@ const MerchantPayment = require('../models/merchant.payment.models');
 // @desc  get all merchantPayments
 //@route  GET /api/v1/merchanpayments
 exports.getAllPayment = asyncHandler(async (req, res, next) => {
-	const payments = await MerchantPayment.find().populate('user_id');
-	res.status(200).json({ success: true, data: payments });
+	res.status(200).json(res.allqueryresults);
 });
 // @desc  get single merchantPayment
 //@route  GET /api/v1/merchantpayments/:id
 exports.getSinglePayment = asyncHandler(async (req, res, next) => {
-	const payment1 = await MerchantPayment.findById(req.params.id);
-	if (!payment1) {
+	const payment = await MerchantPayment.findById(req.params.id);
+	if (!payment) {
 		return next(
 			new ErrorResponse(
-				`Payment not found with id of ${req.params.id} of any merchant`,
+				`Merchant Payment with id ${req.params.id} could not be found`,
 				404
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: payment1 });
+	res.status(200).json({ success: true, data: payment });
 });
 // @desc  create new merchantPayment
 //@route  POST /api/v1/merchantpayments
@@ -38,7 +37,7 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 	if (!payments) {
 		return next(
 			new ErrorResponse(
-				`Payment not found with id of ${req.params.id} of any merchant`,
+				`Merchant Payment with id ${req.params.id} could not be found`,
 				404
 			)
 		);
@@ -52,7 +51,11 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
 
-	res.status(200).json({ success: true, data: payments });
+	res.status(200).json({
+		success: true,
+		data: payments,
+		message: 'Successfully Updated!!',
+	});
 });
 // @desc  Delete  merchantPayment
 //@route  DELETE /api/v1/merchantpayments/:id
@@ -60,7 +63,10 @@ exports.deletePayment = asyncHandler(async (req, res, next) => {
 	let payments = await MerchantPayment.findById(req.params.id);
 	if (!payments) {
 		return next(
-			new ErrorResponse(`Payment not found with id of ${req.params.id}`, 404)
+			new ErrorResponse(
+				`Merchant Payment with id ${req.params.id} has already been deleted`,
+				404
+			)
 		);
 	}
 	payments.remove();
