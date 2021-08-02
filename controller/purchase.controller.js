@@ -43,8 +43,14 @@ exports.createPurchase = asyncHandler(async (req, res, next) => {
 		);
 	}
 
-	const purchase = await Purchase.create(req.body);
-	res.status(201).json({ success: true, data: purchase });
+	const purchases = await Purchase.create(req.body);
+	purchases.description.forEach((purchase) => {
+		let stock = {
+			product_id: purchase.product,
+			stock_in: purchase.stock,
+		};
+	});
+	res.status(201).json({ success: true, data: purchases });
 });
 
 // @desc  update  Purchase
