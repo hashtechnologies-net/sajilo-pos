@@ -4,6 +4,7 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Product = require('../models/product.models');
 const Category = require('../models/category.models');
+const Units = require('../models/unit.model');
 
 // @desc  get all products
 //@route  GET /api/v1/products
@@ -14,17 +15,17 @@ exports.getAllProducts = asyncHandler(async (req, res, next) => {
 // @desc  get single Product
 //@route  GET /api/v1/products/:id
 exports.getSingleProduct = asyncHandler(async (req, res, next) => {
-	const product1 = await Product.findById(req.params.id).populate('admin_id');
+	const product = await Product.findById(req.params.id).populate('admin_id');
 
-	if (!product1) {
+	if (!product) {
 		return next(
 			new ErrorResponse(
-				`Product not found with id of ${req.params.id}`,
+				`Product with id ${req.params.id} could not be found`,
 				404
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: product1 });
+	res.status(200).json({ success: true, data: product });
 });
 // @desc  create new Product
 //@route  POST /api/v1/products
@@ -37,11 +38,22 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 	if (!category) {
 		return next(
 			new ErrorResponse(
-				`Category with id ${req.body.category_id} not found`,
+				`Category with id ${req.body.category_id} could not be found`,
 				404
 			)
 		);
 	}
+	const unit = await Units.findById(req.body.unit_id);
+
+	if (!unit) {
+		return next(
+			new ErrorResponse(
+				`Unit with id ${req.body.unit_id} could not be found`,
+				404
+			)
+		);
+	}
+
 	const { product_code } = req.body;
 	const productcodeExists = await Product.findOne({ product_code });
 
@@ -49,48 +61,59 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 	if (productcodeExists) {
 		return next(
 			new ErrorResponse(
-				`The product of code  ${productcodeExists.product_code} is already registered`,
+				`The product of code ${productcodeExists.product_code} is already registered`,
 				400
 			)
 		);
 	}
 
-	const Cproduct = await Product.create(req.body);
-	res.status(201).json({ success: true, data: Cproduct });
+	const product = await Product.create(req.body);
+	res.status(201).json({ success: true, data: product });
 });
 
 // @desc  update  Product
 //@route  PUT /api/v1/products/:id
 exports.updateProduct = asyncHandler(async (req, res, next) => {
-	const Uproduct = await Product.findByIdAndUpdate(req.params.id, req.body, {
-		new: true,
-		runValidators: true,
-	});
-	if (!Uproduct) {
+	let product = await Product.findByIdAndUpdate(req.params.id);
+	if (!product) {
 		return next(
 			new ErrorResponse(
-				`Product not found with id of ${req.params.id}`,
+				`Product with id ${req.params.id} could not be found`,
 				404
 			)
 		);
 	}
+	product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+		new: true,
+		runValidators: true,
+	});
+
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
-	res.status(200).json({ success: true, data: Uproduct });
+	res.status(200).json({
+		success: true,
+		data: product,
+		message: 'Successfully Updated!!',
+	});
 });
 
 // @desc  Delete  Product
 //@route  DELETE /api/v1/products/:id
 exports.deleteProduct = asyncHandler(async (req, res, next) => {
-	const deleteProduct = await Product.findByIdAndDelete(req.params.id);
-	if (!deleteProduct) {
+	let product = await Product.findById(req.params.id);
+	if (!product) {
 		return next(
 			new ErrorResponse(
-				`Already deleted  Product with id of ${req.params.id}`,
+				`Product with id ${req.params.id} has already been deleted`,
 				404
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: {} });
+	product.remove();
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });

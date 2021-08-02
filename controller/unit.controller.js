@@ -14,9 +14,9 @@ exports.getAllUnit = asyncHandler(async (req, res, next) => {
 // @desc  get single Unit
 //@route  GET /api/v1/units/:id
 exports.getSingleUnit = asyncHandler(async (req, res, next) => {
-	const unit1 = await Unit.findById(req.params.id).populate('admin_id');
+	const units = await Unit.findById(req.params.id).populate('admin_id');
 
-	if (!unit1) {
+	if (!units) {
 		return next(
 			new ErrorResponse(`Unit not found with id of ${req.params.id}`, 404)
 		);
@@ -28,40 +28,54 @@ exports.getSingleUnit = asyncHandler(async (req, res, next) => {
 
 exports.createUnit = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.admin.id;
-	// console.log(req.body.unit_name);
-	const Cunit = await Unit.create(req.body);
-	res.status(201).json({ success: true, data: Cunit });
+	const units = await Unit.create(req.body);
+	res.status(201).json({ success: true, data: units });
 });
 
 // @desc  update  Unit
 //@route  PUT /api/v1/units/:id
 exports.updateUnit = asyncHandler(async (req, res, next) => {
-	const Uunit = await Unit.findByIdAndUpdate(req.params.id, req.body, {
+	let units = await Unit.findByIdAndUpdate(req.params.id);
+	if (!units) {
+		return next(
+			new ErrorResponse(
+				`Unit with id ${req.params.id} could not be found`,
+				404
+			)
+		);
+	}
+
+	units = await Unit.findByIdAndUpdate(req.params.id, req.body, {
 		new: true,
 		runValidators: true,
 	});
-	if (!Uunit) {
-		return next(
-			new ErrorResponse(`Unit not found with id of ${req.params.id}`, 404)
-		);
-	}
+
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
-	res.status(200).json({ success: true, data: Uunit });
+	res.status(200).json({
+		success: true,
+		data: units,
+		message: 'Successfully Updated!!',
+	});
 });
 
 // @desc  Delete  unit
 //@route  DELETE /api/v1/units/:id
 exports.deleteUnit = asyncHandler(async (req, res, next) => {
-	const deleteUnit = await Unit.findByIdAndDelete(req.params.id);
-	if (!deleteUnit) {
+	const units = await Unit.findById(req.params.id);
+	if (!units) {
 		return next(
 			new ErrorResponse(
-				`Already deleted Unit with id of ${req.params.id}`,
+				`Unit with id ${req.params.id} has already been deleted`,
 				404
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: {} });
+	units.remove();
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });
