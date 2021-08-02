@@ -117,6 +117,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	try {
 		// Verify token
+		console.log(token);
 		const decoded = jwt.verify(token, process.env.JWT_USER_SECRET);
 		console.log(decoded);
 		const user = await User.findById(decoded.id);
@@ -129,6 +130,11 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		req.user = user;
 		next();
 	} catch (err) {
-		return next(new ErrorResponse('Inernal Server Error', 500));
+		return next(
+			new ErrorResponse(
+				'Inernal Server Error from user authentication',
+				500
+			)
+		);
 	}
 });

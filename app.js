@@ -33,7 +33,7 @@ const unitRouter = require('./routes/unit.routes');
 const adminRouter = require('./routes/admin.routes');
 const merchantRouter = require('./routes/merchant.routes');
 const invoiceRouter = require('./routes/invoice.routes');
-const purchaseRouter = require('./routes/purchase.route');
+const purchaseRouter = require('./routes/purchase.routes');
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
