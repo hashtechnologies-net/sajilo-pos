@@ -58,5 +58,9 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 			new ErrorResponse(`Payment not found with id of ${req.params.id}`, 404)
 		);
 	}
-	res.status(200).json({ success: true, data: {} });
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });

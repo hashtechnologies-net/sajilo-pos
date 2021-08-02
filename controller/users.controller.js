@@ -1,3 +1,5 @@
+/** @format */
+
 const path = require('path');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
@@ -16,10 +18,7 @@ exports.getSingleUser = asyncHandler(async (req, res, next) => {
 
 	if (!user1) {
 		return next(
-			new ErrorResponse(
-				`Product not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
 		);
 	}
 	res.status(200).json({ success: true, data: user1 });
@@ -58,7 +57,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 			new ErrorResponse(`User not found with id of ${req.params.id}`, 404)
 		);
 	}
-	
+
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
@@ -76,7 +75,11 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: {} });
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });
 
 // @desc  uplaod  photo
@@ -85,10 +88,7 @@ exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
 	const user = await User.findById(req.params.id);
 	if (!user) {
 		return next(
-			new ErrorResponse(
-				` User not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(` User not found with id of ${req.params.id}`, 404)
 		);
 	}
 	if (!req.files) {
@@ -102,9 +102,7 @@ exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
 	}
 	//check filesize
 	if (file.size > process.env.FILE_MAX_SIZE) {
-		return next(
-			new ErrorResponse(`file size cannot be more than 1mb`, 400)
-		);
+		return next(new ErrorResponse(`file size cannot be more than 1mb`, 400));
 	}
 	//Create custom filename
 	file.name = `photo_${user._id}${path.parse(file.name).ext}`;

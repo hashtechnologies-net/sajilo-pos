@@ -64,5 +64,9 @@ exports.deletePayment = asyncHandler(async (req, res, next) => {
 		);
 	}
 	payments.remove();
-	res.status(200).json({ success: true, data: {} });
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });

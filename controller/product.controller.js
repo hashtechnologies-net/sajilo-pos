@@ -18,10 +18,7 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 
 	if (!product1) {
 		return next(
-			new ErrorResponse(
-				`Product not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
 		);
 	}
 	res.status(200).json({ success: true, data: product1 });
@@ -68,10 +65,7 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 	});
 	if (!Uproduct) {
 		return next(
-			new ErrorResponse(
-				`Product not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
 		);
 	}
 	if (Object.keys(req.body).length === 0) {
@@ -92,5 +86,9 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: {} });
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });

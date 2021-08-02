@@ -63,5 +63,9 @@ exports.deleteUnit = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: {} });
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });

@@ -94,5 +94,9 @@ exports.deletePurchase = asyncHandler(async (req, res, next) => {
 		);
 	}
 	purchase.remove();
-	res.status(200).json({ success: true, data: {} });
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });

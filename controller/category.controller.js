@@ -64,8 +64,8 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 // @desc  Delete  Category
 //@route  DELETE /api/v1/category/:id
 exports.deleteCategory = asyncHandler(async (req, res, next) => {
-	const deleteCategory = await Category.findById(req.params.id);
-	if (!deleteCategory) {
+	const categories = await Category.findById(req.params.id);
+	if (!categories) {
 		return next(
 			new ErrorResponse(
 				`Already deleted Category with id of ${req.params.id}`,
@@ -73,6 +73,10 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	deleteCategory.remove();
-	res.status(200).json({ success: true, data: {} });
+	categories.remove();
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });

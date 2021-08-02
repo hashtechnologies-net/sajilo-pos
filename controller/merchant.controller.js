@@ -1,3 +1,5 @@
+/** @format */
+
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Merchant = require('../models/merchant.models');
@@ -31,14 +33,10 @@ exports.createMerchant = asyncHandler(async (req, res, next) => {
 // @desc  update  merchant
 //@route  PUT /api/v1/merchants/:id
 exports.updateMerchant = asyncHandler(async (req, res, next) => {
-	const Umerchant = await Merchant.findByIdAndUpdate(
-		req.params.id,
-		req.body,
-		{
-			new: true,
-			runValidators: true,
-		}
-	);
+	const Umerchant = await Merchant.findByIdAndUpdate(req.params.id, req.body, {
+		new: true,
+		runValidators: true,
+	});
 	if (!Umerchant) {
 		return next(
 			new ErrorResponse(
@@ -61,5 +59,9 @@ exports.deleteMerchant = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: {} });
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });
