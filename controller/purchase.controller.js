@@ -4,6 +4,7 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Purchase = require('../models/purchase.model');
 const Merchant = require('../models/merchant.models');
+const Stock = require('../models/stockEntry.models');
 
 // @desc  get all products
 //@route  GET /api/v1/purchases
@@ -14,9 +15,7 @@ exports.getAllPurchases = asyncHandler(async (req, res, next) => {
 // @desc  get single Purchase
 //@route  GET /api/v1/purchases/:id
 exports.getSinglePurchase = asyncHandler(async (req, res, next) => {
-	const purchase = await Purchase.findById(req.params.id).populate(
-		'admin_id'
-	);
+	const purchase = await Purchase.findById(req.params.id).populate('admin_id');
 
 	if (!purchase) {
 		return next(
@@ -46,11 +45,12 @@ exports.createPurchase = asyncHandler(async (req, res, next) => {
 	}
 
 	const purchases = await Purchase.create(req.body);
-	purchases.description.forEach((purchase) => {
+	purchases.description.forEach(async (purchase) => {
 		let stock = {
 			product_id: purchase.product,
-			stock_in: purchase.stock,
+			stockIn: purchase.stock,
 		};
+		const stockEntry = await Stock.create(stock);
 	});
 	res.status(201).json({ success: true, data: purchases });
 });
