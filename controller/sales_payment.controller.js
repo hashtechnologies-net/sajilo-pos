@@ -1,3 +1,5 @@
+/** @format */
+
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const SalesPayment = require('../models/sales.payment.models');
@@ -14,10 +16,7 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 	const spayment1 = await SalesPayment.findById(req.params.id);
 	if (!spayment1) {
 		return next(
-			new ErrorResponse(
-				`Payment not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`Payment not found with id of ${req.params.id}`, 404)
 		);
 	}
 	res.status(200).json({ success: true, data: spayment1 });
@@ -42,11 +41,11 @@ exports.updateSPayment = asyncHandler(async (req, res, next) => {
 	);
 	if (!USpayment) {
 		return next(
-			new ErrorResponse(
-				`Payment not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`Payment not found with id of ${req.params.id}`, 404)
 		);
+	}
+	if (Object.keys(req.body).length === 0) {
+		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
 	res.status(200).json({ success: true, data: USpayment });
 });
@@ -56,10 +55,7 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 	const deleteSPayment = await Payment.findByIdAndDelete(req.params.id);
 	if (!deleteSPayment) {
 		return next(
-			new ErrorResponse(
-				`Payment not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`Payment not found with id of ${req.params.id}`, 404)
 		);
 	}
 	res.status(200).json({ success: true, data: {} });

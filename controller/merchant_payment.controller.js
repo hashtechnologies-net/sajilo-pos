@@ -48,6 +48,9 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 		new: true,
 		runValidators: true,
 	});
+	if (Object.keys(req.body).length === 0) {
+		return next(new ErrorResponse(`Nothing to update`, 200));
+	}
 
 	res.status(200).json({ success: true, data: payments });
 });

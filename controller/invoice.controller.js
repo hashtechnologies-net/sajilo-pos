@@ -1,3 +1,5 @@
+/** @format */
+
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Invoice = require('../models/invoice.models');
@@ -16,10 +18,7 @@ exports.getSingleInvoice = asyncHandler(async (req, res, next) => {
 	const Invoice1 = await Invoice.findById(req.params.id);
 	if (!Invoice1) {
 		return next(
-			new ErrorResponse(
-				`Invoice not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`Invoice not found with id of ${req.params.id}`, 404)
 		);
 	}
 	res.status(200).json({ success: true, data: Invoice1 });
@@ -50,11 +49,11 @@ exports.updateInvoice = asyncHandler(async (req, res, next) => {
 	});
 	if (!UInvoice) {
 		return next(
-			new ErrorResponse(
-				`Invoice not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`Invoice not found with id of ${req.params.id}`, 404)
 		);
+	}
+	if (Object.keys(req.body).length === 0) {
+		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
 	res.status(200).json({ success: true, data: UInvoice });
 });
@@ -64,10 +63,7 @@ exports.deleteInvoice = asyncHandler(async (req, res, next) => {
 	const deleteInvoice = await Invoice.findByIdAndDelete(req.params.id);
 	if (!deleteInvoice) {
 		return next(
-			new ErrorResponse(
-				`Invoice not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`Invoice not found with id of ${req.params.id}`, 404)
 		);
 	}
 	res.status(200).json({ success: true, data: {} });
