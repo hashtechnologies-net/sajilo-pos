@@ -43,14 +43,10 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
 // @desc  update  Category
 //@route  PUT /api/v1/category/:id
 exports.updateCategory = asyncHandler(async (req, res, next) => {
-	const Ucategory = await Category.findByIdAndUpdate(
-		req.params.id,
-		req.body,
-		{
-			new: true,
-			runValidators: true,
-		}
-	);
+	const Ucategory = await Category.findByIdAndUpdate(req.params.id, req.body, {
+		new: true,
+		runValidators: true,
+	});
 	if (!Ucategory) {
 		return next(
 			new ErrorResponse(
@@ -65,7 +61,7 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 // @desc  Delete  Category
 //@route  DELETE /api/v1/category/:id
 exports.deleteCategory = asyncHandler(async (req, res, next) => {
-	const deleteCategory = await Category.findByIdAndDelete(req.params.id);
+	const deleteCategory = await Category.findById(req.params.id);
 	if (!deleteCategory) {
 		return next(
 			new ErrorResponse(
@@ -74,5 +70,6 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
+	deleteCategory.remove();
 	res.status(200).json({ success: true, data: {} });
 });
