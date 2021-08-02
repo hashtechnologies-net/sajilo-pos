@@ -5,8 +5,7 @@ const SalesPayment = require('../models/sales.payment.models');
 // @desc  get all salesPayments
 //@route  GET /api/v1/salespayments
 exports.getAllSPayments = asyncHandler(async (req, res, next) => {
-	const Spayments = await SalesPayment.find().populate('user_id');
-	res.status(200).json({ success: true, data: Spayments });
+	res.status(200).json(res.allqueryresults);
 });
 // @desc  get single salesPayment
 //@route  GET /api/v1/salespayments/:id
