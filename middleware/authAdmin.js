@@ -29,7 +29,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	try {
 		// Verify token
-
+		console.log(token);
 		const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
 
 		req.admin = await Admin.findById(decoded.id);
@@ -40,6 +40,11 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 		next();
 	} catch (err) {
-		return next(new ErrorResponse('Internal server error', 500));
+		return next(
+			new ErrorResponse(
+				'Internal server error  from admin authentication',
+				500
+			)
+		);
 	}
 });
