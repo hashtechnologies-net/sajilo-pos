@@ -66,11 +66,7 @@ exports.updateSPayment = asyncHandler(async (req, res, next) => {
 // @desc  Delete  Payment
 //@route  DELETE /api/v1/salespayments/:id
 exports.deleteSPayment = asyncHandler(async (req, res, next) => {
-<<<<<<< HEAD
-	const deleteSPayment = await SalesPayment.findByIdAndDelete(req.params.id);
-=======
 	let deleteSPayment = await Payment.findById(req.params.id);
->>>>>>> f042d54464154f85fd3127d4e60ab1be6f3fcf90
 	if (!deleteSPayment) {
 		return next(
 			new ErrorResponse(

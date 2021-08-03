@@ -29,15 +29,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	try {
 		// Verify token
-<<<<<<< HEAD
 		if (token.startsWith('user')) {
 			return next(
 				new ErrorResponse('Please login as an Admin not User', 404)
 			);
 		}
-=======
 		console.log(token);
->>>>>>> f042d54464154f85fd3127d4e60ab1be6f3fcf90
 		const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
 		req.admin = await Admin.findById(decoded.id);
 		if (!req.admin) {
@@ -47,11 +44,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	} catch (err) {
 		return next(
 			new ErrorResponse(
-<<<<<<< HEAD
-				'Internal server error from admin authentication',
-=======
 				'Internal server error  from admin authentication',
->>>>>>> f042d54464154f85fd3127d4e60ab1be6f3fcf90
 				500
 			)
 		);
