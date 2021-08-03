@@ -20,7 +20,7 @@ exports.getSinglePurchase = asyncHandler(async (req, res, next) => {
 	if (!purchase) {
 		return next(
 			new ErrorResponse(
-				`Purchase not found with id of ${req.params.id}`,
+				`Purchase with id ${req.params.id} could not be found`,
 				404
 			)
 		);
@@ -38,18 +38,21 @@ exports.createPurchase = asyncHandler(async (req, res, next) => {
 	if (!merchant) {
 		return next(
 			new ErrorResponse(
-				`Merchant with id ${req.body.merchant_id} not found`,
+				`Merchant with id ${req.body.merchant_id} could not be found`,
 				404
 			)
 		);
 	}
 
 	const purchases = await Purchase.create(req.body);
+
 	purchases.description.forEach(async (purchase) => {
 		let stock = {
 			product_id: purchase.product,
 			stockIn: purchase.stock,
+			purchase_id: purchases.id,
 		};
+
 		const stockEntry = await Stock.create(stock);
 	});
 	res.status(201).json({ success: true, data: purchases });
@@ -62,7 +65,7 @@ exports.updatePurchase = asyncHandler(async (req, res, next) => {
 	if (!purchase) {
 		return next(
 			new ErrorResponse(
-				`Purchase not found with id of ${req.params.id}`,
+				`Purchase with id ${req.params.id} could not be found`,
 				404
 			)
 		);
@@ -75,7 +78,11 @@ exports.updatePurchase = asyncHandler(async (req, res, next) => {
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
-	res.status(200).json({ success: true, data: purchase });
+	res.status(200).json({
+		success: true,
+		data: purchase,
+		message: 'Successfully Updated!!',
+	});
 });
 
 // @desc  Delete  Purchase
@@ -85,11 +92,15 @@ exports.deletePurchase = asyncHandler(async (req, res, next) => {
 	if (!purchase) {
 		return next(
 			new ErrorResponse(
-				`Purchase with id of ${req.params.id} doesn't exists`,
+				`Purchase with id ${req.params.id} has already been deleted`,
 				404
 			)
 		);
 	}
 	purchase.remove();
-	res.status(200).json({ success: true, data: {} });
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });

@@ -1,3 +1,5 @@
+/** @format */
+
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const SalesPayment = require('../models/sales.payment.models');
@@ -14,7 +16,7 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 	if (!spayment1) {
 		return next(
 			new ErrorResponse(
-				`Payment not found with id of ${req.params.id}`,
+				`Payment with id ${req.params.id} could not be found`,
 				404
 			)
 		);
@@ -31,35 +33,56 @@ exports.createSPayment = asyncHandler(async (req, res, next) => {
 // @desc  update  salesPayment
 //@route  PUT /api/v1/salespayments/:id
 exports.updateSPayment = asyncHandler(async (req, res, next) => {
-	const USpayment = await SalesPayment.findByIdAndUpdate(
-		req.params.id,
-		req.body,
-		{
-			new: true,
-			runValidators: true,
-		}
-	);
+	USpayment = await SalesPayment.findByIdAndUpdate(req.params.id);
 	if (!USpayment) {
 		return next(
 			new ErrorResponse(
-				`Payment not found with id of ${req.params.id}`,
+				`Payment with id ${req.params.id} could not be found`,
 				404
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: USpayment });
+	USpayment = await SalesPayment.findByIdAndUpdate(req.params.id, req.body, {
+		new: true,
+		runValidators: true,
+	});
+	if (!USpayment) {
+		return next(
+			new ErrorResponse(
+				`Sales Payment with id ${req.params.id} could not be found`,
+				404
+			)
+		);
+	}
+	if (Object.keys(req.body).length === 0) {
+		return next(new ErrorResponse(`Nothing to update`, 200));
+	}
+	res.status(200).json({
+		success: true,
+		data: USpayment,
+		message: 'Successfully Updated!!',
+	});
 });
 // @desc  Delete  Payment
 //@route  DELETE /api/v1/salespayments/:id
 exports.deleteSPayment = asyncHandler(async (req, res, next) => {
+<<<<<<< HEAD
 	const deleteSPayment = await SalesPayment.findByIdAndDelete(req.params.id);
+=======
+	let deleteSPayment = await Payment.findById(req.params.id);
+>>>>>>> f042d54464154f85fd3127d4e60ab1be6f3fcf90
 	if (!deleteSPayment) {
 		return next(
 			new ErrorResponse(
-				`Payment not found with id of ${req.params.id}`,
+				`Payment with id ${req.params.id} has already been deleted`,
 				404
 			)
 		);
 	}
-	res.status(200).json({ success: true, data: {} });
+	deleteSPayment.remove();
+	res.status(200).json({
+		success: true,
+		data: {},
+		message: 'Successfully deleted !!',
+	});
 });

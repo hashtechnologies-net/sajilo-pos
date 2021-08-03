@@ -19,7 +19,7 @@ const merchantPaymentSchema = new mongoose.Schema({
 	cash: {
 		type: Number,
 	},
-	Bank: {
+	bank: {
 		type: Number,
 	},
 	credit: {
