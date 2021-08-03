@@ -1,3 +1,5 @@
+/** @format */
+
 const mongoose = require('mongoose');
 const salesPaymentSchema = new mongoose.Schema({
 	paymentType: {
@@ -5,14 +7,14 @@ const salesPaymentSchema = new mongoose.Schema({
 		enum: ['Cash', 'Bank'],
 		required: true,
 	},
-	Created_at: {
+	created_at: {
 		type: Date,
 		default: Date.now,
 	},
 	cash: {
 		type: Number,
 	},
-	Bank: {
+	bank: {
 		type: Number,
 	},
 	credit: {
@@ -23,6 +25,11 @@ const salesPaymentSchema = new mongoose.Schema({
 		ref: 'invoice',
 		required: true,
 	},
+	// created_by: {
+	// 	type: mongoose.Schema.ObjectId,
+	// 	ref: 'invoice',
+	// 	required: true,
+	// },
 });
 
 module.exports = mongoose.model('salesPayment', salesPaymentSchema);

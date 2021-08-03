@@ -27,6 +27,7 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/salespayments
 
 exports.createSPayment = asyncHandler(async (req, res, next) => {
+	//req.body.created_by = req.user.id;
 	const CSpayment = await SalesPayment.create(req.body);
 	res.status(201).json({ success: true, data: CSpayment });
 });
@@ -64,9 +65,9 @@ exports.updateSPayment = asyncHandler(async (req, res, next) => {
 	});
 });
 // @desc  Delete  Payment
-//@route  DELETE /api/v1/payments/:id
+//@route  DELETE /api/v1/salespayments/:id
 exports.deleteSPayment = asyncHandler(async (req, res, next) => {
-	let deleteSPayment = await Payment.findById(req.params.id);
+	let deleteSPayment = await SalesPayment.findById(req.params.id);
 	if (!deleteSPayment) {
 		return next(
 			new ErrorResponse(
@@ -82,3 +83,58 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 		message: 'Successfully deleted !!',
 	});
 });
+
+// @desc  Get User
+//@route  GET /api/v1/salespayment/counterusers
+exports.getCounterUser = asyncHandler(async (req, res, next) => {
+	SalesPayment.aggregate([
+		{
+			$lookup: {
+				from: 'invoices',
+				localField: 'invoice_id',
+				foreignField: '_id',
+				as: 'data',
+			},
+		},
+		{
+			$project: {
+				data: {
+					created_by: 1,
+					_id: 1,
+				},
+				_id: 0,
+			},
+		},
+		{
+			$group: {
+				_id: '$data.created_by',
+				count: { $count: {} },
+			},
+		},
+		{
+			$sort: {
+				count: -1,
+			},
+		},
+		{
+			$limit: 5,
+		},
+	]).exec((err, result) => {
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+// //from: 'invoices',
+// as: 'invoices',
+
+// //as: 'data',
+// let: { invoice_id: '$_id' },
+// pipeline: [
+// 	{
+// 		$match: {
+// 			$expr: { $eq: ['$$invoice_id', '$invoice_id'] },
+// 		},
+// 	},
+// ],

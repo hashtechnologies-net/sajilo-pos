@@ -50,7 +50,7 @@ app.use('/api/v1/purchases', purchaseRouter);
 app.use('/api/v1/salespayments', sPaymentRouter);
 app.use('/api/v1/merchantpayments', mPaymentRouter);
 
-//mount errprhandler
+//mount errorhandler
 app.use(errorHandler);
 
 module.exports = app;

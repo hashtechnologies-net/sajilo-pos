@@ -1,3 +1,5 @@
+/** @format */
+
 const express = require('express');
 const SalesPaymentController = require('../controller/sales_payment.controller');
 
@@ -11,7 +13,7 @@ router
 	.route('/')
 	.get(allqueryresults(Salespayment), SalesPaymentController.getAllSPayments)
 	.post(authprotect.protect, SalesPaymentController.createSPayment);
-
+router.route('/counteruser').get(SalesPaymentController.getCounterUser);
 router
 	.route('/:id')
 	.get(SalesPaymentController.getSinglePayment)

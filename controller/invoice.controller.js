@@ -9,8 +9,7 @@ const { getID } = require('../middleware/getuserId');
 // @desc  get all Invoice
 //@route  GET /api/v1/invoices
 exports.getAllInvoices = asyncHandler(async (req, res, next) => {
-	const invoices = await Invoice.find().populate('user_id');
-	res.status(200).json({ success: true, data: invoices });
+	res.status(200).json(res.allqueryresults);
 });
 // @desc  get single Invoice
 //@route  GET /api/v1/invoices/:id
@@ -30,7 +29,7 @@ exports.getSingleInvoice = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/invoices
 
 exports.createInvoice = asyncHandler(async (req, res, next) => {
-	req.body.user_id = req.user.id;
+	req.body.created_by = req.user.id;
 	const invoice = await Invoice.create(req.body);
 	invoice.description.forEach(async (sales) => {
 		let stock = {

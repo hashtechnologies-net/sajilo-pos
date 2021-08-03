@@ -1,3 +1,5 @@
+/** @format */
+
 const express = require('express');
 const invoiceController = require('../controller/invoice.controller');
 const Invoice = require('../models/invoice.models');
@@ -8,7 +10,13 @@ const router = express.Router();
 
 router
 	.route('/')
-	.get(allqueryresults(Invoice), invoiceController.getAllInvoices)
+	.get(
+		allqueryresults(Invoice, {
+			path: 'created_by',
+			select: 'username',
+		}),
+		invoiceController.getAllInvoices
+	)
 	.post(protect, invoiceController.createInvoice);
 
 router
