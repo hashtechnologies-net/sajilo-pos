@@ -27,6 +27,20 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/merchantpayments
 
 exports.createPayment = asyncHandler(async (req, res, next) => {
+	const getCredit = () => {
+		let credit;
+		if (req.body.cash) {
+			credit = req.body.amount - req.body.cash;
+			return credit;
+		} else if (req.body.bank) {
+			credit = req.body.amount - req.body.bank;
+			return credit;
+		}
+		credit = req.body.amount;
+		return credit;
+	};
+	req.body.credit = getCredit();
+
 	const payments = await MerchantPayment.create(req.body);
 	res.status(201).json({ success: true, data: payments });
 });
@@ -43,10 +57,14 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 		);
 	}
 
-	payments = await MerchantPayment.findByIdAndUpdate(req.params.id, req.body, {
-		new: true,
-		runValidators: true,
-	});
+	payments = await MerchantPayment.findByIdAndUpdate(
+		req.params.id,
+		req.body,
+		{
+			new: true,
+			runValidators: true,
+		}
+	);
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
