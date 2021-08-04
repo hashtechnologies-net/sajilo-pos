@@ -41,8 +41,12 @@ const usersSchema = new mongoose.Schema({
 });
 
 usersSchema.pre('save', async function (next) {
-	const salt = await bcrypt.genSalt(10);
-	this.password = await bcrypt.hash(this.password, salt);
+	try {
+		const salt = await bcrypt.genSalt(10);
+		this.password = await bcrypt.hash(this.password, salt);
+	} catch (error) {
+		console.log('error ');
+	}
 });
 
 // Sign JWT and return
@@ -53,7 +57,7 @@ usersSchema.methods.getSignedJwtToken = function () {
 };
 
 // Generate and hash password token
-UserSchema.methods.getResetPasswordToken = function () {
+usersSchema.methods.getResetPasswordToken = function () {
 	// Generate token
 	const resetToken = crypto.randomBytes(20).toString('hex');
 

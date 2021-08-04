@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/users.models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config('./env');
+const sendEmail = require('../utils/sendEmail');
 
 // @desc      Register user
 // @route     POST /api/v1/auth/register
@@ -122,9 +123,9 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	await user.save({ validateBeforeSave: false });
 
 	// Create reset url
-	const resetUrl = `${req.protocol}://${req.get(
-		'host'
-	)}/api/v1/auth/resetpassword/${resetToken}`;
+	const resetUrl = `${req.protocol}://${process.env.CLIENT_URL}/resetpassword/${resetToken}`;
+
+	// const resetUrl = `${process.env.CLIENT_URL}/resetpassword/${resetToken}`;
 
 	const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
 
