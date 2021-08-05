@@ -43,7 +43,7 @@ exports.createPurchase = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-
+	console.log(req.body);
 	const purchases = await Purchase.create(req.body);
 
 	purchases.description.forEach(async (purchase) => {
@@ -104,3 +104,51 @@ exports.deletePurchase = asyncHandler(async (req, res, next) => {
 		message: 'Successfully deleted !!',
 	});
 });
+
+// @desc  Get User
+//@route  GET /api/v1/gethighestpurchase
+exports.getHighestPurchase = asyncHandler(async (req, res, next) => {
+	res.status(200).json({
+		status: true,
+		message: 'Hello',
+	});
+	//});
+});
+// Purchase.aggregate([
+// 	{
+// 		$lookup: {
+// 			from: 'merchants',
+// 			localField: 'merchant_id',
+// 			foreignField: '_id',
+// 			as: 'data',
+// 		},
+// 	},
+// 	{
+// 		$project: {
+// 			data: {
+// 				merchant_id: 1,
+// 			},
+// 		},
+// 	},
+// 	{
+// 		$group: {
+// 			_id: '$data._id',
+// 			count: { $count: {} },
+// 		},
+// 	},
+// 	{
+// 		$sort: {
+// 			count: -1,
+// 		},
+// 	},
+// 	{
+// 		$limit: 5,
+// 	},
+// ]).exec((err, result) => {
+// 	if (err) {
+// 		return next(new ErrorResponse('Something Bad happened', 500));
+// 	}
+// 	res.status(200).json({
+// 		status: true,
+// 		data: result,
+// 	});

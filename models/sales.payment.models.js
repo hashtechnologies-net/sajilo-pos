@@ -25,11 +25,6 @@ const salesPaymentSchema = new mongoose.Schema({
 		ref: 'invoice',
 		required: true,
 	},
-	// created_by: {
-	// 	type: mongoose.Schema.ObjectId,
-	// 	ref: 'invoice',
-	// 	required: true,
-	// },
 });
 
 module.exports = mongoose.model('salesPayment', salesPaymentSchema);

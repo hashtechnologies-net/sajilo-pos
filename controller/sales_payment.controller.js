@@ -85,7 +85,7 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 });
 
 // @desc  Get User
-//@route  GET /api/v1/salespayment/counterusers
+//@route  GET /api/v1/salespayments/counteruser
 exports.getCounterUser = asyncHandler(async (req, res, next) => {
 	SalesPayment.aggregate([
 		{
@@ -100,9 +100,7 @@ exports.getCounterUser = asyncHandler(async (req, res, next) => {
 			$project: {
 				data: {
 					created_by: 1,
-					_id: 1,
 				},
-				_id: 0,
 			},
 		},
 		{
@@ -120,21 +118,12 @@ exports.getCounterUser = asyncHandler(async (req, res, next) => {
 			$limit: 5,
 		},
 	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse('Something Bad happened', 500));
+		}
 		res.status(200).json({
 			status: true,
 			data: result,
 		});
 	});
 });
-// //from: 'invoices',
-// as: 'invoices',
-
-// //as: 'data',
-// let: { invoice_id: '$_id' },
-// pipeline: [
-// 	{
-// 		$match: {
-// 			$expr: { $eq: ['$$invoice_id', '$invoice_id'] },
-// 		},
-// 	},
-// ],
