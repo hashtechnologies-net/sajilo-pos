@@ -1,8 +1,7 @@
-/** @format */
-
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const SalesPayment = require('../models/sales.payment.models');
+const Invoice = require('../models/invoice.models');
 
 // @desc  get all salesPayments
 //@route  GET /api/v1/salespayments
@@ -80,5 +79,20 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 		success: true,
 		data: {},
 		message: 'Successfully deleted !!',
+	});
+});
+
+// @desc  GET  totalSales
+//@route  GET /api/v1/sales
+exports.getSales = asyncHandler(async (req, res, next) => {
+	let invoice = await Invoice.find();
+	let sales = 0;
+	invoice.forEach((element) => {
+		let total_amount = element.total_amount;
+		sales += total_amount;
+	});
+	res.status(200).json({
+		success: true,
+		Total_Sales: sales,
 	});
 });
