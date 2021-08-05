@@ -13,7 +13,7 @@ router
 	.route('/')
 	.get(allqueryresults(Salespayment), SalesPaymentController.getAllSPayments)
 	.post(authprotect.protect, SalesPaymentController.createSPayment);
-router.route('/counteruser').get(SalesPaymentController.getCounterUser);
+
 router
 	.route('/:id')
 	.get(SalesPaymentController.getSinglePayment)
