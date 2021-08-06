@@ -1,3 +1,5 @@
+/** @format */
+
 const mongoose = require('mongoose');
 const InvoiceSchema = new mongoose.Schema({
 	total_amount: {
@@ -21,7 +23,7 @@ const InvoiceSchema = new mongoose.Schema({
 			},
 		},
 	],
-	user_id: {
+	created_by: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'user',
 		required: true,

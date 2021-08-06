@@ -29,7 +29,7 @@ exports.getSingleInvoice = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/invoices
 
 exports.createInvoice = asyncHandler(async (req, res, next) => {
-	req.body.user_id = req.user.id;
+	req.body.created_by = req.user.id;
 	const invoice = await Invoice.create(req.body);
 	invoice.description.forEach(async (sales) => {
 		let stock = {

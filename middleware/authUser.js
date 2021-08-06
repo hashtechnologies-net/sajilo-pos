@@ -29,9 +29,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	}
 
 	try {
-		// Verify token
 		const decoded = jwt.verify(token, process.env.JWT_USER_SECRET);
+
 		req.user = await User.findById(decoded.id);
+
 		if (!req.user) {
 			return next(
 				new ErrorResponse('Not authorized to access this route', 401)
@@ -39,6 +40,11 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		}
 		next();
 	} catch (err) {
-		return next(new ErrorResponse('Internal server error', 500));
+		return next(
+			new ErrorResponse(
+				'Internal server error from user authentication',
+				500
+			)
+		);
 	}
 });

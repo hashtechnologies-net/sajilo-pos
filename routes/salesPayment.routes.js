@@ -1,3 +1,5 @@
+/** @format */
+
 const express = require('express');
 const SalesPaymentController = require('../controller/sales_payment.controller');
 

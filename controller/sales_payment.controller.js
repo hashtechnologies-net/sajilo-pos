@@ -26,6 +26,7 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/salespayments
 
 exports.createSPayment = asyncHandler(async (req, res, next) => {
+	//req.body.created_by = req.user.id;
 	const CSpayment = await SalesPayment.create(req.body);
 	res.status(201).json({ success: true, data: CSpayment });
 });
@@ -65,7 +66,7 @@ exports.updateSPayment = asyncHandler(async (req, res, next) => {
 // @desc  Delete  Payment
 //@route  DELETE /api/v1/salespayments/:id
 exports.deleteSPayment = asyncHandler(async (req, res, next) => {
-	let deleteSPayment = await Payment.findById(req.params.id);
+	let deleteSPayment = await SalesPayment.findById(req.params.id);
 	if (!deleteSPayment) {
 		return next(
 			new ErrorResponse(
