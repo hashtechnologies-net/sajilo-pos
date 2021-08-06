@@ -28,7 +28,7 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 exports.createSPayment = asyncHandler(async (req, res, next) => {
 	//req.body.created_by = req.user.id;
 	const CSpayment = await SalesPayment.create(req.body);
-	res.status(201).json({ success: true, data: CSpayment });
+	res.status(201).json(res.allqueryresults);
 });
 // @desc  update  salesPayment
 //@route  PUT /api/v1/salespayments/:id
@@ -46,14 +46,6 @@ exports.updateSPayment = asyncHandler(async (req, res, next) => {
 		new: true,
 		runValidators: true,
 	});
-	if (!USpayment) {
-		return next(
-			new ErrorResponse(
-				`Sales Payment with id ${req.params.id} could not be found`,
-				404
-			)
-		);
-	}
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}

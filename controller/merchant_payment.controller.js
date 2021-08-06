@@ -90,7 +90,7 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 	}
 	res.status(404).json({
 		success: false,
-		reason: 'Please enter receipt no. or cheque no.',
+		reason: 'Please enter receipt no. or cheque no. and updated_date',
 	});
 });
 // @desc  Delete  merchantPayment
