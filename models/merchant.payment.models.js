@@ -22,6 +22,9 @@ const merchantPaymentSchema = new mongoose.Schema({
 	bank: {
 		type: Number,
 	},
+	paymentconfirmId: {
+		type: String,
+	},
 	credit: {
 		type: Number,
 	},

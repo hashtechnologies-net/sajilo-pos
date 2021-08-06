@@ -69,19 +69,28 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 		return credit;
 	};
 	req.body.credit = getCredit();
+	if (req.body.paymentconfirmId) {
+		payments = await MerchantPayment.findOneAndUpdate(
+			req.params.id,
+			req.body,
+			{
+				new: true,
+				runValidators: true,
+			}
+		);
+		if (Object.keys(req.body).length === 0) {
+			return next(new ErrorResponse(`Nothing to update`, 200));
+		}
 
-	payments = await MerchantPayment.findOneAndUpdate(req.params.id, req.body, {
-		new: true,
-		runValidators: true,
-	});
-	if (Object.keys(req.body).length === 0) {
-		return next(new ErrorResponse(`Nothing to update`, 200));
+		res.status(200).json({
+			success: true,
+			data: payments,
+			message: 'Successfully Updated!!',
+		});
 	}
-
-	res.status(200).json({
-		success: true,
-		data: payments,
-		message: 'Successfully Updated!!',
+	res.status(404).json({
+		success: false,
+		reason: 'Please enter receipt no. or cheque no.',
 	});
 });
 // @desc  Delete  merchantPayment
