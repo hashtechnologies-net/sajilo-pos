@@ -4,7 +4,6 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Invoice = require('../models/invoice.models');
 const Stock = require('../models/stockEntry.models');
-const { getID } = require('../middleware/getuserId');
 
 // @desc  get all Invoice
 //@route  GET /api/v1/invoices

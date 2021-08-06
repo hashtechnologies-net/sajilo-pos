@@ -43,7 +43,7 @@ exports.createPurchase = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	console.log(req.body);
+
 	const purchases = await Purchase.create(req.body);
 
 	purchases.description.forEach(async (purchase) => {
