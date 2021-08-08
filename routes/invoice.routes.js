@@ -5,6 +5,7 @@ const invoiceController = require('../controller/invoice.controller');
 const Invoice = require('../models/invoice.models');
 const allqueryresults = require('../middleware/allqueryresults');
 const { protect } = require('../controller/auth.controller');
+const { getStock } = require('../middleware/stockCheck');
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router
 		}),
 		invoiceController.getAllInvoices
 	)
-	.post(protect, invoiceController.createInvoice);
+	.post(protect, getStock, invoiceController.createInvoice);
 
 router
 	.route('/:id')

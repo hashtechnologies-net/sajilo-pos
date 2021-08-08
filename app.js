@@ -38,6 +38,7 @@ const mPaymentRouter = require('./routes/merchantPayment.routes');
 const investmentRouter = require('./routes/investment.routes');
 const salesRouter = require('./routes/totalSales.routes');
 const queryRouter = require('./routes/query.routes');
+const stockRouter = require('./routes/stock.routes');
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
@@ -54,6 +55,7 @@ app.use('/api/v1/merchantpayments', mPaymentRouter);
 app.use('/api/v1/investments', investmentRouter);
 app.use('/api/v1/sales', salesRouter);
 app.use('/api/v1/find', queryRouter);
+app.use('/api/v1/stocks', stockRouter);
 
 //mount errorhandler
 app.use(errorHandler);

@@ -14,6 +14,10 @@ const usersSchema = new mongoose.Schema({
 		required: true,
 		unique: true,
 	},
+	photo: {
+		type: String,
+		default: 'photo.jpg',
+	},
 	email: {
 		type: String,
 		required: [true, 'please add email'],
