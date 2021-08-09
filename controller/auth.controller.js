@@ -112,7 +112,6 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	const user = await User.findOne({ email: req.body.email });
-
 	if (!user) {
 		return next(
 			new ErrorResponse('User with given email could not be found', 404)
@@ -140,7 +139,6 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
 		res.status(200).json({ success: true, data: 'Email sent' });
 	} catch (err) {
-		console.log(err);
 		user.resetPasswordToken = undefined;
 		user.resetPasswordExpire = undefined;
 
@@ -183,7 +181,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		next();
 	} catch (err) {
 		return next(
-			new ErrorResponse('Inernal Server Error from user authentication', 500)
+			new ErrorResponse(
+				'Inernal Server Error from user authentication',
+				500
+			)
 		);
 	}
 });

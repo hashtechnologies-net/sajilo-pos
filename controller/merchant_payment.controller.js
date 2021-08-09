@@ -48,11 +48,11 @@ exports.createPayment = asyncHandler(async (req, res, next) => {
 // @desc  update  merchantPayment
 //@route  PUT /api/v1/merchantpayments/:id
 exports.updatePayment = asyncHandler(async (req, res, next) => {
-	let payments = await MerchantPayment.findById(req.params.id);
+	let payments = await MerchantPayment.findById(req.body.merchant_id);
 	if (!payments) {
 		return next(
 			new ErrorResponse(
-				`Merchant Payment with id ${req.params.id} could not be found`,
+				`Merchant Payment with id ${req.body.merchant_id} could not be found`,
 				404
 			)
 		);
@@ -70,18 +70,18 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 		return credit;
 	};
 	req.body.credit = getCredit();
+	if (Object.keys(req.body).length === 0) {
+		return next(new ErrorResponse(`Nothing to update`, 200));
+	}
 	if (req.body.paymentconfirmId) {
 		payments = await MerchantPayment.findOneAndUpdate(
-			req.params.id,
+			req.body.merchant_id,
 			req.body,
 			{
 				new: true,
 				runValidators: true,
 			}
 		);
-		if (Object.keys(req.body).length === 0) {
-			return next(new ErrorResponse(`Nothing to update`, 200));
-		}
 
 		res.status(200).json({
 			success: true,

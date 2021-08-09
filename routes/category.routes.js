@@ -11,6 +11,7 @@ const authprotect = require('../middleware/authAdmin');
 router
 	.route('/')
 	.get(
+		authprotect.protect,
 		allqueryresults(Category, { path: 'created_by', select: 'username' }),
 		categoryController.getAllCategory
 	)
@@ -18,7 +19,7 @@ router
 
 router
 	.route('/:id')
-	.get(categoryController.getSingleCategory)
+	.get(authprotect.protect, categoryController.getSingleCategory)
 	.put(authprotect.protect, categoryController.updateCategory)
 	.delete(authprotect.protect, categoryController.deleteCategory);
 

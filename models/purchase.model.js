@@ -15,7 +15,6 @@ const PurchaseSchema = new mongoose.Schema({
 			},
 		},
 	],
-
 	merchant_id: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'merchant',
