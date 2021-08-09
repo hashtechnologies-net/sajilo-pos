@@ -25,6 +25,7 @@ exports.getSingleUser = asyncHandler(async (req, res, next) => {
 // @desc  create new user
 //@route  POST /api/v1/users
 exports.createUser = asyncHandler(async (req, res, next) => {
+	req.body.created_by = req.admin.id;
 	const { email, password, username } = req.body;
 	// const { password } = req.body;
 	const userExists = await User.findOne({ email });
@@ -82,9 +83,10 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 });
 
 // @desc  uplaod  photo
-//@route  PUT /api/v1/users/:id/photo
+//@route  PUT /api/v1/users//photo
 exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
 	const user = await User.findById(req.user.id);
+
 	if (!user) {
 		return next(
 			new ErrorResponse(` User not found with id of ${req.user.id}`, 404)

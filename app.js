@@ -26,7 +26,6 @@ app.use(morgan('dev'));
 // Route files
 const userRouter = require('./routes/users.routes');
 const productRouter = require('./routes/product.routes');
-// const paymentRouter = require('./routes/payment.routes');
 const authRouter = require('./routes/auth.routes');
 const categoryRouter = require('./routes/category.routes');
 const unitRouter = require('./routes/unit.routes');

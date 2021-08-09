@@ -1,3 +1,5 @@
+/** @format */
+
 const express = require('express');
 const merchantController = require('../controller/merchant.controller');
 const Merchant = require('../models/merchant.models');
@@ -7,7 +9,13 @@ const router = express.Router();
 
 router
 	.route('/')
-	.get(allqueryresults(Merchant), merchantController.getAllMerchants)
+	.get(
+		allqueryresults(Merchant, {
+			path: 'created_by',
+			select: 'username',
+		}),
+		merchantController.getAllMerchants
+	)
 	.post(authprotect.protect, merchantController.createMerchant);
 
 router

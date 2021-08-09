@@ -11,10 +11,16 @@ const authprotect = require('../middleware/authAdmin');
 router
 	.route('/')
 	.get(
-		allqueryresults(MerchantPayment, {
-			path: 'merchant_id',
-			select: 'merchantName',
-		}),
+		allqueryresults(MerchantPayment, [
+			{
+				path: 'merchant_id',
+				select: 'merchantName',
+			},
+			{
+				path: 'created_by',
+				select: 'username',
+			},
+		]),
 		merchantPaymentController.getAllPayment
 	)
 	.post(authprotect.protect, merchantPaymentController.createPayment);

@@ -30,7 +30,7 @@ exports.getHighestPurchase = asyncHandler(async (req, res, next) => {
 		},
 	]).exec((err, result) => {
 		if (err) {
-			return next(new ErrorResponse('Something Bad happened', 500));
+			return next(new ErrorResponse(err, 500));
 		}
 		res.status(200).json({
 			status: true,
@@ -108,7 +108,7 @@ exports.getHighestCounterUser = asyncHandler(async (req, res, next) => {
 		},
 	]).exec((err, result) => {
 		if (err) {
-			return next(new ErrorResponse('Something Bad happened', 500));
+			return next(new ErrorResponse(err, 500));
 		}
 		res.status(200).json({
 			status: true,
@@ -186,7 +186,7 @@ exports.getHighestPurchaseProducts = asyncHandler(async (req, res, next) => {
 		},
 	]).exec((err, result) => {
 		if (err) {
-			return next(new ErrorResponse('Something Bad happened', 500));
+			return next(new ErrorResponse(err, 500));
 		}
 		res.status(200).json({
 			status: true,
@@ -264,7 +264,7 @@ exports.getHighestSalesProducts = asyncHandler(async (req, res, next) => {
 		},
 	]).exec((err, result) => {
 		if (err) {
-			return next(new ErrorResponse('Something Bad happened', 500));
+			return next(new ErrorResponse(err, 500));
 		}
 		res.status(200).json({
 			status: true,

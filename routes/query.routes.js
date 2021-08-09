@@ -2,6 +2,8 @@
 
 const express = require('express');
 const queryController = require('../controller/query.controller');
+const salesPaymentController = require('../controller/sales_payment.controller');
+const merchantPaymentController = require('../controller/merchant_payment.controller');
 const router = express.Router();
 const authprotect = require('../middleware/authAdmin');
 
@@ -14,7 +16,7 @@ router
 	.get(authprotect.protect, queryController.getLowestPurchase);
 router
 	.route('/highest/counterusers')
-	.get(queryController.getHighestCounterUser);
+	.get(authprotect.protect, queryController.getHighestCounterUser);
 router
 	.route('/lowest/counterusers')
 	.get(authprotect.protect, queryController.getLowestCounterUser);
@@ -30,5 +32,12 @@ router
 router
 	.route('/lowest/soldproducts')
 	.get(authprotect.protect, queryController.getLowestSalesProducts);
+
+router
+	.route('/investments')
+	.get(authprotect.protect, merchantPaymentController.getInvestment);
+router
+	.route('/sales')
+	.get(authprotect.protect, salesPaymentController.getSales);
 
 module.exports = router;

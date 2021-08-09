@@ -1,3 +1,5 @@
+/** @format */
+
 const mongoose = require('mongoose');
 const merchantSchema = new mongoose.Schema({
 	merchantName: {
@@ -7,6 +9,11 @@ const merchantSchema = new mongoose.Schema({
 	created_at: {
 		type: Date,
 		default: Date.now,
+	},
+	created_by: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'admin',
+		required: true,
 	},
 });
 

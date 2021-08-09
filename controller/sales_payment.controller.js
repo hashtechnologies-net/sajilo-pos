@@ -3,6 +3,7 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const SalesPayment = require('../models/sales.payment.models');
+const Invoice = require('../models/invoice.models');
 
 // @desc  get all salesPayments
 //@route  GET /api/v1/salespayments
@@ -29,7 +30,7 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 exports.createSPayment = asyncHandler(async (req, res, next) => {
 	//req.body.created_by = req.user.id;
 	const CSpayment = await SalesPayment.create(req.body);
-	res.status(201).json({ success: true, data: CSpayment });
+	res.status(201).json(res.allqueryresults);
 });
 // @desc  update  salesPayment
 //@route  PUT /api/v1/salespayments/:id
@@ -47,14 +48,6 @@ exports.updateSPayment = asyncHandler(async (req, res, next) => {
 		new: true,
 		runValidators: true,
 	});
-	if (!USpayment) {
-		return next(
-			new ErrorResponse(
-				`Sales Payment with id ${req.params.id} could not be found`,
-				404
-			)
-		);
-	}
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
@@ -81,5 +74,20 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 		success: true,
 		data: {},
 		message: 'Successfully deleted !!',
+	});
+});
+
+// @desc  GET  totalSales
+//@route  GET /api/v1/sales
+exports.getSales = asyncHandler(async (req, res, next) => {
+	let invoice = await Invoice.find();
+	let sales = 0;
+	invoice.forEach((element) => {
+		let total_amount = element.total_amount;
+		sales += total_amount;
+	});
+	res.status(200).json({
+		success: true,
+		Total_Sales: sales,
 	});
 });

@@ -1,5 +1,5 @@
 /** @format */
-
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -16,7 +16,7 @@ const usersSchema = new mongoose.Schema({
 	},
 	photo: {
 		type: String,
-		default: 'no_img,jpg',
+		default: 'photo.jpg',
 	},
 	email: {
 		type: String,
@@ -33,6 +33,8 @@ const usersSchema = new mongoose.Schema({
 		minlength: 6,
 		select: false,
 	},
+	resetPasswordToken: String,
+	resetPasswordExpire: Date,
 	Status: {
 		type: Boolean,
 	},
@@ -40,11 +42,20 @@ const usersSchema = new mongoose.Schema({
 		type: Date,
 		default: Date.now,
 	},
+	created_by: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'admin',
+		required: true,
+	},
 });
 
 usersSchema.pre('save', async function (next) {
-	const salt = await bcrypt.genSalt(10);
-	this.password = await bcrypt.hash(this.password, salt);
+	try {
+		const salt = await bcrypt.genSalt(10);
+		this.password = await bcrypt.hash(this.password, salt);
+	} catch (error) {
+		console.log('error');
+	}
 });
 
 // Sign JWT and return
@@ -53,4 +64,22 @@ usersSchema.methods.getSignedJwtToken = function () {
 		expiresIn: process.env.JWT_EXPIRE,
 	});
 };
+
+// Generate and hash password token
+usersSchema.methods.getResetPasswordToken = function () {
+	// Generate token
+	const resetToken = crypto.randomBytes(20).toString('hex');
+
+	// Hash token and set to resetPasswordToken field
+	this.resetPasswordToken = crypto
+		.createHash('sha256')
+		.update(resetToken)
+		.digest('hex');
+
+	// Set expire
+	this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+	return resetToken;
+};
+
 module.exports = mongoose.model('user', usersSchema);

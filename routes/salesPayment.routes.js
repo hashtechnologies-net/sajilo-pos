@@ -11,7 +11,13 @@ const router = express.Router();
 
 router
 	.route('/')
-	.get(allqueryresults(Salespayment), SalesPaymentController.getAllSPayments)
+	.get(
+		allqueryresults(Salespayment, {
+			path: 'invoice_id',
+			select: 'total_amount',
+		}),
+		SalesPaymentController.getAllSPayments
+	)
 	.post(authprotect.protect, SalesPaymentController.createSPayment);
 
 router

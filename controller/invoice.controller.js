@@ -26,10 +26,9 @@ exports.getSingleInvoice = asyncHandler(async (req, res, next) => {
 });
 // @desc  create new Invoice
 //@route  POST /api/v1/invoices
-
 exports.createInvoice = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.user.id;
-	const invoice = await Invoice.create(req.body);
+	invoice = await Invoice.create(req.body);
 	invoice.description.forEach(async (sales) => {
 		let stock = {
 			product_id: sales.product,
@@ -37,8 +36,8 @@ exports.createInvoice = asyncHandler(async (req, res, next) => {
 			invoice_id: invoice.id,
 		};
 		const stockEntry = await Stock.create(stock);
+		res.status(201).json({ success: true, invoice });
 	});
-	res.status(201).json({ success: true, data: invoice });
 });
 
 // @desc  update  Invoice
