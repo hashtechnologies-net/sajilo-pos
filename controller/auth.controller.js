@@ -73,7 +73,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 
 	res.status(200).json({
 		success: true,
-		message: 'user logged out',
+		message: 'User logged out',
 		data: {},
 	});
 });
@@ -114,7 +114,9 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	const user = await User.findOne({ email: req.body.email });
 
 	if (!user) {
-		return next(new ErrorResponse('There is no user with that email', 404));
+		return next(
+			new ErrorResponse('User with given email could not be found', 404)
+		);
 	}
 
 	// Get reset token
@@ -163,7 +165,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	if (!token) {
 		return next(
 			new ErrorResponse(
-				'Please login as user to access this resource.',
+				'Please login as a user to access this resource.',
 				401
 			)
 		);
@@ -175,18 +177,13 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		const user = await User.findById(decoded.id);
 
 		if (!user) {
-			return next(
-				new ErrorResponse('User not found with that that token', 401)
-			);
+			return next(new ErrorResponse('User could not be found', 401));
 		}
 		req.user = user;
 		next();
 	} catch (err) {
 		return next(
-			new ErrorResponse(
-				'Inernal Server Error from user authentication',
-				500
-			)
+			new ErrorResponse('Inernal Server Error from user authentication', 500)
 		);
 	}
 });

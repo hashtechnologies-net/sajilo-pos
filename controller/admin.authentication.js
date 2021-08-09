@@ -71,7 +71,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 
 	res.status(200).json({
 		success: true,
-		message: 'admin logged out',
+		message: 'Admin logged out',
 		data: {},
 	});
 });
@@ -103,7 +103,6 @@ const sendTokenResponse = (admin, statusCode, res) => {
 // @access    Private
 
 exports.getMe = asyncHandler(async (req, res, next) => {
-	console.log(req.admin);
 	const admin = await Admin.findById(req.admin.id);
 	res.status(200).json({ success: true, data: admin });
 });
