@@ -16,7 +16,7 @@ const adminSchema = new mongoose.Schema({
 	},
 	email: {
 		type: String,
-		required: [true, 'please add email'],
+		required: [true, 'Please add email'],
 		unique: [true, 'Email already registered'],
 		match: [
 			/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
@@ -25,7 +25,7 @@ const adminSchema = new mongoose.Schema({
 	},
 	password: {
 		type: String,
-		required: [true, 'please add a password'],
+		required: [true, 'Please add a password'],
 		minlength: 6,
 		select: false,
 	},

@@ -115,7 +115,7 @@ exports.deletePayment = asyncHandler(async (req, res, next) => {
 });
 
 // @desc  GET  totalinvetsment
-//@route  GET /api/v1/investments
+//@route  GET /api/v1/find/totalinvestments
 exports.getInvestment = asyncHandler(async (req, res, next) => {
 	let merchantPayment = await MerchantPayment.find();
 	let inv = 0;

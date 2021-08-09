@@ -6,7 +6,7 @@ const CategorySchema = new mongoose.Schema({
 		type: String,
 		unique: true,
 		required: [true, 'Please add a category_name'],
-		maxlength: [50, 'name cannot be more than of 30 characters'],
+		maxlength: [50, 'Name cannot be more than of 30 characters'],
 	},
 	created_by: {
 		type: mongoose.Schema.ObjectId,
