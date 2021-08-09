@@ -7,7 +7,9 @@ const merchantPaymentController = require('../controller/merchant_payment.contro
 const MerchantPayment = require('../models/merchant.payment.models');
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
-
+router
+	.route('/:id')
+	.post(authprotect.protect, merchantPaymentController.createCredit);
 router
 	.route('/')
 	.get(

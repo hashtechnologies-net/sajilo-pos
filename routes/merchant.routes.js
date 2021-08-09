@@ -10,6 +10,7 @@ const router = express.Router();
 router
 	.route('/')
 	.get(
+		authprotect.protect,
 		allqueryresults(Merchant, {
 			path: 'created_by',
 			select: 'username',
@@ -20,7 +21,7 @@ router
 
 router
 	.route('/:id')
-	.get(merchantController.getSingleMerchant)
+	.get(authprotect.protect, merchantController.getSingleMerchant)
 	.put(authprotect.protect, merchantController.updateMerchant)
 	.delete(authprotect.protect, merchantController.deleteMerchant);
 

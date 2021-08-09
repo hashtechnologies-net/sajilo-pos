@@ -139,12 +139,12 @@ exports.getLowestCounterUser = asyncHandler(async (req, res, next) => {
 		{
 			$group: {
 				_id: '$data.created_by',
-				count: { $sum: 1 },
+				sales: { $sum: 1 },
 			},
 		},
 		{
 			$sort: {
-				count: 1,
+				item_sold: 1,
 			},
 		},
 		{
