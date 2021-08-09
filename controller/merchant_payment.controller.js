@@ -3,7 +3,7 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const MerchantPayment = require('../models/merchant.payment.models');
-const Credit = require('../models/credit.models');
+
 // @desc  get all merchantPayments
 //@route  GET /api/v1/merchanpayments
 exports.getAllPayment = asyncHandler(async (req, res, next) => {
@@ -45,7 +45,6 @@ exports.createPayment = asyncHandler(async (req, res, next) => {
 	req.body.credit = getCredit();
 
 	const payments = await MerchantPayment.create(req.body);
-	const credits = await Credit.create(req.body);
 	res.status(201).json({ success: true, data: payments });
 });
 // @desc  update  merchantPayment
@@ -68,6 +67,21 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
+	const getCredit = () => {
+		let credit;
+		if (req.body.paymentType === 'Cash') {
+			credit = req.body.amount - req.body.cash;
+			return credit;
+		} else if (req.body.paymentType === 'Bank') {
+			credit = req.body.amount - req.body.bank;
+			return credit;
+		} else {
+			return next(
+				new ErrorResponse('Please enter the correct payment type')
+			);
+		}
+	};
+	req.body.credit = getCredit();
 
 	payments = await MerchantPayment.findOneAndUpdate(req.params.id, req.body, {
 		new: true,
@@ -116,35 +130,4 @@ exports.getInvestment = asyncHandler(async (req, res, next) => {
 		success: true,
 		Total_investments: inv,
 	});
-});
-
-exports.createCredit = asyncHandler(async (req, res, next) => {
-	req.body.created_by = req.admin.id;
-	let payments = await MerchantPayment.findById(req.params.id);
-	if (!payments) {
-		return next(
-			new ErrorResponse(
-				`Merchant Payment with id ${req.params.id} could not be found`,
-				404
-			)
-		);
-	}
-
-	let credits = await Credit.findById({ payment_id: req.params.id });
-
-	const getCredit = () => {
-		if (req.body.paymentType == 'Cash') {
-			req.body.credit = credits.credit - req.body.cash;
-		} else if (req.body.paymentType == 'Bank') {
-			req.body.credit = credits.credit - req.body.bank;
-		} else {
-			return next(
-				new ErrorResponse('Please enter the correct payment type')
-			);
-		}
-	};
-	req.body.credit = getCredit();
-
-	credits = await Credit.create(req.body);
-	res.status(201).json({ success: true, data: credits });
 });
