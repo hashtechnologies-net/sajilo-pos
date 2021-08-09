@@ -103,7 +103,14 @@ const sendTokenResponse = (admin, statusCode, res) => {
 // @access    Private
 
 exports.getMe = asyncHandler(async (req, res, next) => {
-	console.log(req.admin);
 	const admin = await Admin.findById(req.admin.id);
 	res.status(200).json({ success: true, data: admin });
+});
+// @desc      Get all admin
+// @route     GET /api/v1/admin/getadmins
+// @access    Private
+
+exports.getAdmins = asyncHandler(async (req, res, next) => {
+	const admins = await Admin.find();
+	res.status(200).json({ success: true, data: admins });
 });

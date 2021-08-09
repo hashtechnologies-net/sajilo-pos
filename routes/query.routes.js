@@ -14,7 +14,7 @@ router
 	.get(authprotect.protect, queryController.getLowestPurchase);
 router
 	.route('/highest/counterusers')
-	.get(queryController.getHighestCounterUser);
+	.get(authprotect.protect, queryController.getHighestCounterUser);
 router
 	.route('/lowest/counterusers')
 	.get(authprotect.protect, queryController.getLowestCounterUser);
