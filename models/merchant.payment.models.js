@@ -29,6 +29,11 @@ const merchantPaymentSchema = new mongoose.Schema(
 		credit: {
 			type: Number,
 		},
+		created_by: {
+			type: mongoose.Schema.ObjectId,
+			ref: 'admin',
+			required: true,
+		},
 	},
 	{ timestamps: true }
 );

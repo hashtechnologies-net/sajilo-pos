@@ -21,6 +21,10 @@ router
 				path: 'category_id',
 				select: 'category_name',
 			},
+			{
+				path: 'created_by',
+				select: 'username',
+			},
 		]),
 
 		productController.getAllProducts

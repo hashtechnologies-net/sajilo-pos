@@ -27,6 +27,7 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/merchantpayments
 
 exports.createPayment = asyncHandler(async (req, res, next) => {
+	req.body.created_by = req.admin.id;
 	const getCredit = () => {
 		let credit;
 		if (req.body.cash) {
@@ -114,11 +115,11 @@ exports.deletePayment = asyncHandler(async (req, res, next) => {
 });
 
 // @desc  GET  totalinvetsment
-//@route  GET /api/v1/investments
+//@route  GET /api/v1/find/totalinvestments
 exports.getInvestment = asyncHandler(async (req, res, next) => {
-	let merhantPayment = await MerchantPayment.find();
+	let merchantPayment = await MerchantPayment.find();
 	let inv = 0;
-	merhantPayment.forEach((element) => {
+	merchantPayment.forEach((element) => {
 		let investment = element.amount - element.credit;
 		inv += investment;
 	});

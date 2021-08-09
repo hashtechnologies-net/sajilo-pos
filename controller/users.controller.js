@@ -17,10 +17,7 @@ exports.getSingleUser = asyncHandler(async (req, res, next) => {
 
 	if (!user1) {
 		return next(
-			new ErrorResponse(
-				`Product not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
 		);
 	}
 	res.status(200).json({ success: true, data: user1 });
@@ -28,6 +25,7 @@ exports.getSingleUser = asyncHandler(async (req, res, next) => {
 // @desc  create new user
 //@route  POST /api/v1/users
 exports.createUser = asyncHandler(async (req, res, next) => {
+	req.body.created_by = req.admin.id;
 	const { email, password, username } = req.body;
 	// const { password } = req.body;
 	const userExists = await User.findOne({ email });
@@ -88,7 +86,7 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 //@route  PUT /api/v1/users//photo
 exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
 	const user = await User.findById(req.user.id);
-	console.log(req.user.id);
+
 	if (!user) {
 		return next(
 			new ErrorResponse(` User not found with id of ${req.user.id}`, 404)
@@ -105,9 +103,7 @@ exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
 	}
 	//check filesize
 	if (file.size > process.env.FILE_MAX_SIZE) {
-		return next(
-			new ErrorResponse(`file size cannot be more than 1mb`, 400)
-		);
+		return next(new ErrorResponse(`file size cannot be more than 1mb`, 400));
 	}
 	//Create custom filename
 	file.name = `photo_${user._id}${path.parse(file.name).ext}`;

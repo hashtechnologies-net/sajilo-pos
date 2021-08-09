@@ -1,3 +1,5 @@
+/** @format */
+
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const SalesPayment = require('../models/sales.payment.models');
@@ -76,7 +78,7 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 });
 
 // @desc  GET  totalSales
-//@route  GET /api/v1/sales
+//@route  GET /api/v1/find/totalsales
 exports.getSales = asyncHandler(async (req, res, next) => {
 	let invoice = await Invoice.find();
 	let sales = 0;

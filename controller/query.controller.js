@@ -196,7 +196,7 @@ exports.getHighestPurchaseProducts = asyncHandler(async (req, res, next) => {
 });
 
 // @desc  Get highest purchased products
-//@route  GET /api/v1/find/highest/purchasedproducts
+//@route  GET /api/v1/find/lowest/purchasedproducts
 exports.getLowestPurchaseProducts = asyncHandler(async (req, res, next) => {
 	Purchase.aggregate([
 		{

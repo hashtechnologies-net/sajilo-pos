@@ -20,8 +20,8 @@ const usersSchema = new mongoose.Schema({
 	},
 	email: {
 		type: String,
-		required: [true, 'please add email'],
-		unique: [true, 'Email already registered'],
+		required: [true, 'Please add email'],
+		unique: [true, 'Email has already been registered'],
 		match: [
 			/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
 			'Please enter a valid email',
@@ -29,7 +29,7 @@ const usersSchema = new mongoose.Schema({
 	},
 	password: {
 		type: String,
-		required: [true, 'please add a password'],
+		required: [true, 'Please add a password'],
 		minlength: 6,
 		select: false,
 	},
@@ -42,6 +42,11 @@ const usersSchema = new mongoose.Schema({
 		type: Date,
 		default: Date.now,
 	},
+	created_by: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'admin',
+		required: true,
+	},
 });
 
 usersSchema.pre('save', async function (next) {
@@ -49,7 +54,7 @@ usersSchema.pre('save', async function (next) {
 		const salt = await bcrypt.genSalt(10);
 		this.password = await bcrypt.hash(this.password, salt);
 	} catch (error) {
-		console.log('error');
+		console.log('Error');
 	}
 });
 

@@ -1,3 +1,5 @@
+/** @format */
+
 const express = require('express');
 const router = express.Router();
 const userController = require('../controller/users.controller');
@@ -9,7 +11,13 @@ const { protect } = require('../middleware/authUser');
 router.route('/photo').put(protect, userController.userPhotoUpload);
 router
 	.route('/')
-	.get(allqueryresults(User), userController.getAllUsers)
+	.get(
+		allqueryresults(User, {
+			path: 'created_by',
+			select: 'username',
+		}),
+		userController.getAllUsers
+	)
 	.post(protectAdmin.protect, userController.createUser);
 
 router

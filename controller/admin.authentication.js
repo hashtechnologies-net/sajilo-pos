@@ -71,7 +71,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 
 	res.status(200).json({
 		success: true,
-		message: 'admin logged out',
+		message: 'Admin logged out',
 		data: {},
 	});
 });
