@@ -84,10 +84,10 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 // @desc  uplaod  photo
 //@route  PUT /api/v1/users/:id/photo
 exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
-	const user = await User.findById(req.params.id);
+	const user = await User.findById(req.user.id);
 	if (!user) {
 		return next(
-			new ErrorResponse(` User not found with id of ${req.params.id}`, 404)
+			new ErrorResponse(` User not found with id of ${req.user.id}`, 404)
 		);
 	}
 	if (!req.files) {
@@ -112,7 +112,7 @@ exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
 			return next(new ErrorResponse(`Problem with file upload`, 500));
 		}
 
-		await User.findByIdAndUpdate(req.params.id, { photo: file.name });
+		await User.findByIdAndUpdate(req.user.id, { photo: file.name });
 
 		res.status(200).json({
 			success: true,
