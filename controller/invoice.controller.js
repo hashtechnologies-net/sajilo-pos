@@ -4,13 +4,11 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Invoice = require('../models/invoice.models');
 const Stock = require('../models/stockEntry.models');
-const { getID } = require('../middleware/getuserId');
 
 // @desc  get all Invoice
 //@route  GET /api/v1/invoices
 exports.getAllInvoices = asyncHandler(async (req, res, next) => {
-	const invoices = await Invoice.find().populate('user_id');
-	res.status(200).json({ success: true, data: invoices });
+	res.status(200).json(res.allqueryresults);
 });
 // @desc  get single Invoice
 //@route  GET /api/v1/invoices/:id
@@ -28,10 +26,9 @@ exports.getSingleInvoice = asyncHandler(async (req, res, next) => {
 });
 // @desc  create new Invoice
 //@route  POST /api/v1/invoices
-
 exports.createInvoice = asyncHandler(async (req, res, next) => {
-	req.body.user_id = req.user.id;
-	const invoice = await Invoice.create(req.body);
+	req.body.created_by = req.user.id;
+	invoice = await Invoice.create(req.body);
 	invoice.description.forEach(async (sales) => {
 		let stock = {
 			product_id: sales.product,
@@ -39,8 +36,8 @@ exports.createInvoice = asyncHandler(async (req, res, next) => {
 			invoice_id: invoice.id,
 		};
 		const stockEntry = await Stock.create(stock);
+		res.status(201).json({ success: true, invoice });
 	});
-	res.status(201).json({ success: true, data: invoice });
 });
 
 // @desc  update  Invoice

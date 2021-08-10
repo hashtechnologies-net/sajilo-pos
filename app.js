@@ -7,6 +7,9 @@ const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xss = require('xss-clean');
 const connectDB = require('./db');
 
 //connect database
@@ -21,12 +24,20 @@ app.use(cookieParser());
 //use fileupload
 app.use(fileupload());
 
+//Sanitize data
+app.use(mongoSanitize());
+
+//Set Security Headers
+app.use(helmet());
+
+//Prevent XSS attacks
+app.use(xss());
+
 app.use(morgan('dev'));
 
 // Route files
 const userRouter = require('./routes/users.routes');
 const productRouter = require('./routes/product.routes');
-// const paymentRouter = require('./routes/payment.routes');
 const authRouter = require('./routes/auth.routes');
 const categoryRouter = require('./routes/category.routes');
 const unitRouter = require('./routes/unit.routes');
@@ -36,6 +47,8 @@ const invoiceRouter = require('./routes/invoice.routes');
 const purchaseRouter = require('./routes/purchase.routes');
 const sPaymentRouter = require('./routes/salesPayment.routes');
 const mPaymentRouter = require('./routes/merchantPayment.routes');
+const queryRouter = require('./routes/query.routes');
+const stockRouter = require('./routes/stock.routes');
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
@@ -49,8 +62,10 @@ app.use('/api/v1/invoices', invoiceRouter);
 app.use('/api/v1/purchases', purchaseRouter);
 app.use('/api/v1/salespayments', sPaymentRouter);
 app.use('/api/v1/merchantpayments', mPaymentRouter);
+app.use('/api/v1/find', queryRouter);
+app.use('/api/v1/stocks', stockRouter);
 
-//mount errprhandler
+//mount errorhandler
 app.use(errorHandler);
 
 module.exports = app;

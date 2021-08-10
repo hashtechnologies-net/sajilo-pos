@@ -15,7 +15,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	) {
 		// Set token from Bearer token in header
 		token = req.headers.authorization.split('-')[1];
-		console.log(token);
 	}
 
 	// Make sure token exists
@@ -29,14 +28,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	}
 
 	try {
-		// Verify token
-		if (!token.startsWith('user')) {
-			return next(
-				new ErrorResponse('Please login as a User not Admin', 401)
-			);
-		}
 		const decoded = jwt.verify(token, process.env.JWT_USER_SECRET);
+
 		req.user = await User.findById(decoded.id);
+
 		if (!req.user) {
 			return next(
 				new ErrorResponse('Not authorized to access this route', 401)
@@ -44,6 +39,11 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		}
 		next();
 	} catch (err) {
-		return next(new ErrorResponse('Internal server error', 500));
+		return next(
+			new ErrorResponse(
+				'Internal server error from user authentication',
+				500
+			)
+		);
 	}
 });

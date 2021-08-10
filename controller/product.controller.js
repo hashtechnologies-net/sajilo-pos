@@ -15,7 +15,7 @@ exports.getAllProducts = asyncHandler(async (req, res, next) => {
 // @desc  get single Product
 //@route  GET /api/v1/products/:id
 exports.getSingleProduct = asyncHandler(async (req, res, next) => {
-	const product = await Product.findById(req.params.id).populate('admin_id');
+	const product = await Product.findById(req.params.id);
 
 	if (!product) {
 		return next(
@@ -27,9 +27,9 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 	}
 	res.status(200).json({ success: true, data: product });
 });
+
 // @desc  create new Product
 //@route  POST /api/v1/products
-
 exports.createProduct = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.admin.id;
 

@@ -1,23 +1,30 @@
+/** @format */
+
 const express = require('express');
 const router = express.Router();
 const userController = require('../controller/users.controller');
 const User = require('../models/users.models');
 const allqueryresults = require('../middleware/allqueryresults');
-const authprotect = require('../middleware/authAdmin');
+const protectAdmin = require('../middleware/authAdmin');
+const { protect } = require('../middleware/authUser');
 
+router.route('/photo').put(protect, userController.userPhotoUpload);
 router
 	.route('/')
-	.get(allqueryresults(User), userController.getAllUsers)
-	.post(authprotect.protect, userController.createUser);
+	.get(
+		protectAdmin.protect,
+		allqueryresults(User, {
+			path: 'created_by',
+			select: 'username',
+		}),
+		userController.getAllUsers
+	)
+	.post(protectAdmin.protect, userController.createUser);
 
 router
 	.route('/:id')
-	.get(userController.getSingleUser)
-	.put(authprotect.protect, userController.updateUser)
-	.delete(authprotect.protect, userController.deleteUser);
-
-router
-	.route('/:id/photo')
-	.put(authprotect.protect, userController.userPhotoUpload);
+	.get(protectAdmin.protect, userController.getSingleUser)
+	.put(protectAdmin.protect, userController.updateUser)
+	.delete(protectAdmin.protect, userController.deleteUser);
 
 module.exports = router;

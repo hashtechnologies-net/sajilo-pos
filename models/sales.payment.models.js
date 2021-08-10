@@ -1,3 +1,5 @@
+/** @format */
+
 const mongoose = require('mongoose');
 const salesPaymentSchema = new mongoose.Schema({
 	paymentType: {
@@ -5,14 +7,14 @@ const salesPaymentSchema = new mongoose.Schema({
 		enum: ['Cash', 'Bank'],
 		required: true,
 	},
-	Created_at: {
+	created_at: {
 		type: Date,
 		default: Date.now,
 	},
 	cash: {
 		type: Number,
 	},
-	Bank: {
+	bank: {
 		type: Number,
 	},
 	credit: {

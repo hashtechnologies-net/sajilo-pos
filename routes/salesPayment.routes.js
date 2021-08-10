@@ -1,3 +1,5 @@
+/** @format */
+
 const express = require('express');
 const SalesPaymentController = require('../controller/sales_payment.controller');
 
@@ -9,11 +11,17 @@ const router = express.Router();
 
 router
 	.route('/')
-	.get(allqueryresults(Salespayment), SalesPaymentController.getAllSPayments)
+	.get(
+		allqueryresults(Salespayment, {
+			path: 'invoice_id',
+			select: 'total_amount',
+		}),
+		SalesPaymentController.getAllSPayments
+	)
 	.post(authprotect.protect, SalesPaymentController.createSPayment);
 
 router
-	.route('/:id')
+	.route('/: ')
 	.get(SalesPaymentController.getSinglePayment)
 	.put(authprotect.protect, SalesPaymentController.updateSPayment)
 	.delete(authprotect.protect, SalesPaymentController.deleteSPayment);

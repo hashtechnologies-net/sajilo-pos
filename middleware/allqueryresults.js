@@ -1,3 +1,5 @@
+/** @format */
+
 const allqueryresults = (model, populate) => async (req, res, next) => {
 	let query;
 

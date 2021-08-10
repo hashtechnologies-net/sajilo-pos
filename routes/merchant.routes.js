@@ -1,3 +1,5 @@
+/** @format */
+
 const express = require('express');
 const merchantController = require('../controller/merchant.controller');
 const Merchant = require('../models/merchant.models');
@@ -7,12 +9,19 @@ const router = express.Router();
 
 router
 	.route('/')
-	.get(allqueryresults(Merchant), merchantController.getAllMerchants)
+	.get(
+		authprotect.protect,
+		allqueryresults(Merchant, {
+			path: 'created_by',
+			select: 'username',
+		}),
+		merchantController.getAllMerchants
+	)
 	.post(authprotect.protect, merchantController.createMerchant);
 
 router
 	.route('/:id')
-	.get(merchantController.getSingleMerchant)
+	.get(authprotect.protect, merchantController.getSingleMerchant)
 	.put(authprotect.protect, merchantController.updateMerchant)
 	.delete(authprotect.protect, merchantController.deleteMerchant);
 

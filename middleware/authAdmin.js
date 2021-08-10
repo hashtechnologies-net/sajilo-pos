@@ -34,7 +34,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 				new ErrorResponse('Please login as an Admin not User', 404)
 			);
 		}
-		// console.log(token);
 		const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
 		req.admin = await Admin.findById(decoded.id);
 		if (!req.admin) {

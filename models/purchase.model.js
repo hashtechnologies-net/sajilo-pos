@@ -2,18 +2,19 @@
 
 const mongoose = require('mongoose');
 const PurchaseSchema = new mongoose.Schema({
-	description: [{
-		product: {
-			type: mongoose.Schema.ObjectId,
-			ref: 'product',
-			required: true,
+	description: [
+		{
+			product: {
+				type: mongoose.Schema.ObjectId,
+				ref: 'product',
+				required: true,
+			},
+			stock: {
+				type: Number,
+				required: [true, 'Please add the stock number'],
+			},
 		},
-		stock: {
-			type: Number,
-			required: [true, 'Please add the stock number'],
-		},
-	}],
-
+	],
 	merchant_id: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'merchant',
