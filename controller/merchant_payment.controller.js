@@ -48,11 +48,11 @@ exports.createPayment = asyncHandler(async (req, res, next) => {
 // @desc  update  merchantPayment
 //@route  PUT /api/v1/merchantpayments/:id
 exports.updatePayment = asyncHandler(async (req, res, next) => {
-	let payments = await MerchantPayment.findById(req.body.merchant_id);
+	let payments = await MerchantPayment.findById(req.params.id);
 	if (!payments) {
 		return next(
 			new ErrorResponse(
-				`Merchant Payment with id ${req.body.merchant_id} could not be found`,
+				`Merchant Payment with id ${req.params.id} could not be found`,
 				404
 			)
 		);
@@ -60,10 +60,13 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 	const getCredit = () => {
 		let credit;
 		if (req.body.cash) {
-			credit = payments.amount - req.body.cash;
+			credit = payments.amount - req.body.cash - payments.cash;
 			return credit;
 		} else if (req.body.bank) {
-			credit = payments.amount - req.body.bank;
+			if (!payments.bank) {
+				credit = payments.amount - req.body.bank - payments.cash;
+			}
+			credit = payments.amount - req.body.bank - payments.bank;
 			return credit;
 		}
 		credit = payments.amount;
@@ -74,8 +77,8 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
 	if (req.body.paymentconfirmId) {
-		payments = await MerchantPayment.findOneAndUpdate(
-			req.body.merchant_id,
+		payments = await MerchantPayment.findByIdAndUpdate(
+			req.params.id,
 			req.body,
 			{
 				new: true,
@@ -91,7 +94,7 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 	}
 	res.status(404).json({
 		success: false,
-		reason: 'Please enter receipt no. or cheque no. and updated_date',
+		reason: 'Please enter receipt no. or cheque no',
 	});
 });
 // @desc  Delete  merchantPayment
