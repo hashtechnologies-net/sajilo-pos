@@ -9,7 +9,11 @@ const router = express.Router();
 router.route('/login').post(authController.login);
 router.route('/me').get(authprotect.protect, authController.getMe);
 router.route('/logout').post(authController.logout);
-router.route('/updatepassword').put(authController.updatePassword);
-router.route('/forgotpassword').post(authController.forgotPassword);
+router
+	.route('/updatepassword')
+	.put(authprotect.protect, authController.updatePassword);
+router
+	.route('/forgotpassword')
+	.post(authprotect.protect, authController.forgotPassword);
 
 module.exports = router;

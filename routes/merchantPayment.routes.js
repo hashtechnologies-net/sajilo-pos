@@ -11,6 +11,7 @@ const authprotect = require('../middleware/authAdmin');
 router
 	.route('/')
 	.get(
+		authprotect.protect,
 		allqueryresults(MerchantPayment, [
 			{
 				path: 'merchant_id',
@@ -27,7 +28,7 @@ router
 
 router
 	.route('/:id')
-	.get(merchantPaymentController.getSinglePayment)
+	.get(authprotect.protect, merchantPaymentController.getSinglePayment)
 	.put(authprotect.protect, merchantPaymentController.updatePayment)
 	.delete(authprotect.protect, merchantPaymentController.deletePayment);
 

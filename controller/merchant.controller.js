@@ -27,6 +27,7 @@ exports.getSingleMerchant = asyncHandler(async (req, res, next) => {
 // @desc  create new merchant
 //@route  POST /api/v1/merchants
 exports.createMerchant = asyncHandler(async (req, res, next) => {
+	req.body.created_by = req.admin.id;
 	const Cmerchant = await Merchant.create(req.body);
 	res.status(201).json({ success: true, Cmerchant });
 });
@@ -41,6 +42,9 @@ exports.updateMerchant = asyncHandler(async (req, res, next) => {
 				404
 			)
 		);
+	}
+	if (Object.keys(req.body).length === 0) {
+		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
 	Umerchant = await Merchant.findByIdAndUpdate(req.params.id, req.body, {
 		new: true,

@@ -69,11 +69,11 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 	}
 	const getCredit = () => {
 		let credit;
-		if (req.body.paymentType === 'Cash') {
-			credit = req.body.amount - req.body.cash;
+		if (req.body.paymentType == 'Cash') {
+			credit = payments.credit - req.body.cash;
 			return credit;
-		} else if (req.body.paymentType === 'Bank') {
-			credit = req.body.amount - req.body.bank;
+		} else if (req.body.paymentType == 'Bank') {
+			credit = payments.credit - req.body.bank;
 			return credit;
 		} else {
 			return next(
@@ -83,7 +83,7 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 	};
 	req.body.credit = getCredit();
 
-	payments = await MerchantPayment.findOneAndUpdate(req.params.id, req.body, {
+	payments = await MerchantPayment.findByIdAndUpdate(req.params.id, req.body, {
 		new: true,
 		runValidators: true,
 	});

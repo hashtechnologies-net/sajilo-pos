@@ -95,12 +95,12 @@ exports.getHighestCounterUser = asyncHandler(async (req, res, next) => {
 		{
 			$group: {
 				_id: '$data.created_by',
-				count: { $sum: 1 },
+				sales: { $sum: 1 },
 			},
 		},
 		{
 			$sort: {
-				count: -1,
+				sales: -1,
 			},
 		},
 		{
@@ -144,7 +144,7 @@ exports.getLowestCounterUser = asyncHandler(async (req, res, next) => {
 		},
 		{
 			$sort: {
-				item_sold: 1,
+				sales: 1,
 			},
 		},
 		{
@@ -173,12 +173,12 @@ exports.getHighestPurchaseProducts = asyncHandler(async (req, res, next) => {
 		{
 			$group: {
 				_id: '$description.product',
-				count: { $sum: 1 },
+				purchases: { $sum: 1 },
 			},
 		},
 		{
 			$sort: {
-				count: -1,
+				purchases: -1,
 			},
 		},
 		{
@@ -207,12 +207,12 @@ exports.getLowestPurchaseProducts = asyncHandler(async (req, res, next) => {
 		{
 			$group: {
 				_id: '$description.product',
-				count: { $sum: 1 },
+				purchases: { $sum: 1 },
 			},
 		},
 		{
 			$sort: {
-				count: 1,
+				purchases: 1,
 			},
 		},
 		{
@@ -251,12 +251,12 @@ exports.getHighestSalesProducts = asyncHandler(async (req, res, next) => {
 		{
 			$group: {
 				_id: '$data.description.product',
-				count: { $sum: 1 },
+				Items_sold: { $sum: 1 },
 			},
 		},
 		{
 			$sort: {
-				count: -1,
+				Items_sold: -1,
 			},
 		},
 		{
@@ -295,12 +295,12 @@ exports.getLowestSalesProducts = asyncHandler(async (req, res, next) => {
 		{
 			$group: {
 				_id: '$data.description.product',
-				count: { $sum: 1 },
+				Items_sold: { $sum: 1 },
 			},
 		},
 		{
 			$sort: {
-				count: 1,
+				Items_sold: 1,
 			},
 		},
 		{

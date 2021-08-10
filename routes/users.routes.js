@@ -12,6 +12,7 @@ router.route('/photo').put(protect, userController.userPhotoUpload);
 router
 	.route('/')
 	.get(
+		protectAdmin.protect,
 		allqueryresults(User, {
 			path: 'created_by',
 			select: 'username',
@@ -22,7 +23,7 @@ router
 
 router
 	.route('/:id')
-	.get(userController.getSingleUser)
+	.get(protectAdmin.protect, userController.getSingleUser)
 	.put(protectAdmin.protect, userController.updateUser)
 	.delete(protectAdmin.protect, userController.deleteUser);
 
