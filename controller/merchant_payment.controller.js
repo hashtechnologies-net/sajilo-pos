@@ -30,15 +30,17 @@ exports.createPayment = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.admin.id;
 	const getCredit = () => {
 		let credit;
-		if (req.body.cash) {
+		if (req.body.paymentType === 'Cash') {
 			credit = req.body.amount - req.body.cash;
 			return credit;
-		} else if (req.body.bank) {
+		} else if (req.body.paymentType === 'Bank') {
 			credit = req.body.amount - req.body.bank;
 			return credit;
+		} else {
+			return next(
+				new ErrorResponse('Please enter the correct payment type')
+			);
 		}
-		credit = req.body.amount;
-		return credit;
 	};
 	req.body.credit = getCredit();
 
@@ -53,12 +55,24 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`Merchant Payment with id ${req.params.id} could not be found`,
+<<<<<<< HEAD
+=======
+				404
+			)
+		);
+	}
+	if (!req.body.paymentconfirmId) {
+		return next(
+			new ErrorResponse(
+				'Please enter the receipt no. or cheque no. and updated date',
+>>>>>>> bd0caccadf51f02125914d9c4633aab280fa5e9c
 				404
 			)
 		);
 	}
 	const getCredit = () => {
 		let credit;
+<<<<<<< HEAD
 		if (req.body.cash) {
 			credit = payments.amount - req.body.cash - payments.cash;
 			return credit;
@@ -67,15 +81,30 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 				credit = payments.amount - req.body.bank - payments.cash;
 			}
 			credit = payments.amount - req.body.bank - payments.bank;
+=======
+		if (req.body.paymentType == 'Cash') {
+			credit = payments.credit - req.body.cash;
 			return credit;
+		} else if (req.body.paymentType == 'Bank') {
+			credit = payments.credit - req.body.bank;
+>>>>>>> bd0caccadf51f02125914d9c4633aab280fa5e9c
+			return credit;
+		} else {
+			return next(
+				new ErrorResponse('Please enter the correct payment type')
+			);
 		}
-		credit = payments.amount;
-		return credit;
 	};
 	req.body.credit = getCredit();
+
+	payments = await MerchantPayment.findByIdAndUpdate(req.params.id, req.body, {
+		new: true,
+		runValidators: true,
+	});
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
+<<<<<<< HEAD
 	if (req.body.paymentconfirmId) {
 		payments = await MerchantPayment.findByIdAndUpdate(
 			req.params.id,
@@ -95,6 +124,13 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 	res.status(404).json({
 		success: false,
 		reason: 'Please enter receipt no. or cheque no',
+=======
+
+	res.status(200).json({
+		success: true,
+		data: payments,
+		message: 'Successfully Updated!!',
+>>>>>>> bd0caccadf51f02125914d9c4633aab280fa5e9c
 	});
 });
 // @desc  Delete  merchantPayment
