@@ -21,7 +21,7 @@ router
 	.post(authprotect.protect, SalesPaymentController.createSPayment);
 
 router
-	.route('/: ')
+	.route('/:id')
 	.get(SalesPaymentController.getSinglePayment)
 	.put(authprotect.protect, SalesPaymentController.updateSPayment)
 	.delete(authprotect.protect, SalesPaymentController.deleteSPayment);
