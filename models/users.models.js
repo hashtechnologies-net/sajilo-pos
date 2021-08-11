@@ -1,4 +1,3 @@
-/** @format */
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -51,9 +50,6 @@ const usersSchema = new mongoose.Schema({
 
 usersSchema.pre('save', async function (next) {
 	try {
-		if (this.isModified('password')) {
-			next();
-		}
 		const salt = await bcrypt.genSalt(10);
 		this.password = await bcrypt.hash(this.password, salt);
 	} catch (error) {

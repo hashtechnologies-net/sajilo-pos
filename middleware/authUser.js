@@ -16,7 +16,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		// Set token from Bearer token in header
 		token = req.headers.authorization.split('-')[1];
 	}
-
 	// Make sure token exists
 	if (!token) {
 		return next(
@@ -29,7 +28,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	try {
 		const decoded = jwt.verify(token, process.env.JWT_USER_SECRET);
-
+		console.log(decoded);
 		req.user = await User.findById(decoded.id);
 
 		if (!req.user) {
