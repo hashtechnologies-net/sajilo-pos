@@ -3,11 +3,50 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Category = require('../models/category.models');
+const Product = require('../models/product.models');
 
 // @desc  get all Product Category
 //@route  GET /api/v1/category
 exports.getAllCategory = asyncHandler(async (req, res, next) => {
-	res.status(200).json(res.allqueryresults);
+	Category.aggregate([
+		{
+			$lookup: {
+				from: 'products',
+				localField: '_id',
+				foreignField: 'category_id',
+				as: 'data',
+			},
+		},
+		{
+			$project: {
+				_id: 1,
+				data: 1,
+			},
+		},
+		// {
+		// 	$group: {
+		// 		_id: '$data._id',
+		// 		products: { $sum: 1 },
+		// 	},
+		// },
+
+		// {
+		// 	$sort: {
+		// 		products: -1,
+		// 	},
+		// },
+		// {
+		// 	$limit: 5,
+		// },
+	]).exec(async (err, result) => {
+		if (err) {
+			return next(new ErrorResponse(err, 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
 });
 
 // @desc  get a single Product Category
@@ -31,7 +70,6 @@ exports.getSingleCategory = asyncHandler(async (req, res, next) => {
 
 exports.createCategory = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.admin.id;
-	req.body.totalStock = req.total.products;
 	const category = await Category.create(req.body);
 	res.status(201).json({
 		status: true,
