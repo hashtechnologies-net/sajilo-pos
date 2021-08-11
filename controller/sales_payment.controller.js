@@ -30,7 +30,7 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/salespayments
 exports.createSPayment = asyncHandler(async (req, res, next) => {
 	const CSpayment = await SalesPayment.create(req.body);
-	res.status(201).json(res.allqueryresults);
+	res.status(201).json({ success: true, data: CSpayment });
 });
 
 // @desc  update  salesPayment

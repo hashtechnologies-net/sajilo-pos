@@ -21,7 +21,7 @@ exports.getSingleUnit = asyncHandler(async (req, res, next) => {
 			new ErrorResponse(`Unit not found with id of ${req.params.id}`, 404)
 		);
 	}
-	res.status(200).json({ success: true, data: unit1 });
+	res.status(200).json({ success: true, data: units });
 });
 // @desc  create new Unit
 //@route  POST /api/v1/units

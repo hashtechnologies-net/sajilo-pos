@@ -49,6 +49,7 @@ const sPaymentRouter = require('./routes/salesPayment.routes');
 const mPaymentRouter = require('./routes/merchantPayment.routes');
 const queryRouter = require('./routes/query.routes');
 const stockRouter = require('./routes/stock.routes');
+const appsettingRouter = require('./routes/appsetting.routes');
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
@@ -64,6 +65,7 @@ app.use('/api/v1/salespayments', sPaymentRouter);
 app.use('/api/v1/merchantpayments', mPaymentRouter);
 app.use('/api/v1/find', queryRouter);
 app.use('/api/v1/stocks', stockRouter);
+app.use('/api/v1/appsettings', appsettingRouter);
 
 //mount errorhandler
 app.use(errorHandler);
