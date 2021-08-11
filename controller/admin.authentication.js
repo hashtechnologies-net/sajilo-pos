@@ -112,5 +112,6 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 
 exports.getAdmins = asyncHandler(async (req, res, next) => {
 	const admins = await Admin.find();
-	res.status(200).json({ success: true, data: admins });
+	const exist = (admins.length > 0 ? true : false)
+	res.status(200).json({ success: true, exist });
 });

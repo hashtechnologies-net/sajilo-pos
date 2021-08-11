@@ -11,6 +11,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const connectDB = require('./db');
+const cors = require('cors');
+
 
 //connect database
 connectDB();
@@ -34,6 +36,8 @@ app.use(helmet());
 app.use(xss());
 
 app.use(morgan('dev'));
+
+app.use(cors())
 
 // Route files
 const userRouter = require('./routes/users.routes');
