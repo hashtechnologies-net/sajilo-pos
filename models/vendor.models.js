@@ -3,19 +3,15 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const mongoose = require('mongoose');
-const usersSchema = new mongoose.Schema({
-	full_name: {
+const vendorSchema = new mongoose.Schema({
+	vendorName: {
 		type: String,
 		required: [true, 'Please add the Name'],
 	},
-	username: {
-		type: String,
-		required: true,
-		unique: true,
-	},
-	photo: {
-		type: String,
-		default: 'photo.jpg',
+	phoneNumber: {
+		type: Number,
+		minlength: [10, 'phone number sould have 10 digits'],
+		required: [true, 'Please add the phoneNumber'],
 	},
 	email: {
 		type: String,
@@ -34,21 +30,13 @@ const usersSchema = new mongoose.Schema({
 	},
 	resetPasswordToken: String,
 	resetPasswordExpire: Date,
-	Status: {
-		type: Boolean,
-	},
 	created_at: {
 		type: Date,
 		default: Date.now,
 	},
-	created_by: {
-		type: mongoose.Schema.ObjectId,
-		ref: 'admin',
-		required: true,
-	},
 });
 
-usersSchema.pre('save', async function (next) {
+vendorSchema.pre('save', async function (next) {
 	try {
 		const salt = await bcrypt.genSalt(10);
 		this.password = await bcrypt.hash(this.password, salt);
@@ -58,19 +46,19 @@ usersSchema.pre('save', async function (next) {
 });
 
 // Sign JWT and return
-usersSchema.methods.getSignedJwtToken = function () {
-	return jwt.sign({ id: this._id }, process.env.JWT_USER_SECRET, {
+vendorSchema.methods.getSignedJwtToken = function () {
+	return jwt.sign({ id: this._id }, process.env.JWT_VENDOR_SECRET, {
 		expiresIn: process.env.JWT_EXPIRE,
 	});
 };
 
-// Match user entered password to hashed password in database
-usersSchema.methods.matchPassword = async function (enteredPassword) {
+// Match vendor entered password to hashed password in database
+vendorSchema.methods.matchPassword = async function (enteredPassword) {
 	return await bcrypt.compare(enteredPassword, this.password);
 };
 
 // Generate and hash password token
-usersSchema.methods.getResetPasswordToken = function () {
+vendorSchema.methods.getResetPasswordToken = function () {
 	// Generate token
 	const resetToken = crypto.randomBytes(20).toString('hex');
 
@@ -86,4 +74,4 @@ usersSchema.methods.getResetPasswordToken = function () {
 	return resetToken;
 };
 
-module.exports = mongoose.model('user', usersSchema);
+module.exports = mongoose.model('vendor', vendorSchema);
