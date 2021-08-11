@@ -31,6 +31,7 @@ exports.getSingleCategory = asyncHandler(async (req, res, next) => {
 
 exports.createCategory = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.admin.id;
+	req.body.totalStock = req.total.products;
 	const category = await Category.create(req.body);
 	res.status(201).json({
 		status: true,

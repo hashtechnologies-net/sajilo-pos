@@ -7,6 +7,7 @@ const categoryController = require('../controller/category.controller');
 const Category = require('../models/category.models');
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
+const totalStock = require('../middleware/totalStock');
 
 router
 	.route('/')
@@ -15,7 +16,7 @@ router
 		allqueryresults(Category, { path: 'created_by', select: 'username' }),
 		categoryController.getAllCategory
 	)
-	.post(authprotect.protect, categoryController.createCategory);
+	.post(authprotect.protect, totalStock, categoryController.createCategory);
 
 router
 	.route('/:id')
