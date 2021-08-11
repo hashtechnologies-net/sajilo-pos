@@ -38,17 +38,17 @@ const sendEmail = require('../utils/sendEmail');
 // @route     POST /api/v1/auth/login
 // @access    Public
 exports.login = asyncHandler(async (req, res, next) => {
-	const { email, password } = req.body;
+	const { username, password } = req.body;
 
 	// Validate emil & password
-	if (!email || !password) {
+	if (!username || !password) {
 		return next(
-			new ErrorResponse('Please provide an email and password', 400)
+			new ErrorResponse('Please provide username and password', 400)
 		);
 	}
 
 	// Check for user
-	const user = await User.findOne({ email }).select('+password');
+	const user = await User.findOne({ username }).select('+password');
 	if (!user) {
 		return next(new ErrorResponse('Invalid email or password', 401));
 	}
