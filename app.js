@@ -1,5 +1,3 @@
-/** @format */
-
 //const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
@@ -9,6 +7,81 @@ const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const mongoSanitize = require('express-mongo-sanitize');
 const connectDB = require('./db');
+// const mongoose = require('mongoose');
+// const Pusher = require('pusher');
+
+//establish socket.io connection
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server);
+
+// io.of('/api/socket').on('connection', (socket) => {
+// 	console.log('socket.io: User connected: ', socket.id);
+
+// 	socket.on('disconnect', () => {
+// 		console.log('socket.io: User disconnected: ', socket.id);
+// 	});
+// });
+
+// const connection = mongoose.connection;
+
+// connection.once('open', () => {
+// 	console.log('MongoDB database connected');
+
+// 	console.log('Setting change streams');
+// 	const thoughtChangeStream = connection.collection('thoughts').watch();
+
+// 	thoughtChangeStream.on('change', (change) => {
+// 		switch (change.operationType) {
+// 			case 'insert':
+// 				const thought = {
+// 					_id: change.fullDocument._id,
+// 					name: change.fullDocument.name,
+// 					description: change.fullDocument.description,
+// 				};
+
+// 				io.of('/api/socket').emit('newThought', thought);
+// 				break;
+
+// 			case 'delete':
+// 				io.of('/api/socket').emit(
+// 					'deletedThought',
+// 					change.documentKey._id
+// 				);
+// 				break;
+// 		}
+// 	});
+// });
+
+// //pusher setup
+// const db = mongoose.connection;
+// db.once('open', () => {
+// 	console.log('db is connected');
+// 	const messages = db.collection('products');
+// 	const changeStream = messages.watch();
+
+// 	changeStream.on('change', (change) => {
+// 		if (change.operationType === 'insert') {
+// 			const details = change.fullDocument;
+// 			pusher.trigger('products', 'inserted', {
+// 				sender: details.sender,
+// 				message: details.message,
+// 				timestamp: details.timestamp,
+// 				status: 0,
+// 				threadId: details.threadId,
+// 			});
+// 		} else {
+// 			console.log('error on pusher');
+// 		}
+// 	});
+// });
+
+// const pusher = new Pusher({
+// 	appId: '1202226',
+// 	key: '2142cda6d39765cba2a9',
+// 	secret: '93c2b88777c4c5d29975',
+// 	cluster: 'ap2',
+// 	useTLS: true,
+// });
 
 //connect database
 connectDB();

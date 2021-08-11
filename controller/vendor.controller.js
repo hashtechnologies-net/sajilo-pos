@@ -1,8 +1,10 @@
 const bcrypt = require('bcrypt');
 require('dotenv').config('./env');
+const jwt = require('jsonwebtoken');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Vendor = require('../models/vendor.models');
+const sendEmail = require('../utils/sendEmail');
 
 // @desc  get all vendors
 //@route  GET /api/v1/vendors
@@ -142,7 +144,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 	const vendor = await Vendor.findById(req.vendor.id).select('+password');
 
 	// Check current password
-	if (!(await Vendor.matchPassword(req.body.currentPassword))) {
+	if (!(await vendor.matchPassword(req.body.currentPassword))) {
 		return next(new ErrorResponse('Password is incorrect', 401));
 	}
 
@@ -184,10 +186,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
 		res.status(200).json({ success: true, data: 'Email sent' });
 	} catch (err) {
-		user.resetPasswordToken = undefined;
-		user.resetPasswordExpire = undefined;
+		vendor.resetPasswordToken = undefined;
+		vendor.resetPasswordExpire = undefined;
 
-		await vendor.save({ validateBeforeSave: false });
+		// await vendor.save({ validateBeforeSave: false });
 
 		return next(new ErrorResponse('Email could not be sent', 500));
 	}

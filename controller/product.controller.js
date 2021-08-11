@@ -5,11 +5,32 @@ const asyncHandler = require('../middleware/async');
 const Product = require('../models/product.models');
 const Category = require('../models/category.models');
 const Units = require('../models/unit.model');
+const stockEntry = require('../models/stockEntry.models');
 
 // @desc  get all products
 //@route  GET /api/v1/products
 exports.getAllProducts = asyncHandler(async (req, res, next) => {
-	res.status(200).json(res.allqueryresults);
+	const products = await Product.find();
+	Product.aggregate([
+		{
+			$lookup: {
+				from: 'stockentries',
+				localField: '_id',
+				foreignField: 'product_id',
+				as: 'stocks',
+			},
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse(err, 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+
+	// res.status(200).json(res.allqueryresults);
 });
 
 // @desc  get single Product
@@ -25,6 +46,7 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
+	stockController.getStock();
 	res.status(200).json({ success: true, data: product });
 });
 
