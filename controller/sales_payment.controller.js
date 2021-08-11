@@ -10,6 +10,7 @@ const Invoice = require('../models/invoice.models');
 exports.getAllSPayments = asyncHandler(async (req, res, next) => {
 	res.status(200).json(res.allqueryresults);
 });
+
 // @desc  get single salesPayment
 //@route  GET /api/v1/salespayments/:id
 exports.getSinglePayment = asyncHandler(async (req, res, next) => {
@@ -24,14 +25,14 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 	}
 	res.status(200).json({ success: true, data: spayment1 });
 });
+
 // @desc  create new salesPayment
 //@route  POST /api/v1/salespayments
-
 exports.createSPayment = asyncHandler(async (req, res, next) => {
-	//req.body.created_by = req.user.id;
 	const CSpayment = await SalesPayment.create(req.body);
-	res.status(201).json(res.allqueryresults);
+	res.status(201).json({ success: true, data: CSpayment });
 });
+
 // @desc  update  salesPayment
 //@route  PUT /api/v1/salespayments/:id
 exports.updateSPayment = asyncHandler(async (req, res, next) => {

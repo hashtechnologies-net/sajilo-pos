@@ -35,6 +35,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 			);
 		}
 		const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
+		console.log(decoded)
 		req.admin = await Admin.findById(decoded.id);
 		if (!req.admin) {
 			return next(new ErrorResponse('Admin not found', 401));

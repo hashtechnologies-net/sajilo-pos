@@ -181,10 +181,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		next();
 	} catch (err) {
 		return next(
-			new ErrorResponse(
-				'Inernal Server Error from user authentication',
-				500
-			)
+			new ErrorResponse('Inernal Server Error from user authentication', 500)
 		);
 	}
 });
