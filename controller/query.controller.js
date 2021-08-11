@@ -4,6 +4,7 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Purchase = require('../models/purchase.model');
 const SalesPayment = require('../models/sales.payment.models');
+const Product = require('../models/product.models');
 
 // @desc  Get Highest Purchase
 //@route  GET /api/v1/find/highest/purchases
@@ -301,6 +302,94 @@ exports.getLowestSalesProducts = asyncHandler(async (req, res, next) => {
 		{
 			$sort: {
 				Items_sold: 1,
+			},
+		},
+		{
+			$limit: 5,
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse('Something Bad happened', 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// @desc  Get sales done within the hour
+//@route  GET /api/v1/find/hourly/sales
+exports.getHourlySales = asyncHandler(async (req, res, next) => {
+	SalesPayment.aggregate([
+		{
+			$lookup: {
+				from: 'invoices',
+				localField: 'invoice_id',
+				foreignField: '_id',
+				as: 'data',
+			},
+		},
+		{
+			$project: {
+				data: {
+					description: 1,
+				},
+			},
+		},
+		{
+			$group: {
+				_id: '$data.description.product',
+				Items_sold: { $sum: 1 },
+			},
+		},
+		{
+			$sort: {
+				Items_sold: 1,
+			},
+		},
+		{
+			$limit: 5,
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse('Something Bad happened', 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// @desc  Get sales done within the hour
+//@route  GET /api/v1/find/category/totalproducts
+exports.getTotalProducts = asyncHandler(async (req, res, next) => {
+	Product.aggregate([
+		{
+			$lookup: {
+				from: 'categories',
+				localField: 'category_id',
+				foreignField: '_id',
+				as: 'data',
+			},
+		},
+		{
+			$project: {
+				data: {
+					_id: 1,
+				},
+			},
+		},
+		{
+			$group: {
+				_id: '$data._id',
+				products: { $sum: 1 },
+			},
+		},
+		{
+			$sort: {
+				products: -1,
 			},
 		},
 		{

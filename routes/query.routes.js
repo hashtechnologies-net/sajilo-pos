@@ -34,10 +34,18 @@ router
 	.get(authprotect.protect, queryController.getLowestSalesProducts);
 
 router
+	.route('/category/totalproducts')
+	.get(authprotect.protect, queryController.getTotalProducts);
+
+router
 	.route('/totalinvestments')
 	.get(authprotect.protect, merchantPaymentController.getInvestment);
 router
 	.route('/totalsales')
 	.get(authprotect.protect, salesPaymentController.getSales);
+
+router
+	.route('/hourly/sales')
+	.get(authprotect.protect, queryController.getHourlySales);
 
 module.exports = router;

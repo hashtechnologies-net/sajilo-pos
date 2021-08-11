@@ -1,46 +1,43 @@
-/** @format */
-
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('./async');
 const ErrorResponse = require('../utils/errorResponse');
-const User = require('../models/users.models');
+const Vendor = require('../models/vendor.models');
 
-// Protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
 	let token;
 
 	if (
 		req.headers.authorization &&
-		req.headers.authorization.startsWith('Bearer user-')
+		req.headers.authorization.startsWith('Bearer vendor-')
 	) {
 		// Set token from Bearer token in header
 		token = req.headers.authorization.split('-')[1];
 	}
+
 	// Make sure token exists
 	if (!token) {
 		return next(
 			new ErrorResponse(
-				'Please login as a user to access this resources',
+				'Please login as a vendor to access this resource.',
 				401
 			)
 		);
 	}
 
 	try {
-		const decoded = jwt.verify(token, process.env.JWT_USER_SECRET);
-		console.log(decoded);
-		req.user = await User.findById(decoded.id);
+		// Verify token
+		const decoded = jwt.verify(token, process.env.JWT_VENDOR_SECRET);
+		const vendor = await Vendor.findById(decoded.id);
 
-		if (!req.user) {
-			return next(
-				new ErrorResponse('Not authorized to access this route', 401)
-			);
+		if (!vendor) {
+			return next(new ErrorResponse('vendor could not be found', 401));
 		}
+		req.vendor = vendor;
 		next();
 	} catch (err) {
 		return next(
 			new ErrorResponse(
-				'Internal server error from user authentication',
+				'Inernal Server Error from vendor authentication',
 				500
 			)
 		);
