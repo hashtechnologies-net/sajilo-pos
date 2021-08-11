@@ -8,6 +8,7 @@ const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const mongoSanitize = require('express-mongo-sanitize');
+const uploads = require('./middleware/upload');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const connectDB = require('./db');
@@ -22,6 +23,9 @@ app.use(express.json());
 
 //cookie parser
 app.use(cookieParser());
+
+//Using the imageupload middleware
+app.use('/uploads', express.static('uploads'));
 
 //use fileupload
 app.use(fileupload());
@@ -53,8 +57,9 @@ const sPaymentRouter = require('./routes/salesPayment.routes');
 const mPaymentRouter = require('./routes/merchantPayment.routes');
 const queryRouter = require('./routes/query.routes');
 const stockRouter = require('./routes/stock.routes');
-const vendorRouter = require('./routes/vendor.routes');
 const appsettingRouter = require('./routes/appsetting.routes');
+const vendorRouter = require('./routes/vendor.routes');
+const imageUploadRouter = require('./routes/productimage.routes');
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
@@ -70,8 +75,9 @@ app.use('/api/v1/salespayments', sPaymentRouter);
 app.use('/api/v1/merchantpayments', mPaymentRouter);
 app.use('/api/v1/find', queryRouter);
 app.use('/api/v1/stocks', stockRouter);
-app.use('/api/v1/vendors', vendorRouter);
 app.use('/api/v1/appsettings', appsettingRouter);
+app.use('/api/v1/vendors', vendorRouter);
+app.use('/api/v1/productimages', imageUploadRouter);
 
 //mount errorhandler
 app.use(errorHandler);
