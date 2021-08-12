@@ -75,7 +75,6 @@ const allqueryresults = (model, populate) => async (req, res, next) => {
 		pagination,
 		data: results,
 	};
-
 	next();
 };
 

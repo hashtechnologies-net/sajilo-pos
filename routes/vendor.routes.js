@@ -17,12 +17,6 @@ router
 		vendorController.getAllvendors
 	);
 
-router
-	.route('/:id')
-	.get(authAdmin.protect, vendorController.getSingleVendor)
-	.put(authvendor.protect, vendorController.updateVendor)
-	.delete(authvendor.protect, vendorController.deleteVendor);
-
 router.route('/register').post(vendorController.register);
 router.route('/login').post(vendorController.login);
 
@@ -32,5 +26,11 @@ router
 router
 	.route('/forgotpassword')
 	.post(authvendor.protect, vendorController.forgotPassword);
+
+router
+	.route('/:id')
+	.get(authAdmin.protect, vendorController.getSingleVendor)
+	.put(authvendor.protect, vendorController.updateVendor)
+	.delete(authvendor.protect, vendorController.deleteVendor);
 
 module.exports = router;
