@@ -14,50 +14,10 @@ const cors = require('cors');
 
 // const mongoose = require('mongoose');
 // const Pusher = require('pusher');
+const mongoose = require('mongoose');
+const Pusher = require('pusher');
 
-//establish socket.io connection
-// const server = require('http').createServer(app);
-// const io = require('socket.io')(server);
-
-// io.of('/api/socket').on('connection', (socket) => {
-// 	console.log('socket.io: User connected: ', socket.id);
-
-// 	socket.on('disconnect', () => {
-// 		console.log('socket.io: User disconnected: ', socket.id);
-// 	});
-// });
-
-// const connection = mongoose.connection;
-
-// connection.once('open', () => {
-// 	console.log('MongoDB database connected');
-
-// 	console.log('Setting change streams');
-// 	const thoughtChangeStream = connection.collection('thoughts').watch();
-
-// 	thoughtChangeStream.on('change', (change) => {
-// 		switch (change.operationType) {
-// 			case 'insert':
-// 				const thought = {
-// 					_id: change.fullDocument._id,
-// 					name: change.fullDocument.name,
-// 					description: change.fullDocument.description,
-// 				};
-
-// 				io.of('/api/socket').emit('newThought', thought);
-// 				break;
-
-// 			case 'delete':
-// 				io.of('/api/socket').emit(
-// 					'deletedThought',
-// 					change.documentKey._id
-// 				);
-// 				break;
-// 		}
-// 	});
-// });
-
-// //pusher setup
+// // //pusher setup
 // const db = mongoose.connection;
 // db.once('open', () => {
 // 	console.log('db is connected');
