@@ -12,10 +12,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	if (
 		req.headers.authorization &&
-		req.headers.authorization.startsWith('Bearer vendor-')
+		req.headers.authorization.startsWith('Bearer vendor@')
 	) {
 		// Set token from Bearer token in header
-		token = req.headers.authorization.split('-')[1];
+		token = req.headers.authorization.split('@')[1];
 	} else {
 		token = req.headers.authorization.split(' ')[1];
 	}
@@ -31,15 +31,15 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	}
 
 	try {
-		if (req.headers.authorization.startsWith('Bearer vendor-')) {
+		if (req.headers.authorization.startsWith('Bearer vendor@')) {
 			const decoded = jwt.verify(token, process.env.JWT_VENDOR_SECRET);
 			req.creator = await Vendor.findById(decoded.id);
 			if (!req.creator) {
 				return next(new ErrorResponse('Vendor not found', 401));
 			}
 		} else if (
-			req.headers.authorization.startsWith('Bearer customer-') ||
-			req.headers.authorization.startsWith('Bearer user-')
+			req.headers.authorization.startsWith('Bearer customer@') ||
+			req.headers.authorization.startsWith('Bearer user@')
 		) {
 			return next(
 				new ErrorResponse('Please login as an admin or vendor', 404)
