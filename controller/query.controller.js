@@ -4,6 +4,7 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Purchase = require('../models/purchase.model');
 const SalesPayment = require('../models/sales.payment.models');
+const Review = require('../models/review.models');
 
 // @desc  Get Highest Purchase
 //@route  GET /api/v1/find/highest/purchases
@@ -301,6 +302,51 @@ exports.getLowestSalesProducts = asyncHandler(async (req, res, next) => {
 		{
 			$sort: {
 				Items_sold: 1,
+			},
+		},
+		{
+			$limit: 5,
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse('Something Bad happened', 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// // @desc  Get Average Rating
+// //@route  GET /api/v1/find/averagerating
+exports.getAverageRating = asyncHandler(async (req, res, next) => {
+	Review.aggregate([
+		
+		{
+			$project: {
+				
+				product:1,
+				rating:1,
+				customer:1
+		},
+	},
+		{
+			$group: {
+				_id: '$product',
+				rating:{ $sum: '$rating' },
+				count: { $sum: 1 },
+				
+			},
+		},
+		{
+			$addFields: {
+			AverageRating:{$divide:['$rating','$count']}
+		}
+	},
+		{
+			$sort: {
+				AverageRating: -1,
 			},
 		},
 		{

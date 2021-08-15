@@ -37,7 +37,7 @@ router
 router
   .route('/:id')
   .get(getSingleReview)
-  .put(protect, updateReview)
+  .put(authCustomer.protect, updateReview)
   .delete(deleteReview)
   
 

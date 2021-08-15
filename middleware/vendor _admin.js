@@ -34,17 +34,17 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	try {
 	
-		if (req.headers.authorization.startsWith('Bearer customer-')) {
+		if (req.headers.authorization.startsWith('Bearer vendor-')) {
 			const decoded = jwt.verify(token, process.env.JWT_VENDOR_SECRET);
 			req.vendor = await Vendor.findById(decoded.id);
 			if (!req.vendor) {
 				return next(new ErrorResponse('Vendor not found', 404));
 			}
 			
-		} else if (req.headers.authorization.startsWith('Bearer user-')) {
-
-
 		}
+
+
+		
 		else {
 			const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
 			req.admin = await Admin.findById(decoded.id);

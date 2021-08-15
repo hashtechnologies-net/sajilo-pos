@@ -40,4 +40,8 @@ router
 	.route('/totalsales')
 	.get(authprotect.protect, salesPaymentController.getSales);
 
+router
+	.route('/averagerating')
+	.get(authprotect.protect, queryController.getAverageRating);
+
 module.exports = router;

@@ -1,6 +1,7 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Review = require('../models/review.models');
+const Product= require('../models/product.models');
 
 // @desc      Get reviews
 // @route     GET /api/v1/reviews
@@ -55,8 +56,8 @@ req.body.customer= req.customer.id;
     );
   }
 
-let review=await Review.findOne({customer:req.customer.id});
-if(review.customer!=req.body.customer){
+let review = await Review.findOne({customer:req.customer.id});
+if(review.customer!= req.body.customer){
      review = await Review.create(req.body);
     res.status(201).json({
         success: true,
@@ -75,12 +76,13 @@ if(review.customer!=req.body.customer){
 // @access    Private
 exports.updateReview = asyncHandler(async (req, res, next) => {
   let review = await Review.findById(req.params.id);
-
+  
   if (!review) {
     return next(
       new ErrorResponse(`No review with the id of ${req.params.id}`, 404)
     );
   }
+  
 
   // Make sure product belongs to vendor or admin
   review = await Review.findByIdAndUpdate(req.params.id, req.body, {
@@ -98,7 +100,7 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
 // @route     DELETE /api/v1/reviews/:id
 // @access    Private
 exports.deleteReview = asyncHandler(async (req, res, next) => {
-  const review = await Review.findById(req.params.id);
+  let review = await Review.findOne({customer:req.customer.id});
 
   if (!review) {
     return next(
@@ -119,8 +121,10 @@ exports.deleteReview = asyncHandler(async (req, res, next) => {
   });
 });
 
+
 exports.reviewStatus = asyncHandler(async (req, res, next) => {
     let review = await Review.findById(req.params.id);
+    
     
   
     if (!review) {
@@ -128,10 +132,20 @@ exports.reviewStatus = asyncHandler(async (req, res, next) => {
         new ErrorResponse(`No review with the id of ${req.params.id}`, 404)
       );
     }
-    console.log(review.status)
+
+     let products=review.product
+  
+    let product=await Product.findOne(products);
+    if(product.created_by==req.creator.id){
     if(review.status==='Unapproved'){
         req.body.status='Approved'
     }
+  }
+  else{
+    return next(
+      new ErrorResponse('This product was not created by you',400)
+    )
+  }
 
     // Make sure product belongs to vendor or admin
     review = await Review.findByIdAndUpdate(req.params.id, req.body, {
