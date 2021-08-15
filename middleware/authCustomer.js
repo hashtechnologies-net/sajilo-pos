@@ -29,9 +29,8 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	}
 
 	try {
-		console.log(token)
 		const decoded = jwt.verify(token, process.env.JWT_CUSTOMER_SECRET);
-		console.log(decoded)
+	
 		req.customer = await Customer.findById(decoded.id);
 		if (!req.customer) {
 			return next(new ErrorResponse('Customer not found', 401));

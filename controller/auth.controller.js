@@ -38,17 +38,17 @@ const sendEmail = require('../utils/sendEmail');
 // @route     POST /api/v1/auth/login
 // @access    Public
 exports.login = asyncHandler(async (req, res, next) => {
-	const { email, password } = req.body;
+	const { username, password } = req.body;
 
 	// Validate emil & password
-	if (!email || !password) {
+	if (!username || !password) {
 		return next(
-			new ErrorResponse('Please provide an email and password', 400)
+			new ErrorResponse('Please provide username and password', 400)
 		);
 	}
 
 	// Check for user
-	const user = await User.findOne({ email }).select('+password');
+	const user = await User.findOne({ username }).select('+password');
 	if (!user) {
 		return next(new ErrorResponse('Invalid email or password', 401));
 	}
@@ -121,7 +121,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	// Get reset token
 	const resetToken = user.getResetPasswordToken();
 
-	await user.save({ validateBeforeSave: false });
+	// await user.save({ validateBeforeSave: false });
 
 	// Create reset url
 	const resetUrl = `${req.protocol}://${process.env.CLIENT_URL}/resetpassword/${resetToken}`;
@@ -142,7 +142,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 		user.resetPasswordToken = undefined;
 		user.resetPasswordExpire = undefined;
 
-		await user.save({ validateBeforeSave: false });
+		// await user.save({ validateBeforeSave: false });
 
 		return next(new ErrorResponse('Email could not be sent', 500));
 	}

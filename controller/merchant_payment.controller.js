@@ -59,14 +59,6 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	if (!req.body.paymentconfirmId) {
-		return next(
-			new ErrorResponse(
-				'Please enter the receipt no. or cheque no. and updated date',
-				404
-			)
-		);
-	}
 	const getCredit = () => {
 		let credit;
 		if (req.body.paymentType == 'Cash') {
@@ -83,14 +75,17 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 	};
 	req.body.credit = getCredit();
 
-	payments = await MerchantPayment.findByIdAndUpdate(req.params.id, req.body, {
-		new: true,
-		runValidators: true,
-	});
+	payments = await MerchantPayment.findByIdAndUpdate(
+		req.params.id,
+		req.body,
+		{
+			new: true,
+			runValidators: true,
+		}
+	);
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
-
 	res.status(200).json({
 		success: true,
 		data: payments,

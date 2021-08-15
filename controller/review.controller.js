@@ -1,7 +1,6 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Review = require('../models/review.models');
-const Product = require('../models/product.models');
 
 // @desc      Get reviews
 // @route     GET /api/v1/reviews
@@ -42,29 +41,33 @@ exports.getSingleReview = asyncHandler(async (req, res, next) => {
   });
 
 // @desc      Add review
-// @route     POST /api/v1/bootcamps/:bootcampId/reviews
+// @route     POST /api/v1/products/:id/reviews
 // @access    Private
 exports.addReview = asyncHandler(async (req, res, next) => {
-  req.body.product = req.params.id;
-  req.body.customer = req.customer.id;
-
-  const product = await Product.findById(req.params.id);
-
+req.body.customer= req.customer.id;
+  let product = req.body.product;
   if (!product) {
     return next(
       new ErrorResponse(
-        `No product with the id of ${req.params.id}`,
+        `No product with the id of ${req.body.product}`,
         404
       )
     );
   }
 
-  const review = await Review.create(req.body);
+let review=await Review.findOne({customer:req.customer.id});
+if(review.customer!=req.body.customer){
+     review = await Review.create(req.body);
+    res.status(201).json({
+        success: true,
+        data: review
+      });
+    }
+    return next(
+      new ErrorResponse("You cannot review the same product more than once",400)
+    )
+    
 
-  res.status(201).json({
-    success: true,
-    data: review
-  });
 });
 
 // @desc      Update review
@@ -79,11 +82,7 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // Make sure review belongs to user or user is admin
-  if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
-    return next(new ErrorResponse(`Not authorized to update review`, 401));
-  }
-
+  // Make sure product belongs to vendor or admin
   review = await Review.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true
@@ -107,10 +106,10 @@ exports.deleteReview = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // Make sure review belongs to user or user is admin
-  if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
-    return next(new ErrorResponse(`Not authorized to update review`, 401));
-  }
+//   // Make sure review belongs to user or user is admin
+//   if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
+//     return next(new ErrorResponse(`Not authorized to update review`, 401));
+//   }
 
   await review.remove();
 
@@ -119,3 +118,30 @@ exports.deleteReview = asyncHandler(async (req, res, next) => {
     data: {}
   });
 });
+
+exports.reviewStatus = asyncHandler(async (req, res, next) => {
+    let review = await Review.findById(req.params.id);
+    
+  
+    if (!review) {
+      return next(
+        new ErrorResponse(`No review with the id of ${req.params.id}`, 404)
+      );
+    }
+    console.log(review.status)
+    if(review.status==='Unapproved'){
+        req.body.status='Approved'
+    }
+
+    // Make sure product belongs to vendor or admin
+    review = await Review.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+
+  
+    res.status(200).json({
+      success: true,
+      data: review
+    });
+  });

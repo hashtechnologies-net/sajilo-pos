@@ -29,7 +29,7 @@ exports.getSingleOrder = asyncHandler(async (req, res, next) => {
 exports.createOrder = asyncHandler(async (req, res, next) => {
 	req.body.customer_id = req.customer.id;
 	order = await Order.create(req.body);
-	if(order.status=='Delivered'){
+	if(order.status == 'Delivered'){
 	order.description.forEach(async (sales) => {
 		let stock = {
 			product_id: sales.product,

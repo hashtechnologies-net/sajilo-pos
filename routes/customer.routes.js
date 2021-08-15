@@ -19,7 +19,7 @@ router
 		allqueryresults(Customer),
 		customerController.getAllCustomers
 	)
-	.post(protectAdmin.protect, customerController.register);
+	.post(customerController.register);
     
 router
 .route('/updatepassword')
