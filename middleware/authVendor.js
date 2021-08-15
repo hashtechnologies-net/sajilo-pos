@@ -1,3 +1,5 @@
+/** @format */
+
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('./async');
 const ErrorResponse = require('../utils/errorResponse');
@@ -30,7 +32,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		const vendor = await Vendor.findById(decoded.id);
 
 		if (!vendor) {
-			return next(new ErrorResponse('vendor could not be found', 401));
+			return next(new ErrorResponse('Vendor could not be found', 401));
 		}
 		req.vendor = vendor;
 		next();

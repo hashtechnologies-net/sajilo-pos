@@ -5,6 +5,7 @@ const asyncHandler = require('../middleware/async');
 const Purchase = require('../models/purchase.model');
 const SalesPayment = require('../models/sales.payment.models');
 const Review = require('../models/review.models');
+const Product = require('../models/product.models');
 
 // @desc  Get Highest Purchase
 //@route  GET /api/v1/find/highest/purchases

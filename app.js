@@ -1,3 +1,5 @@
+/** @format */
+
 //const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
@@ -6,55 +8,15 @@ const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const mongoSanitize = require('express-mongo-sanitize');
+const upload = require('./middleware/upload');
+
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const connectDB = require('./db');
-// const mongoose = require('mongoose');
-// const Pusher = require('pusher');
+const mongoose = require('mongoose');
+const Pusher = require('pusher');
 
-//establish socket.io connection
-// const server = require('http').createServer(app);
-// const io = require('socket.io')(server);
-
-// io.of('/api/socket').on('connection', (socket) => {
-// 	console.log('socket.io: User connected: ', socket.id);
-
-// 	socket.on('disconnect', () => {
-// 		console.log('socket.io: User disconnected: ', socket.id);
-// 	});
-// });
-
-// const connection = mongoose.connection;
-
-// connection.once('open', () => {
-// 	console.log('MongoDB database connected');
-
-// 	console.log('Setting change streams');
-// 	const thoughtChangeStream = connection.collection('thoughts').watch();
-
-// 	thoughtChangeStream.on('change', (change) => {
-// 		switch (change.operationType) {
-// 			case 'insert':
-// 				const thought = {
-// 					_id: change.fullDocument._id,
-// 					name: change.fullDocument.name,
-// 					description: change.fullDocument.description,
-// 				};
-
-// 				io.of('/api/socket').emit('newThought', thought);
-// 				break;
-
-// 			case 'delete':
-// 				io.of('/api/socket').emit(
-// 					'deletedThought',
-// 					change.documentKey._id
-// 				);
-// 				break;
-// 		}
-// 	});
-// });
-
-// //pusher setup
+// // //pusher setup
 // const db = mongoose.connection;
 // db.once('open', () => {
 // 	console.log('db is connected');
@@ -87,6 +49,9 @@ const connectDB = require('./db');
 
 //connect database
 connectDB();
+
+//Using the imageupload middleware
+app.use('/uploads', express.static('uploads'));
 
 // Body parser
 app.use(express.json());
@@ -124,7 +89,9 @@ const sPaymentRouter = require('./routes/salesPayment.routes');
 const mPaymentRouter = require('./routes/merchantPayment.routes');
 const queryRouter = require('./routes/query.routes');
 const stockRouter = require('./routes/stock.routes');
+const appsettingRouter = require('./routes/appsetting.routes');
 const vendorRouter = require('./routes/vendor.routes');
+const imageUploadRouter = require('./routes/productimage.routes');
 const reviewRouter = require('./routes/review.routes');
 
 // Mount routers
@@ -143,9 +110,10 @@ app.use('/api/v1/salespayments', sPaymentRouter);
 app.use('/api/v1/merchantpayments', mPaymentRouter);
 app.use('/api/v1/find', queryRouter);
 app.use('/api/v1/stocks', stockRouter);
+app.use('/api/v1/appsettings', appsettingRouter);
 app.use('/api/v1/vendors', vendorRouter);
+app.use('/api/v1/productimages', imageUploadRouter);
 app.use('/api/v1/reviews', reviewRouter);
-
 
 //mount errorhandler
 app.use(errorHandler);

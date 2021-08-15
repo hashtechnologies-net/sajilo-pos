@@ -13,6 +13,9 @@ const CategorySchema = new mongoose.Schema({
 		ref: 'admin',
 		required: true,
 	},
+	totalStock: {
+		type: Number,
+	},
 	created_at: {
 		type: Date,
 		default: Date.now,

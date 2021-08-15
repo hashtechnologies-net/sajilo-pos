@@ -50,9 +50,7 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 					try {
 						if (sales.product == element._id) {
 							if (sales.stock > element.totalStock) {
-								return next(
-									new ErrorResponse('Out of stock', 404)
-								);
+								return next(new ErrorResponse('Out of stock', 404));
 							}
 							next();
 						}

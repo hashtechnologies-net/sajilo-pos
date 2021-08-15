@@ -34,6 +34,9 @@ router
 	.get(authprotect.protect, queryController.getLowestSalesProducts);
 
 router
+	.route('/category/totalproducts')
+	.get(authprotect.protect, queryController.getLowestSalesProducts);
+router
 	.route('/totalinvestments')
 	.get(authprotect.protect, merchantPaymentController.getInvestment);
 router
@@ -42,6 +45,8 @@ router
 
 router
 	.route('/averagerating')
-	.get(authprotect.protect, queryController.getAverageRating);
+	.get(authprotect.protect, queryController.getAverageRating)
+	router.route('/today/sales')
+	.get(authprotect.protect, salesPaymentController.getTodaySales);
 
 module.exports = router;

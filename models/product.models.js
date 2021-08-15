@@ -6,7 +6,6 @@ const ProductSchema = new mongoose.Schema({
 		type: String,
 		required: [true, 'Please add a name'],
 		trim: true,
-		unique: true,
 		maxlength: [50, 'Name cannot be more than of 50 characters'],
 	},
 	product_code: {
@@ -34,7 +33,6 @@ const ProductSchema = new mongoose.Schema({
 	},
 	created_by: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'admin',
 		required: true,
 	},
 	created_at: {

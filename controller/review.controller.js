@@ -46,7 +46,8 @@ exports.getSingleReview = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.addReview = asyncHandler(async (req, res, next) => {
 req.body.customer= req.customer.id;
-  let product = req.body.product;
+  let products = req.body.product;
+  const product= await Product.findOne({_id:products})
   if (!product) {
     return next(
       new ErrorResponse(
@@ -56,8 +57,9 @@ req.body.customer= req.customer.id;
     );
   }
 
+
 let review = await Review.findOne({customer:req.customer.id});
-if(review.customer!= req.body.customer){
+if(!review){
      review = await Review.create(req.body);
     res.status(201).json({
         success: true,
