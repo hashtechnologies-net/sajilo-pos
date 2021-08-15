@@ -33,7 +33,6 @@ exports.getSingleProductImages = asyncHandler(async (req, res, next) => {
 // @desc  upload product images
 //@route  POST /api/v1/productimages
 exports.uploadProductImages = asyncHandler(async (req, res, next) => {
-	// console.log(req.body);
 	console.log(req.file);
 
 	const products = await Product.findById(req.params.id);
@@ -46,26 +45,25 @@ exports.uploadProductImages = asyncHandler(async (req, res, next) => {
 		);
 	}
 
-	// if (!req.files) {
-	// 	return next(new ErrorResponse(`Please select the files`, 404));
-	// } else {
-	// 	let path = '';
-	// 	req.files.forEach((files, index, arr) => {
-	// 		path = path + files.path + ',';
-	// 	});
-	// 	path = path.substring(0, path.lastIndexOf(','));
-	// 	var data = {
-	// 		product: req.params.id,
-	// 		imageUrl: path,
-	// 	};
+	if (!req.files) {
+		return next(new ErrorResponse(`Please select the files`, 404));
+	} else {
+		let path = '';
+		req.files.forEach((files, index, arr) => {
+			path = path + files.path + ',';
+		});
+		path = path.substring(0, path.lastIndexOf(','));
+		var data = {
+			product: req.params.id,
+			imageUrl: path,
+		};
 
-	// 	const productImages = await ProductImage.create(data);
-	res.status(201).json({
-		status: true,
-		//data: productImages,
-		message: 'Try more',
-	});
-	//	}
+		const productImages = await ProductImage.create(data);
+		res.status(201).json({
+			status: true,
+			data: productImages,
+		});
+	}
 });
 
 // @desc  update single product images

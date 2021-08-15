@@ -8,6 +8,7 @@ const Review = require('../models/review.models');
 const router = express.Router({ mergeParams: true });
 const { protect } = require('../middleware/vendoradmin');
 const authCustomer = require('../middleware/authCustomer');
+
 const {
 	getAllReviews,
 	getSingleReview,
@@ -34,7 +35,7 @@ router.route('/status/:id').put(protect, reviewStatus);
 router
 	.route('/:id')
 	.get(getSingleReview)
-	.put(protect, updateReview)
+	.put(authCustomer.protect, updateReview)
 	.delete(deleteReview);
 
 module.exports = router;

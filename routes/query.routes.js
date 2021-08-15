@@ -47,4 +47,8 @@ router
 	.route('/today/sales')
 	.get(authprotect.protect, salesPaymentController.getTodaySales);
 
+router
+	.route('/averagerating')
+	.get(authprotect.protect, queryController.averageRating);
+
 module.exports = router;
