@@ -33,7 +33,6 @@ const ProductSchema = new mongoose.Schema({
 	},
 	created_by: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'admin',
 		required: true,
 	},
 	created_at: {

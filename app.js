@@ -80,6 +80,8 @@ const authRouter = require('./routes/auth.routes');
 const categoryRouter = require('./routes/category.routes');
 const unitRouter = require('./routes/unit.routes');
 const adminRouter = require('./routes/admin.routes');
+const orderRouter = require('./routes/order.routes');
+const customerRouter = require('./routes/customer.routes');
 const merchantRouter = require('./routes/merchant.routes');
 const invoiceRouter = require('./routes/invoice.routes');
 const purchaseRouter = require('./routes/purchase.routes');
@@ -90,14 +92,17 @@ const stockRouter = require('./routes/stock.routes');
 const appsettingRouter = require('./routes/appsetting.routes');
 const vendorRouter = require('./routes/vendor.routes');
 const imageUploadRouter = require('./routes/productimage.routes');
+const reviewRouter = require('./routes/review.routes');
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/products', productRouter);
-app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/auths', authRouter);
 app.use('/api/v1/category', categoryRouter);
 app.use('/api/v1/units', unitRouter);
 app.use('/api/v1/admins', adminRouter);
+app.use('/api/v1/orders', orderRouter);
+app.use('/api/v1/customers', customerRouter);
 app.use('/api/v1/merchants', merchantRouter);
 app.use('/api/v1/invoices', invoiceRouter);
 app.use('/api/v1/purchases', purchaseRouter);
@@ -108,6 +113,7 @@ app.use('/api/v1/stocks', stockRouter);
 app.use('/api/v1/appsettings', appsettingRouter);
 app.use('/api/v1/vendors', vendorRouter);
 app.use('/api/v1/productimages', imageUploadRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 //mount errorhandler
 app.use(errorHandler);

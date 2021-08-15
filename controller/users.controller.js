@@ -17,7 +17,7 @@ exports.getSingleUser = asyncHandler(async (req, res, next) => {
 
 	if (!user1) {
 		return next(
-			new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
+			new ErrorResponse(`User not found with id of ${req.params.id}`, 404)
 		);
 	}
 	res.status(200).json({ success: true, data: user1 });
@@ -48,11 +48,11 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 // @desc  update  user
 //@route  PUT /api/v1/users/:id
 exports.updateUser = asyncHandler(async (req, res, next) => {
-	const Uuser = await User.findByIdAndUpdate(req.params.id, req.body, {
+	const user = await User.findByIdAndUpdate(req.params.id, req.body, {
 		new: true,
 		runValidators: true,
 	});
-	if (!Uuser) {
+	if (!user) {
 		return next(
 			new ErrorResponse(`User not found with id of ${req.params.id}`, 404)
 		);
@@ -61,7 +61,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
-	res.status(200).json({ success: true, data: Uuser });
+	res.status(200).json({ success: true, data: user });
 });
 // @desc  Delete  user
 //@route  DELETE /api/v1/users/:id
