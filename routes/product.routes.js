@@ -7,6 +7,7 @@ const Product = require('../models/product.models');
 
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
+const routeprotect = require('../middleware/vendoradmin');
 const router = express.Router();
 
 router
@@ -29,7 +30,7 @@ router
 
 		productController.getAllProducts
 	)
-	.post(authprotect.protect, productController.createProduct);
+	.post(routeprotect.protect, productController.createProduct);
 
 router
 	.route('/:id')

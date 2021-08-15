@@ -5,11 +5,33 @@ const asyncHandler = require('../middleware/async');
 const Product = require('../models/product.models');
 const Category = require('../models/category.models');
 const Units = require('../models/unit.model');
+const stockEntry = require('../models/stockEntry.models');
 
 // @desc  get all products
 //@route  GET /api/v1/products
 exports.getAllProducts = asyncHandler(async (req, res, next) => {
-	res.status(200).json(res.allqueryresults);
+	const products = await Product.find();
+	Product.aggregate([
+		{
+			$lookup: {
+				from: 'stockentries',
+				localField: '_id',
+				foreignField: 'product_id',
+				as: 'stocks',
+			},
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse(err, 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+			products,
+		});
+	});
+
+	// res.status(200).json(res.allqueryresults);
 });
 
 // @desc  get single Product
@@ -25,13 +47,14 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
+	stockController.getStock();
 	res.status(200).json({ success: true, data: product });
 });
 
 // @desc  create new Product
 //@route  POST /api/v1/products
 exports.createProduct = asyncHandler(async (req, res, next) => {
-	req.body.created_by = req.admin.id;
+	req.body.created_by = req.creator.id;
 
 	const category = await Category.findById(req.body.category_id);
 
@@ -68,6 +91,26 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 	}
 
 	const product = await Product.create(req.body);
+
+	// Node.js WebSocket server script
+	const http = require('http');
+	const WebSocketServer = require('websocket').server;
+	const server = http.createServer();
+	server.listen(9898);
+	const wsServer = new WebSocketServer({
+		httpServer: server,
+	});
+	wsServer.on('request', function (request) {
+		const connection = request.accept(null, request.origin);
+		connection.on('message', function (message) {
+			console.log('Received Message:', message.utf8Data);
+			connection.sendUTF('Hi this is WebSocket server!');
+		});
+		connection.on('close', function (reasonCode, description) {
+			console.log('Client has disconnected.');
+		});
+	});
+
 	res.status(201).json({ success: true, data: product });
 });
 
