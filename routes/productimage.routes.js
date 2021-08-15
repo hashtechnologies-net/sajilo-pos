@@ -2,15 +2,16 @@
 
 const express = require('express');
 const productImageController = require('../controller/product.image.controller');
-
+const multer = require('multer');
 const ProductImage = require('../models/product.image.models');
 
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
 const router = express.Router();
+const upload = multer({ dest: './uploads/' });
 
 //Including the upload middleware
-const upload = require('../middleware/upload');
+//const upload = require('../middleware/upload');
 
 router.route('/').get(
 	allqueryresults(
@@ -31,8 +32,9 @@ router
 	.put(productImageController.updateProductImages)
 	.delete(productImageController.deleteProductImages)
 	.post(
-		upload.fields([{ name: 'productImage', maxCount: 3 }]),
+		upload.single('productImage'),
 		productImageController.uploadProductImages
 	);
+router.route('/photo/:id').put(productImageController.PhotoUpload);
 
 module.exports = router;

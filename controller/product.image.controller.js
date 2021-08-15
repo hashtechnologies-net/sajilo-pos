@@ -34,7 +34,8 @@ exports.getSingleProductImages = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/productimages
 exports.uploadProductImages = asyncHandler(async (req, res, next) => {
 	// console.log(req.body);
-	// console.log(req);
+	console.log(req.file);
+
 	const products = await Product.findById(req.params.id);
 	if (!products) {
 		return next(
@@ -44,26 +45,27 @@ exports.uploadProductImages = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	if (!req.files) {
-		return next(new ErrorResponse(`Please select the files`, 404));
-	} else {
-		let path = '';
-		console.log(req.files);
-		req.files.productImage.forEach((files, index, arr) => {
-			path = path + files.path + ',';
-		});
-		path = path.substring(0, path.lastIndexOf(','));
-		var data = {
-			product: req.body.product,
-			imageUrl: path,
-		};
 
-		const productImages = await ProductImage.create(data);
-		res.status(201).json({
-			status: true,
-			data: productImages,
-		});
-	}
+	// if (!req.files) {
+	// 	return next(new ErrorResponse(`Please select the files`, 404));
+	// } else {
+	// 	let path = '';
+	// 	req.files.forEach((files, index, arr) => {
+	// 		path = path + files.path + ',';
+	// 	});
+	// 	path = path.substring(0, path.lastIndexOf(','));
+	// 	var data = {
+	// 		product: req.params.id,
+	// 		imageUrl: path,
+	// 	};
+
+	// 	const productImages = await ProductImage.create(data);
+	res.status(201).json({
+		status: true,
+		//data: productImages,
+		message: 'Try more',
+	});
+	//	}
 });
 
 // @desc  update single product images
@@ -126,5 +128,48 @@ exports.deleteProductImages = asyncHandler(async (req, res, next) => {
 	res.status(200).json({
 		status: true,
 		message: 'Successfully deleted the images',
+	});
+});
+
+// @desc  uplaod  photo
+//@route  PUT /api/v1/users//photo
+exports.PhotoUpload = asyncHandler(async (req, res, next) => {
+	const product = await ProductImage.findById(req.params.id);
+
+	if (!product) {
+		return next(
+			new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
+		);
+	}
+	if (!req.files) {
+		return next(new ErrorResponse(`Please upload a file`, 400));
+	}
+	const file = req.files.Photo;
+
+	//Image is photo check
+	if (!file.mimetype.startsWith('image')) {
+		return next(new ErrorResponse(`Please upload an image file`, 400));
+	}
+	//check filesize
+	if (file.size > process.env.FILE_MAX_SIZE) {
+		return next(new ErrorResponse(`file size cannot be more than 1mb`, 400));
+	}
+	//Create custom filename
+	file.name = `photo_${req.params.id}${path.parse(file.name).ext}`;
+
+	file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+		if (err) {
+			console.error(err);
+			return next(new ErrorResponse(`Problem with file upload`, 500));
+		}
+
+		await product.findByIdAndUpdate(req.params.id, {
+			photo: file.name,
+		});
+
+		res.status(200).json({
+			success: true,
+			data: file.name,
+		});
 	});
 });

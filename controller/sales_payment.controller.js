@@ -109,10 +109,9 @@ exports.getSales = asyncHandler(async (req, res, next) => {
 });
 
 // // @desc  GET  todaySales
-// //@route  GET /api/v1/find/totalsales
+// //@route  GET /api/v1/find/today/sales
 exports.getTodaySales = asyncHandler(async (req, res, next) => {
 	let invoice = await Invoice.find();
-	0;
 	let sales = [];
 	invoice.forEach((element) => {
 		let created_at = element.created_at;

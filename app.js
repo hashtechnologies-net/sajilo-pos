@@ -8,7 +8,8 @@ const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const mongoSanitize = require('express-mongo-sanitize');
-const uploads = require('./middleware/upload');
+const upload = require('./middleware/upload');
+
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const connectDB = require('./db');
@@ -16,14 +17,14 @@ const connectDB = require('./db');
 //connect database
 connectDB();
 
+//Using the imageupload middleware
+app.use('/uploads', express.static('uploads'));
+
 // Body parser
 app.use(express.json());
 
 //cookie parser
 app.use(cookieParser());
-
-//Using the imageupload middleware
-app.use('/uploads', express.static('uploads'));
 
 //use fileupload
 app.use(fileupload());
