@@ -107,13 +107,12 @@ exports.getTodayTotalSales = asyncHandler(async (req, res, next) => {
 	invoice.forEach((element) => {
 		let created_at = element.created_at;
 		let today = new Date().toISOString().slice(0, 10);
-		let saledate = created_at.toISOString().slice(0, 10);
+		let salesdate = created_at.toISOString().slice(0, 10);
 
-		if (today == saledate) {
+		if (today == salesdate) {
 			totalAmount += element.total_amount;
 		}
 	});
-
 	res.status(200).json({
 		success: true,
 		total_amount: totalAmount,
