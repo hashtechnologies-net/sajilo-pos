@@ -323,28 +323,25 @@ exports.getLowestSalesProducts = asyncHandler(async (req, res, next) => {
 // //@route  GET /api/v1/find/averagerating
 exports.getAverageRating = asyncHandler(async (req, res, next) => {
 	Review.aggregate([
-		
 		{
 			$project: {
-				
-				product:1,
-				rating:1,
-				customer:1
+				product: 1,
+				rating: 1,
+				customer: 1,
+			},
 		},
-	},
 		{
 			$group: {
 				_id: '$product',
-				rating:{ $sum: '$rating' },
+				rating: { $sum: '$rating' },
 				count: { $sum: 1 },
-				
 			},
 		},
 		{
 			$addFields: {
-			AverageRating:{$divide:['$rating','$count']}
-		}
-	},
+				AverageRating: { $divide: ['$rating', '$count'] },
+			},
+		},
 		{
 			$sort: {
 				AverageRating: -1,
@@ -356,39 +353,6 @@ exports.getAverageRating = asyncHandler(async (req, res, next) => {
 	]).exec((err, result) => {
 		if (err) {
 			return next(new ErrorResponse('Something Bad happened', 500));
-		}
-		res.status(200).json({
-			status: true,
-			data: result,
-		});
-	});
-});
-
-// @desc  Get highest sold products
-//@route  GET /api/v1/find/averagerating
-exports.averageRating = asyncHandler(async (req, res, next) => {
-	Review.aggregate([
-		// 		{
-		// 			$project: {
-		// 			$product:1
-		// 		},
-		// 		{
-		// 			$group: {
-		// 				_id: '$data.description.product',
-		// 				Items_sold: { $sum: 1 },
-		// 			},
-		// 		},
-		// 		{
-		// 			$sort: {
-		// 				Items_sold: -1,
-		// 			},
-		// 		},
-		// 		{
-		// 			$limit: 5,
-		// 		},
-	]).exec((err, result) => {
-		if (err) {
-			return next(new ErrorResponse(err, 500));
 		}
 		res.status(200).json({
 			status: true,

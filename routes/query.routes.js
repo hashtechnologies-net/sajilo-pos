@@ -45,12 +45,12 @@ router
 
 router
 	.route('/averagerating')
-	.get(authprotect.protect, queryController.getAverageRating)
-	router.route('/today/sales')
-	.get(authprotect.protect, salesPaymentController.getTodaySales);
-
+	.get(authprotect.protect, queryController.getAverageRating);
 router
-	.route('/averagerating')
-	.get(authprotect.protect, queryController.averageRating);
+	.route('/today/sales')
+	.get(authprotect.protect, salesPaymentController.getTodaySales);
+router
+	.route('/today/totalsales')
+	.get(authprotect.protect, salesPaymentController.getTodayTotalSales);
 
 module.exports = router;

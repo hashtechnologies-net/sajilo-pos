@@ -128,3 +128,24 @@ exports.getTodaySales = asyncHandler(async (req, res, next) => {
 		sales: sales,
 	});
 });
+
+// // @desc  GET  todaySales
+// //@route  GET /api/v1/find/today/sales
+exports.getTodayTotalSales = asyncHandler(async (req, res, next) => {
+	let invoice = await Invoice.find();
+	let sales = [];
+	invoice.forEach((element) => {
+		let created_at = element.created_at;
+		let today = new Date().toISOString().slice(0, 10);
+		let saledate = created_at.toISOString().slice(0, 10);
+
+		if (today == saledate) {
+			sales.push(created_at.getHours(), element.total_amount);
+		}
+	});
+
+	res.status(200).json({
+		success: true,
+		sales: sales,
+	});
+});

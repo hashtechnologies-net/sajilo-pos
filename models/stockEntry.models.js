@@ -17,6 +17,10 @@ const StockEntrySchema = new mongoose.Schema({
 		type: mongoose.Schema.ObjectId,
 		ref: 'purchase',
 	},
+	order_id: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'order',
+	},
 	invoice_id: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'invoice',

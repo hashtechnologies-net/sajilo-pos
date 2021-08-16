@@ -44,20 +44,22 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 			result.map((item) => {
 				req.body.total.push(item);
 			});
+		
 			// logic not implemented for sales.product !== element._id due to error issue.
-			let element= req.body.total;
+			let elements= req.body.total;
 			let sales =req.body.description;
-			let i,j;
-			for(i=0;i<element.length;i++)
-			{
-				for(j=0;j<sales.length;i++)
-				{
+			let product_id= sales[0].product;
+			let stock_count=sales[0].stock;
+			let found = elements.find(item=>
+				item._id==product_id)
+
 					try{
-						if(sales[i].product!=element[j])
+						if(!found)
 						{
-							continue;
+							return next(new ErrorResponse('Product not found', 404));	
 						}
-						if(sales[i].product>element[j].totalStock){
+						if(stock_count > found.totalstock){
+							
 							return next(new ErrorResponse('Out of stock', 404));
 
 						}
@@ -71,8 +73,8 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 										)
 									);
 								}
-				}
-			}
+				
+			
 		});
 	});
 	
