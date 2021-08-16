@@ -37,9 +37,10 @@ exports.createOrder = asyncHandler(async (req, res, next) => {
 			
 		};
 		await Stock.create(stock);
-		res.status(201).json({ success: true, data:order });
+	
 	});
 }
+res.status(201).json({ success: true, data:order });
 });
 
 // @desc  update  Order
