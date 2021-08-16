@@ -44,25 +44,22 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 			result.map((item) => {
 				req.body.total.push(item);
 			});
-			// logic not implemented for sales.product !== element._id due to error issue.
-			req.body.total.map(async (element) => {
-				req.body.description.map(async (sales) => {
-					try {
+
+			try {
+				req.body.total.map(async (element) => {
+					req.body.description.map(async (sales) => {
 						if (sales.product == element._id) {
 							if (sales.stock > element.totalStock) {
 								return next(new ErrorResponse('Out of stock', 404));
 							}
 							next();
 						}
-					} catch (error) {
-						return next(
-							new ErrorResponse(
-								'Internal Server Error from Stock Check',
-								500
-							)
-						);
-					}
+					});
 				});
-			});
+			} catch (error) {
+				return next(
+					new ErrorResponse('Internal Server Error from Stock Check', 500)
+				);
+			}
 		});
 });
