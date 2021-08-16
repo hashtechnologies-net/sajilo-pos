@@ -28,17 +28,20 @@ exports.getSingleOrder = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/orders
 exports.createOrder = asyncHandler(async (req, res, next) => {
 	req.body.customer_id = req.customer.id;
+
 	let order = await Order.create(req.body);
-	if (order.status == 'Delivered') {
+
+	if (order.status === 'Delivered') {
 		order.description.forEach(async (sales) => {
 			let stock = {
 				product_id: sales.product,
-				stockOut: sales.count,
+				stockOut: sales.stock,
+				order_id: order.id,
 			};
-			const stockEntry = await Stock.create(stock);
-			res.status(201).json({ success: true, data: order });
+			await Stock.create(stock);
 		});
 	}
+	res.status(201).json({ success: true, data: order });
 });
 
 // @desc  update  Order
@@ -71,7 +74,7 @@ exports.updateOrder = asyncHandler(async (req, res, next) => {
 // @desc  Delete  Order
 //@route  DELETE /api/v1/orders/:id
 exports.deleteOrder = asyncHandler(async (req, res, next) => {
-	const order = await Order.findByIdAndDelete(req.params.id);
+	let order = await Order.findById(req.params.id);
 	if (!order) {
 		return next(
 			new ErrorResponse(
@@ -80,6 +83,7 @@ exports.deleteOrder = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
+	await order.remove();
 	res.status(200).json({
 		success: true,
 		data: {},

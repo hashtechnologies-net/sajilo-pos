@@ -44,11 +44,13 @@ router
 	.get(authprotect.protect, salesPaymentController.getSales);
 
 router
+	.route('/averagerating')
+	.get(authprotect.protect, queryController.getAverageRating);
+router
 	.route('/today/sales')
 	.get(authprotect.protect, salesPaymentController.getTodaySales);
-
 router
-	.route('/averagerating')
-	.get(authprotect.protect, queryController.averageRating);
+	.route('/today/totalsales')
+	.get(authprotect.protect, salesPaymentController.getTodayTotalSales);
 
 module.exports = router;
