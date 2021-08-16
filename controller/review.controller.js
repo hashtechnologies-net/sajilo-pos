@@ -56,11 +56,19 @@ req.body.customer= req.customer.id;
       )
     );
   }
+//customer cannot review the same product twice
+let count=0
+let review = await Review.find({product:products});
+review.forEach((item)=>{
+  if(item.customer==req.customer.id)
+  {
+    count++;
+  }
+});
 
-
-let review = await Review.findOne({customer:req.customer.id});
-if(!review){
-     review = await Review.create(req.body);
+if(count==0)
+{
+  review = await Review.create(req.body);
     res.status(201).json({
         success: true,
         data: review
@@ -70,7 +78,6 @@ if(!review){
       new ErrorResponse("You cannot review the same product more than once",400)
     )
     
-
 });
 
 // @desc      Update review
