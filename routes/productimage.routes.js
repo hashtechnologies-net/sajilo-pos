@@ -32,7 +32,7 @@ router
 	.put(productImageController.updateProductImages)
 	.delete(productImageController.deleteProductImages)
 	.post(
-		upload.single('productImage'),
+		upload.array('productImage', 3),
 		productImageController.uploadProductImages
 	);
 router.route('/photo/:id').put(productImageController.PhotoUpload);

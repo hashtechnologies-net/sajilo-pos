@@ -14,7 +14,7 @@ const OrderSchema = new mongoose.Schema({
 				ref: 'product',
 				required: true,
 			},
-			count: {
+			stock: {
 				type: Number,
 				required: [true, 'Please add the stock number'],
 			},
@@ -45,3 +45,5 @@ const OrderSchema = new mongoose.Schema({
 
     }
 })
+
+module.exports = mongoose.model('order', OrderSchema);

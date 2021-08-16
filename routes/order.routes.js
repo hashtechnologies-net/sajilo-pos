@@ -5,7 +5,7 @@ const orderController = require('../controller/order.controller');
 const Invoice = require('../models/invoice.models');
 const allqueryresults = require('../middleware/allqueryresults');
 const { protect } = require('../middleware/authCustomer');
-const { getCount } = require('../middleware/orderCountCheck');
+const { getStock } = require('../middleware/stockCheck');
 const Order= require('../models/order.models');
 
 const router = express.Router();
@@ -19,7 +19,7 @@ router
 		}),
 		orderController.getAllOrders
 	)
-	.post(protect, getCount, orderController.createOrder);
+	.post(protect, getStock, orderController.createOrder);
 
 router
 	.route('/:id')

@@ -47,6 +47,8 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 			// logic not implemented for sales.product !== element._id due to error issue.
 			req.body.total.map(async (element) => {
 				req.body.description.map(async (sales) => {
+			
+					console.log(element.stock)
 					try {
 						if (sales.product == element._id) {
 							if (sales.stock > element.totalStock) {

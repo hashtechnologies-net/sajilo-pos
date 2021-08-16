@@ -4,7 +4,7 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const bcrypt = require('bcrypt');
 const Customer = require('../models/customer.models');
-const sendEmail= require('../utils/sendEmail');
+const sendEmail = require('../utils/sendEmail');
 
 require('dotenv').config('./env');
 
@@ -12,7 +12,15 @@ require('dotenv').config('./env');
 // @route     POST /api/v1/customers/register
 // @access    Customer
 exports.register = asyncHandler(async (req, res, next) => {
-	const { customer_fname,customer_lname, customer_username, customer_email, phone, address, password } = req.body;
+	const {
+		customer_fname,
+		customer_lname,
+		customer_username,
+		customer_email,
+		phone,
+		address,
+		password,
+	} = req.body;
 	const customerExists = await Customer.findOne({ customer_username });
 	//check duplicate email
 	if (customerExists) {
@@ -25,11 +33,11 @@ exports.register = asyncHandler(async (req, res, next) => {
 	// Create customer
 	const customer = await Customer.create({
 		customer_fname,
-        customer_lname,
+		customer_lname,
 		customer_username,
 		customer_email,
-        phone,
-        address,
+		phone,
+		address,
 		password,
 	});
 
@@ -45,7 +53,10 @@ exports.updateCustomer = asyncHandler(async (req, res, next) => {
 	});
 	if (!customer) {
 		return next(
-			new ErrorResponse(`Customer not found with id of ${req.params.id}`, 404)
+			new ErrorResponse(
+				`Customer not found with id of ${req.params.id}`,
+				404
+			)
 		);
 	}
 	if (Object.keys(req.body).length === 0) {
@@ -68,7 +79,9 @@ exports.login = asyncHandler(async (req, res, next) => {
 	}
 
 	// Check for customer
-	const customer = await Customer.findOne({ customer_username }).select('+password');
+	const customer = await Customer.findOne({ customer_username }).select(
+		'+password'
+	);
 	if (!customer) {
 		return next(new ErrorResponse('Invalid username or password', 401));
 	}
@@ -101,7 +114,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 // Get token from model, create cookie and send response
 const sendTokenResponse = (customer, statusCode, res) => {
 	// Create token
-	const token = 'customer-' + customer.getSignedJwtToken();
+	const token = 'customer@' + customer.getSignedJwtToken();
 
 	const options = {
 		expires: new Date(
@@ -132,7 +145,10 @@ exports.getSingleCustomer = asyncHandler(async (req, res, next) => {
 
 	if (!customer1) {
 		return next(
-			new ErrorResponse(`Customer not found with id of ${req.params.id}`, 404)
+			new ErrorResponse(
+				`Customer not found with id of ${req.params.id}`,
+				404
+			)
 		);
 	}
 	res.status(200).json({ success: true, data: customer1 });
@@ -154,7 +170,9 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/customers/updatepassword
 // @access    Private
 exports.updatePassword = asyncHandler(async (req, res, next) => {
-	const customer = await Customer.findById(req.customer.id).select('+password');
+	const customer = await Customer.findById(req.customer.id).select(
+		'+password'
+	);
 
 	// Check current password
 	if (!(await customer.matchPassword(req.body.currentPassword))) {
@@ -212,10 +230,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	if (
 		req.headers.authorization &&
-		req.headers.authorization.startsWith('Bearer customer-')
+		req.headers.authorization.startsWith('Bearer customer@')
 	) {
 		// Set token from Bearer token in header
-		token = req.headers.authorization.split('-')[1];
+		token = req.headers.authorization.split('@')[1];
 	}
 
 	// Make sure token exists
@@ -227,14 +245,13 @@ exports.protect = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	console.logout(token)
+	console.logout(token);
 
 	try {
 		// Verify token
 		const decoded = jwt.verify(token, process.env.JWT_CUSTOMER_SECRET);
-		console.log(decoded)
+
 		const customer = await Customer.findById(decoded.id);
-		console.log(customer)
 
 		if (!customer) {
 			return next(new ErrorResponse('Customer could not be found', 401));

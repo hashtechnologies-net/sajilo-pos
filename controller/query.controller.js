@@ -4,8 +4,8 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Purchase = require('../models/purchase.model');
 const SalesPayment = require('../models/sales.payment.models');
-const Review = require('../models/review.models');
 const Product = require('../models/product.models');
+const Review = require('../models/review.models');
 
 // @desc  Get Highest Purchase
 //@route  GET /api/v1/find/highest/purchases
@@ -356,6 +356,39 @@ exports.getAverageRating = asyncHandler(async (req, res, next) => {
 	]).exec((err, result) => {
 		if (err) {
 			return next(new ErrorResponse('Something Bad happened', 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// @desc  Get highest sold products
+//@route  GET /api/v1/find/averagerating
+exports.averageRating = asyncHandler(async (req, res, next) => {
+	Review.aggregate([
+		// 		{
+		// 			$project: {
+		// 			$product:1
+		// 		},
+		// 		{
+		// 			$group: {
+		// 				_id: '$data.description.product',
+		// 				Items_sold: { $sum: 1 },
+		// 			},
+		// 		},
+		// 		{
+		// 			$sort: {
+		// 				Items_sold: -1,
+		// 			},
+		// 		},
+		// 		{
+		// 			$limit: 5,
+		// 		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse(err, 500));
 		}
 		res.status(200).json({
 			status: true,
