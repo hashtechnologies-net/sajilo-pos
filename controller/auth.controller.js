@@ -7,7 +7,6 @@ const User = require('../models/users.models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config('./env');
 const sendEmail = require('../utils/sendEmail');
-let refreshTokens = [];
 
 // @desc      Register user
 // @route     POST /api/v1/auth/register
@@ -192,6 +191,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 	// Create token
 	const token = 'user@' + user.getSignedJwtToken();
 	const refreshToken = generateRefreshToken(user._id);
+	//refreshTokens.push(refreshToken);
 
 	const options = {
 		expires: new Date(Date.now() + 15000),
@@ -213,8 +213,10 @@ const sendTokenResponse = (user, statusCode, res) => {
 const generateRefreshToken = (user_id) => {
 	// Create token
 
-	const refreshToken =
-		'user@' + jwt.sign({ id: user_id }, process.env.REFRESH_TOKEN_SECRET);
+	const refreshToken = jwt.sign(
+		{ id: user_id },
+		process.env.REFRESH_TOKEN_SECRET
+	);
 
 	return refreshToken;
 };
@@ -222,22 +224,17 @@ const generateRefreshToken = (user_id) => {
 // Generate access token through refresh token, create cookie and send response
 exports.generateAccessToken = (req, res, next) => {
 	const refreshToken = req.body.token;
-
-	console.log(refreshTokens);
+	console.log(refreshToken);
 	if (refreshToken == null) {
 		return next(new ErrorResponse('Unauthorized', 403));
 	}
-	console.log(refreshTokens);
-	if (!refreshTokens.includes(refreshToken)) {
-		return next(new ErrorResponse(('Forbidden', 403)));
-	}
-	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-		if (err) {
-			return next(new ErrorResponse(('Unauthorized Access', 403)));
-		}
-		const token =
-			'user@' + jwt.sign({ id: user_id }, process.env.JWT_USER_SECRET);
 
-		res.json({ token });
-	});
+	// if (!refreshTokens.includes(refreshToken)) {
+	// 	return next(new ErrorResponse(('Forbidden', 403)));
+	// }
+	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+	const token =
+		'user@' + jwt.sign({ id: this._id }, process.env.JWT_USER_SECRET);
+
+	res.json({ token });
 };
