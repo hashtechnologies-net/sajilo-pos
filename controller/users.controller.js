@@ -17,7 +17,14 @@ exports.getSingleUser = asyncHandler(async (req, res, next) => {
 
 	if (!user1) {
 		return next(
+<<<<<<< HEAD
 			new ErrorResponse(`User not found with id of ${req.params.id}`, 404)
+=======
+			new ErrorResponse(
+				`Product not found with id of ${req.params.id}`,
+				404
+			)
+>>>>>>> 709fb5a11540deb4fe8c0e60882adacea81491fa
 		);
 	}
 	res.status(200).json({ success: true, data: user1 });
@@ -86,7 +93,6 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 //@route  PUT /api/v1/users//photo
 exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
 	const user = await User.findById(req.user.id);
-
 	if (!user) {
 		return next(
 			new ErrorResponse(` User not found with id of ${req.user.id}`, 404)
@@ -103,7 +109,9 @@ exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
 	}
 	//check filesize
 	if (file.size > process.env.FILE_MAX_SIZE) {
-		return next(new ErrorResponse(`file size cannot be more than 1mb`, 400));
+		return next(
+			new ErrorResponse(`file size cannot be more than 1mb`, 400)
+		);
 	}
 	//Create custom filename
 	file.name = `photo_${user._id}${path.parse(file.name).ext}`;

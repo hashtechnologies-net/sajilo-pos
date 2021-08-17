@@ -15,37 +15,38 @@ const xss = require('xss-clean');
 const connectDB = require('./db');
 const mongoose = require('mongoose');
 const Pusher = require('pusher');
+const multer = require('multer');
 
-// // //pusher setup
-// const db = mongoose.connection;
-// db.once('open', () => {
-// 	console.log('db is connected');
-// 	const messages = db.collection('products');
-// 	const changeStream = messages.watch();
+//pusher setup
+const db = mongoose.connection;
+db.once('open', () => {
+	console.log('db is connected');
+	const messages = db.collection('products');
+	const changeStream = messages.watch();
 
-// 	changeStream.on('change', (change) => {
-// 		if (change.operationType === 'insert') {
-// 			const details = change.fullDocument;
-// 			pusher.trigger('products', 'inserted', {
-// 				sender: details.sender,
-// 				message: details.message,
-// 				timestamp: details.timestamp,
-// 				status: 0,
-// 				threadId: details.threadId,
-// 			});
-// 		} else {
-// 			console.log('error on pusher');
-// 		}
-// 	});
-// });
+	changeStream.on('change', (change) => {
+		if (change.operationType === 'insert') {
+			const details = change.fullDocument;
+			pusher.trigger('products', 'inserted', {
+				sender: details.sender,
+				message: details.message,
+				timestamp: details.timestamp,
+				status: 0,
+				threadId: details.threadId,
+			});
+		} else {
+			console.log('error on pusher');
+		}
+	});
+});
 
-// const pusher = new Pusher({
-// 	appId: '1202226',
-// 	key: '2142cda6d39765cba2a9',
-// 	secret: '93c2b88777c4c5d29975',
-// 	cluster: 'ap2',
-// 	useTLS: true,
-// });
+const pusher = new Pusher({
+	appId: '1202226',
+	key: '2142cda6d39765cba2a9',
+	secret: '93c2b88777c4c5d29975',
+	cluster: 'ap2',
+	useTLS: true,
+});
 
 //connect database
 connectDB();
@@ -91,8 +92,12 @@ const queryRouter = require('./routes/query.routes');
 const stockRouter = require('./routes/stock.routes');
 const appsettingRouter = require('./routes/appsetting.routes');
 const vendorRouter = require('./routes/vendor.routes');
+<<<<<<< HEAD
 const imageUploadRouter = require('./routes/productimage.routes');
 const reviewRouter = require('./routes/review.routes');
+=======
+const imageRouter = require('./routes/imageroutes');
+>>>>>>> 709fb5a11540deb4fe8c0e60882adacea81491fa
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
@@ -101,8 +106,11 @@ app.use('/api/v1/auths', authRouter);
 app.use('/api/v1/category', categoryRouter);
 app.use('/api/v1/units', unitRouter);
 app.use('/api/v1/admins', adminRouter);
+<<<<<<< HEAD
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/customers', customerRouter);
+=======
+>>>>>>> 709fb5a11540deb4fe8c0e60882adacea81491fa
 app.use('/api/v1/merchants', merchantRouter);
 app.use('/api/v1/invoices', invoiceRouter);
 app.use('/api/v1/purchases', purchaseRouter);
@@ -112,8 +120,13 @@ app.use('/api/v1/find', queryRouter);
 app.use('/api/v1/stocks', stockRouter);
 app.use('/api/v1/appsettings', appsettingRouter);
 app.use('/api/v1/vendors', vendorRouter);
+<<<<<<< HEAD
 app.use('/api/v1/productimages', imageUploadRouter);
 app.use('/api/v1/reviews', reviewRouter);
+=======
+app.use('/api/v1/vendors', vendorRouter);
+app.use('/api/v1/uploads', imageRouter);
+>>>>>>> 709fb5a11540deb4fe8c0e60882adacea81491fa
 
 //mount errorhandler
 app.use(errorHandler);

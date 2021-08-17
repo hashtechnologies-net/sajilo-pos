@@ -54,7 +54,12 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 // @desc  create new Product
 //@route  POST /api/v1/products
 exports.createProduct = asyncHandler(async (req, res, next) => {
+<<<<<<< HEAD
 	req.body.created_by = req.creator.id;
+=======
+	req.body.created_by = req.admin.id;
+	// console.log(req.files.photo);
+>>>>>>> 709fb5a11540deb4fe8c0e60882adacea81491fa
 
 	const category = await Category.findById(req.body.category_id);
 
@@ -91,27 +96,10 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 	}
 
 	const product = await Product.create(req.body);
-
-	// Node.js WebSocket server script
-	const http = require('http');
-	const WebSocketServer = require('websocket').server;
-	const server = http.createServer();
-	server.listen(9898);
-	const wsServer = new WebSocketServer({
-		httpServer: server,
+	res.status(201).json({
+		success: true,
+		data: product,
 	});
-	wsServer.on('request', function (request) {
-		const connection = request.accept(null, request.origin);
-		connection.on('message', function (message) {
-			console.log('Received Message:', message.utf8Data);
-			connection.sendUTF('Hi this is WebSocket server!');
-		});
-		connection.on('close', function (reasonCode, description) {
-			console.log('Client has disconnected.');
-		});
-	});
-
-	res.status(201).json({ success: true, data: product });
 });
 
 // @desc  update  Product
