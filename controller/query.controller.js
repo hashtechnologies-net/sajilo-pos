@@ -4,8 +4,9 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Purchase = require('../models/purchase.model');
 const SalesPayment = require('../models/sales.payment.models');
-const Product = require('../models/product.models');
+const Invoice = require('../models/invoice.models');
 const Review = require('../models/review.models');
+const MerchantPayment = require('../models/merchant.payment.models');
 
 // @desc  Get Highest Purchase
 //@route  GET /api/v1/find/highest/purchases
@@ -349,6 +350,65 @@ exports.getAverageRating = asyncHandler(async (req, res, next) => {
 		},
 		{
 			$limit: 5,
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse('Something Bad happened', 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// @desc  GET  totalSales
+//@route  GET /api/v1/find/totalsales
+exports.getSales = asyncHandler(async (req, res, next) => {
+	Invoice.aggregate([
+		{
+			$project: {
+				total_amount: 1,
+			},
+		},
+		{
+			$group: {
+				_id: null,
+				totalSales: { $sum: '$total_amount' },
+			},
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse('Something Bad happened', 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// @desc  GET  totalinvetsment
+//@route  GET /api/v1/find/totalinvestments
+exports.getInvestment = asyncHandler(async (req, res, next) => {
+	MerchantPayment.aggregate([
+		{
+			$project: {
+				amount: 1,
+				credit: 1,
+			},
+		},
+		{
+			$group: {
+				_id: null,
+				totalAmount: { $sum: '$amount' },
+				totalCredit: { $sum: '$credit' },
+			},
+		},
+		{
+			$addFields: {
+				Investment: { $subtract: ['$totalAmount', '$totalCredit'] },
+			},
 		},
 	]).exec((err, result) => {
 		if (err) {

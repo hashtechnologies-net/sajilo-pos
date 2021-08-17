@@ -38,10 +38,8 @@ router
 	.get(authprotect.protect, queryController.getLowestSalesProducts);
 router
 	.route('/totalinvestments')
-	.get(authprotect.protect, merchantPaymentController.getInvestment);
-router
-	.route('/totalsales')
-	.get(authprotect.protect, salesPaymentController.getSales);
+	.get(authprotect.protect, queryController.getInvestment);
+router.route('/totalsales').get(authprotect.protect, queryController.getSales);
 
 router
 	.route('/averagerating')
