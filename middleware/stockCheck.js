@@ -45,26 +45,32 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 				req.body.total.push(item);
 			});
 		
-			// logic not implemented for sales.product !== element._id due to error issue.
+			// first check if the product sought by the customer is available and let them buy only the available stock
 			let elements= req.body.total;
-			let sales =req.body.description;
-			let product_id= sales[0].product;
-			let stock_count=sales[0].stock;
-			let found = elements.find(item=>
-				item._id==product_id)
+			let found;
+	
+				req.body.description.map(async (sales) => 
+				{
 
+					found = elements.find(item=>
+							item._id==sales.product)
 					try{
 						if(!found)
 						{
 							return next(new ErrorResponse('Product not found', 404));	
-						}
-						if(stock_count > found.totalstock){
 							
-							return next(new ErrorResponse('Out of stock', 404));
-
 						}
-						next();
-					}
+						else
+						{
+						  if(sales.stock > found.totalStock)
+							{
+							
+								return next(new ErrorResponse('Out of stock', 404));
+	
+							}
+						    next();
+					    }
+				}
 					catch (error) {
 									return next(
 										new ErrorResponse(
@@ -73,7 +79,7 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 										)
 									);
 								}
-				
+							});
 			
 		});
 	});
