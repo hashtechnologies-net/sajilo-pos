@@ -163,7 +163,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	const vendor = await Vendor.findOne({ email: req.body.email });
 	if (!vendor) {
 		return next(
-			new ErrorResponse('vendor with given email could not be found', 404)
+			new ErrorResponse('Vendor with given email could not be found', 404)
 		);
 	}
 

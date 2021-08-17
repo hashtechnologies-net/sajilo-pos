@@ -33,8 +33,6 @@ exports.getSingleProductImages = asyncHandler(async (req, res, next) => {
 // @desc  upload product images
 //@route  POST /api/v1/productimages
 exports.uploadProductImages = asyncHandler(async (req, res, next) => {
-	console.log(req.file);
-
 	const products = await Product.findById(req.params.id);
 	if (!products) {
 		return next(
