@@ -153,10 +153,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	if (
 		req.headers.authorization &&
-		req.headers.authorization.startsWith('Bearer user-')
+		req.headers.authorization.startsWith('Bearer user@')
 	) {
 		// Set token from Bearer token in header
-		token = req.headers.authorization.split('-')[1];
+		token = req.headers.authorization.split('@')[1];
 	}
 
 	// Make sure token exists
@@ -192,7 +192,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
 	// Create token
-	const token = 'user-' + user.getSignedJwtToken();
+	const token = 'user@' + user.getSignedJwtToken();
 
 	const options = {
 		expires: new Date(

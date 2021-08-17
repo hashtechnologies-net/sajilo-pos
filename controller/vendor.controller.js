@@ -198,7 +198,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 // Get token from model, create cookie and send response
 const sendTokenResponse = (vendor, statusCode, res) => {
 	// Create token
-	const token = 'vendor-' + vendor.getSignedJwtToken();
+	const token = 'vendor@' + vendor.getSignedJwtToken();
 
 	const options = {
 		expires: new Date(

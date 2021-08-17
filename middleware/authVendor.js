@@ -8,10 +8,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	if (
 		req.headers.authorization &&
-		req.headers.authorization.startsWith('Bearer vendor-')
+		req.headers.authorization.startsWith('Bearer vendor@')
 	) {
 		// Set token from Bearer token in header
-		token = req.headers.authorization.split('-')[1];
+		token = req.headers.authorization.split('@')[1];
 	}
 
 	// Make sure token exists
