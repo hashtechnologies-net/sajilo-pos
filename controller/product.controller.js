@@ -54,12 +54,7 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 // @desc  create new Product
 //@route  POST /api/v1/products
 exports.createProduct = asyncHandler(async (req, res, next) => {
-<<<<<<< HEAD
 	req.body.created_by = req.creator.id;
-=======
-	req.body.created_by = req.admin.id;
-	// console.log(req.files.photo);
->>>>>>> 709fb5a11540deb4fe8c0e60882adacea81491fa
 
 	const category = await Category.findById(req.body.category_id);
 

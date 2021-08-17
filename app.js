@@ -20,7 +20,7 @@ const multer = require('multer');
 //pusher setup
 const db = mongoose.connection;
 db.once('open', () => {
-	console.log('db is connected');
+
 	const messages = db.collection('products');
 	const changeStream = messages.watch();
 
@@ -92,12 +92,9 @@ const queryRouter = require('./routes/query.routes');
 const stockRouter = require('./routes/stock.routes');
 const appsettingRouter = require('./routes/appsetting.routes');
 const vendorRouter = require('./routes/vendor.routes');
-<<<<<<< HEAD
 const imageUploadRouter = require('./routes/productimage.routes');
 const reviewRouter = require('./routes/review.routes');
-=======
 const imageRouter = require('./routes/imageroutes');
->>>>>>> 709fb5a11540deb4fe8c0e60882adacea81491fa
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
@@ -106,11 +103,8 @@ app.use('/api/v1/auths', authRouter);
 app.use('/api/v1/category', categoryRouter);
 app.use('/api/v1/units', unitRouter);
 app.use('/api/v1/admins', adminRouter);
-<<<<<<< HEAD
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/customers', customerRouter);
-=======
->>>>>>> 709fb5a11540deb4fe8c0e60882adacea81491fa
 app.use('/api/v1/merchants', merchantRouter);
 app.use('/api/v1/invoices', invoiceRouter);
 app.use('/api/v1/purchases', purchaseRouter);
@@ -120,13 +114,10 @@ app.use('/api/v1/find', queryRouter);
 app.use('/api/v1/stocks', stockRouter);
 app.use('/api/v1/appsettings', appsettingRouter);
 app.use('/api/v1/vendors', vendorRouter);
-<<<<<<< HEAD
 app.use('/api/v1/productimages', imageUploadRouter);
 app.use('/api/v1/reviews', reviewRouter);
-=======
 app.use('/api/v1/vendors', vendorRouter);
 app.use('/api/v1/uploads', imageRouter);
->>>>>>> 709fb5a11540deb4fe8c0e60882adacea81491fa
 
 //mount errorhandler
 app.use(errorHandler);
