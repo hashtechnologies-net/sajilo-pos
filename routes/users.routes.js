@@ -6,9 +6,12 @@ const userController = require('../controller/users.controller');
 const User = require('../models/users.models');
 const allqueryresults = require('../middleware/allqueryresults');
 const protectAdmin = require('../middleware/authAdmin');
+const upload = require('../middleware/photoUpload');
 const { protect } = require('../middleware/authUser');
 
-router.route('/photo').put(protect, userController.userPhotoUpload);
+router
+	.route('/photo')
+	.put(protect, upload.single('photo'), userController.userPhotoUpload);
 router
 	.route('/')
 	.get(

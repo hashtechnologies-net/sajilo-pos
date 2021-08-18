@@ -187,11 +187,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
 });
 
 // Get token from model, create cookie and send response
-const sendTokenResponse = (user, statusCode, res) => {
+const sendTokenResponse = async (user, statusCode, res) => {
 	// Create token
 	const token = 'user@' + user.getSignedJwtToken();
 	const refreshToken = generateRefreshToken(user._id);
-	//refreshTokens.push(refreshToken);
 
 	const options = {
 		expires: new Date(Date.now() + 15000),
@@ -229,12 +228,11 @@ exports.generateAccessToken = (req, res, next) => {
 		return next(new ErrorResponse('Unauthorized', 403));
 	}
 
-	// if (!refreshTokens.includes(refreshToken)) {
-	// 	return next(new ErrorResponse(('Forbidden', 403)));
-	// }
-	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-	const token =
-		'user@' + jwt.sign({ id: this._id }, process.env.JWT_USER_SECRET);
+	const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+	if (decoded.id === req.user.id) {
+		const token =
+			'user@' + jwt.sign({ id: this._id }, process.env.JWT_USER_SECRET);
 
-	res.json({ token });
+		res.json({ token });
+	}
 };
