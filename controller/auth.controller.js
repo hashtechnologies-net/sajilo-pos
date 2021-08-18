@@ -224,5 +224,9 @@ exports.generateAccessToken = (req, res, next) => {
 			'user@' + jwt.sign({ id: req.user.id }, process.env.JWT_USER_SECRET);
 
 		res.json({ token });
+	} else {
+		return next(
+			new ErrorResponse('Unauthorized!Please enter the valid token', 401)
+		);
 	}
 };

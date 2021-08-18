@@ -16,36 +16,36 @@ const connectDB = require('./db');
 const mongoose = require('mongoose');
 const Pusher = require('pusher');
 
-// // //pusher setup
-// const db = mongoose.connection;
-// db.once('open', () => {
-// 	console.log('db is connected');
-// 	const messages = db.collection('products');
-// 	const changeStream = messages.watch();
+// //pusher setup
+const db = mongoose.connection;
+db.once('open', () => {
+	console.log('db is connected');
+	const messages = db.collection('products');
+	const changeStream = messages.watch();
 
-// 	changeStream.on('change', (change) => {
-// 		if (change.operationType === 'insert') {
-// 			const details = change.fullDocument;
-// 			pusher.trigger('products', 'inserted', {
-// 				sender: details.sender,
-// 				message: details.message,
-// 				timestamp: details.timestamp,
-// 				status: 0,
-// 				threadId: details.threadId,
-// 			});
-// 		} else {
-// 			console.log('error on pusher');
-// 		}
-// 	});
-// });
+	changeStream.on('change', (change) => {
+		if (change.operationType === 'insert') {
+			const details = change.fullDocument;
+			pusher.trigger('products', 'inserted', {
+				sender: details.sender,
+				message: details.message,
+				timestamp: details.timestamp,
+				status: 0,
+				threadId: details.threadId,
+			});
+		} else {
+			console.log('error on pusher');
+		}
+	});
+});
 
-// const pusher = new Pusher({
-// 	appId: '1202226',
-// 	key: '2142cda6d39765cba2a9',
-// 	secret: '93c2b88777c4c5d29975',
-// 	cluster: 'ap2',
-// 	useTLS: true,
-// });
+const pusher = new Pusher({
+	appId: '1202226',
+	key: '2142cda6d39765cba2a9',
+	secret: '93c2b88777c4c5d29975',
+	cluster: 'ap2',
+	useTLS: true,
+});
 
 //connect database
 connectDB();
