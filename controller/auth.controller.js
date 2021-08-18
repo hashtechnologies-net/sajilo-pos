@@ -70,7 +70,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 		expires: new Date(Date.now() + 10 * 1000),
 		httpOnly: true,
 	});
-
+	refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
 	res.status(200).json({
 		success: true,
 		message: 'User logged out',
@@ -187,14 +187,14 @@ exports.protect = asyncHandler(async (req, res, next) => {
 });
 
 // Get token from model, create cookie and send response
-const sendTokenResponse = (user, statusCode, res) => {
+const sendTokenResponse = async (user, statusCode, res) => {
 	// Create token
+
 	const token = 'user@' + user.getSignedJwtToken();
+	const refreshToken = user.generateRefreshToken();
 
 	const options = {
-		expires: new Date(
-			Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-		),
+		expires: new Date(Date.now() + 15000),
 		httpOnly: true,
 	};
 
@@ -205,5 +205,36 @@ const sendTokenResponse = (user, statusCode, res) => {
 	res.status(statusCode).cookie('token', token, options).json({
 		success: true,
 		token,
+		refreshToken,
 	});
+};
+
+// Get refresh token from model, create cookie and send response
+// const generateRefreshToken = (user_id) => {
+// 	// Create token
+
+// 	const refreshToken = jwt.sign(
+// 		{ id: user_id },
+// 		process.env.REFRESH_TOKEN_SECRET
+// 	);
+
+// 	return refreshToken;
+// };
+
+// Generate access token through refresh token, create cookie and send response
+exports.generateAccessToken = (req, res, next) => {
+	const refreshToken = req.body.token;
+
+	if (!refreshToken) {
+		return next(new ErrorResponse('Unauthorized', 403));
+	}
+
+	const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+	console.log(decoded);
+	if (decoded.id === req.user.id) {
+		const token =
+			'user@' + jwt.sign({ id: req.user.id }, process.env.JWT_USER_SECRET);
+
+		res.json({ token });
+	}
 };

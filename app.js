@@ -4,7 +4,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const fileupload = require('express-fileupload');
+//const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -61,7 +61,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 //use fileupload
-app.use(fileupload());
+//app.use(fileupload());
 
 //Sanitize data
 app.use(mongoSanitize());
