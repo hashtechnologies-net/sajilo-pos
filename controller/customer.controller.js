@@ -189,7 +189,8 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/customers/forgotpassword
 // @access    Public
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
-	const customer = await Customer.findOne({ email: req.body.customer_email });
+	const customer = await Customer.findOne({ customer_email: req.body.customer_email });
+	console.log(customer)
 	if (!customer) {
 		return next(
 			new ErrorResponse('Customer with given email could not be found', 404)
@@ -198,10 +199,13 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
 	// Get reset token
 	const resetToken = customer.getResetPasswordToken();
-	await customer.save({ validateBeforeSave: false });
+
+	// await customer.save({ validateBeforeSave: false });
 
 	// Create reset url
 	const resetUrl = `${req.protocol}://${process.env.CLIENT_URL}/resetpassword/${resetToken}`;
+	console.log(resetUrl)
+
 
 	// const resetUrl = `${process.env.CLIENT_URL}/resetpassword/${resetToken}`;
 
@@ -213,13 +217,14 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 			subject: 'Password reset token',
 			message,
 		});
+		
 
 		res.status(200).json({ success: true, data: 'Email sent' });
 	} catch (err) {
 		customer.resetPasswordToken = undefined;
 		customer.resetPasswordExpire = undefined;
 
-		await customer.save({ validateBeforeSave: false });
+		// await customer.save({ validateBeforeSave: false });
 
 		return next(new ErrorResponse('Email could not be sent', 500));
 	}
