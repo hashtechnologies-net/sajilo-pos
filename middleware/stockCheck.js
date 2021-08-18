@@ -46,8 +46,8 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 			});
 
 			try {
-				req.body.total.map(async (element) => {
-					req.body.description.map(async (sales) => {
+				req.body.total.map((element) => {
+					req.body.description.map((sales) => {
 						if (sales.product == element._id) {
 							if (sales.stock > element.totalStock) {
 								return next(new ErrorResponse('Out of stock', 404));

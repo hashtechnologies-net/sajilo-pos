@@ -36,8 +36,8 @@ exports.createInvoice = asyncHandler(async (req, res, next) => {
 			invoice_id: invoice.id,
 		};
 		await Stock.create(stock);
-		res.status(201).json({ success: true, data: invoice });
 	});
+	res.status(201).json({ success: true, data: invoice });
 });
 
 // @desc  update  Invoice
