@@ -2,14 +2,13 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const fileupload = require('express-fileupload');
+// const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const mongoSanitize = require('express-mongo-sanitize');
 const connectDB = require('./db');
 const mongoose = require('mongoose');
 const Pusher = require('pusher');
-const multer = require('multer');
 
 //pusher setup
 const db = mongoose.connection;
@@ -52,7 +51,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 //use fileupload
-app.use(fileupload());
+// app.use(fileupload());
 
 //Sanitize data
 app.use(mongoSanitize());
@@ -74,7 +73,6 @@ const mPaymentRouter = require('./routes/merchantPayment.routes');
 const queryRouter = require('./routes/query.routes');
 const stockRouter = require('./routes/stock.routes');
 const vendorRouter = require('./routes/vendor.routes');
-const imageRouter = require('./routes/imageroutes');
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
@@ -92,7 +90,6 @@ app.use('/api/v1/find', queryRouter);
 app.use('/api/v1/stocks', stockRouter);
 app.use('/api/v1/vendors', vendorRouter);
 app.use('/api/v1/vendors', vendorRouter);
-app.use('/api/v1/uploads', imageRouter);
 
 //mount errorhandler
 app.use(errorHandler);

@@ -17,10 +17,7 @@ exports.getSingleUser = asyncHandler(async (req, res, next) => {
 
 	if (!user1) {
 		return next(
-			new ErrorResponse(
-				`Product not found with id of ${req.params.id}`,
-				404
-			)
+			new ErrorResponse(`User not found with id of ${req.params.id}`, 404)
 		);
 	}
 	res.status(200).json({ success: true, data: user1 });
