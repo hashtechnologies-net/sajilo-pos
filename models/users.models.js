@@ -63,6 +63,10 @@ usersSchema.methods.getSignedJwtToken = function () {
 	});
 };
 
+// Sign JWT Refresh token and return
+usersSchema.methods.generateRefreshToken = function () {
+	return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN_SECRET);
+};
 // Match user entered password to hashed password in database
 usersSchema.methods.matchPassword = async function (enteredPassword) {
 	return await bcrypt.compare(enteredPassword, this.password);
