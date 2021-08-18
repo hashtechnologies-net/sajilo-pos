@@ -45,21 +45,55 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 				req.body.total.push(item);
 			});
 
-			try {
-				req.body.total.map((element) => {
-					req.body.description.map((sales) => {
-						if (sales.product == element._id) {
-							if (sales.stock > element.totalStock) {
-								return next(new ErrorResponse('Out of stock', 404));
-							}
-							next();
+			// first check if the product sought by the customer is available and let them buy only the available stock
+			let elements = req.body.total;
+			let found;
+
+			req.body.description.map((sales) => {
+				found = elements.find((item) => item._id == sales.product);
+				try {
+					if (!found) {
+						return next(new ErrorResponse('Product not found', 404));
+					} else {
+						if (sales.stock > found.totalStock) {
+							return next(
+								new ErrorResponse(
+									`Only ${found.totalStock} products are available`,
+									400
+								)
+							);
 						}
-					});
-				});
-			} catch (error) {
-				return next(
-					new ErrorResponse('Internal Server Error from Stock Check', 500)
-				);
-			}
+						next();
+					}
+				} catch (error) {
+					return next(
+						new ErrorResponse(
+							'Internal Server Error from Stock Check',
+							500
+						)
+					);
+				}
+			});
 		});
 });
+
+// req.body.total.map(async (element) => {
+// 	req.body.description.map(async (sales) => {
+// 		try {
+// 			if (sales.product == element._id) {
+// 				if (sales.stock > element.totalStock) {
+// 					return next(new ErrorResponse('Out of stock', 404));
+// 				}
+// 				next();
+// 			}
+// 		} catch (error) {
+// 			return next(
+// 				new ErrorResponse(
+// 					'Internal Server Error from Stock Check',
+// 					500
+// 				)
+// 			);
+// 		}
+// 	});
+// 	});
+// });

@@ -39,7 +39,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	} catch (err) {
 		return next(
 			new ErrorResponse(
-				'Inernal Server Error from vendor authentication',
+				'Internal Server Error from vendor authentication',
 				500
 			)
 		);

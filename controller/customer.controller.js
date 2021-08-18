@@ -198,7 +198,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
 	// Get reset token
 	const resetToken = customer.getResetPasswordToken();
-	await customer.save({ validateBeforeSave: false });
+	// await customer.save({ validateBeforeSave: false });
 
 	// Create reset url
 	const resetUrl = `${req.protocol}://${process.env.CLIENT_URL}/resetpassword/${resetToken}`;
