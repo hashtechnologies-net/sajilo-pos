@@ -131,7 +131,6 @@ exports.updateProductImages = asyncHandler(async (req, res, next) => {
 //@route  DELETE /api/v1/productimages/:id
 exports.deleteProductImages = asyncHandler(async (req, res, next) => {
 	let productImages = await ProductImage.findById(req.params.id);
-	const product = await Product.find({ _id: productImages.product });
 
 	if (!productImages) {
 		return next(
@@ -141,6 +140,7 @@ exports.deleteProductImages = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
+	const product = await Product.find({ _id: productImages.product });
 
 	if (product[0].created_by == req.creator.id) {
 		await productImages.remove();
