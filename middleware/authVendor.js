@@ -37,11 +37,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		req.vendor = vendor;
 		next();
 	} catch (err) {
-		return next(
-			new ErrorResponse(
-				'Inernal Server Error from vendor authentication',
-				500
-			)
-		);
+		return next(new ErrorResponse('Token Expired', 500));
 	}
 });

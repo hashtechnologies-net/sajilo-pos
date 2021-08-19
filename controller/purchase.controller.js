@@ -3,6 +3,7 @@ const asyncHandler = require('../middleware/async');
 const Purchase = require('../models/purchase.model');
 const Merchant = require('../models/merchant.models');
 const Stock = require('../models/stockEntry.models');
+const Product = require('../models/product.models');
 
 // @desc  get all products
 //@route  GET /api/v1/purchases
@@ -44,6 +45,16 @@ exports.createPurchase = asyncHandler(async (req, res, next) => {
 		);
 	}
 
+	const productId = await Product.findById(req.body.description[0].product);
+
+	if (!productId) {
+		return next(
+			new ErrorResponse(
+				`Product with id ${req.body.description[0].product} could not be found`,
+				404
+			)
+		);
+	}
 	const purchases = await Purchase.create(req.body);
 
 	purchases.description.forEach(async (purchase) => {
@@ -70,6 +81,18 @@ exports.updatePurchase = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
+
+	const productId = await Product.findById(req.body.description[0].product);
+
+	if (!productId) {
+		return next(
+			new ErrorResponse(
+				`Product with id ${req.body.description[0].product} could not be found`,
+				404
+			)
+		);
+	}
+
 	purchase = await Purchase.findByIdAndUpdate(req.params.id, req.body, {
 		new: true,
 		runValidators: true,

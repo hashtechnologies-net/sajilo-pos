@@ -3,7 +3,7 @@
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('./async');
 const ErrorResponse = require('../utils/errorResponse');
-const Admin = require('../models/admin.models');
+const Customer = require('../models/customer.models');
 
 // Protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
@@ -11,10 +11,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	if (
 		req.headers.authorization &&
-		req.headers.authorization.startsWith('Bearer')
+		req.headers.authorization.startsWith('Bearer customer@')
 	) {
 		// Set token from Bearer token in header
-		token = req.headers.authorization.split(' ')[1];
+		token = req.headers.authorization.split('@')[1];
 	} else {
 		return next(new ErrorResponse('Token not found', 401));
 	}
@@ -23,23 +23,18 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	if (!token) {
 		return next(
 			new ErrorResponse(
-				'Please login as admin to access this resources',
+				'Please login as customer to access this resources',
 				401
 			)
 		);
 	}
 
 	try {
-		// Verify token
-		if (token.startsWith('user')) {
-			return next(
-				new ErrorResponse('Please login as an Admin not User', 404)
-			);
-		}
-		const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
-		req.admin = await Admin.findById(decoded.id);
-		if (!req.admin) {
-			return next(new ErrorResponse('Admin not found', 401));
+		const decoded = jwt.verify(token, process.env.JWT_CUSTOMER_SECRET);
+
+		req.customer = await Customer.findById(decoded.id);
+		if (!req.customer) {
+			return next(new ErrorResponse('Customer not found', 401));
 		}
 		next();
 	} catch (err) {

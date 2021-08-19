@@ -9,6 +9,7 @@ const MerchantPayment = require('../models/merchant.payment.models');
 exports.getAllPayment = asyncHandler(async (req, res, next) => {
 	res.status(200).json(res.allqueryresults);
 });
+
 // @desc  get single merchantPayment
 //@route  GET /api/v1/merchantpayments/:id
 exports.getSinglePayment = asyncHandler(async (req, res, next) => {
@@ -75,14 +76,10 @@ exports.updatePayment = asyncHandler(async (req, res, next) => {
 	};
 	req.body.credit = getCredit();
 
-	payments = await MerchantPayment.findByIdAndUpdate(
-		req.params.id,
-		req.body,
-		{
-			new: true,
-			runValidators: true,
-		}
-	);
+	payments = await MerchantPayment.findByIdAndUpdate(req.params.id, req.body, {
+		new: true,
+		runValidators: true,
+	});
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
@@ -109,20 +106,5 @@ exports.deletePayment = asyncHandler(async (req, res, next) => {
 		success: true,
 		data: {},
 		message: 'Successfully deleted !!',
-	});
-});
-
-// @desc  GET  totalinvetsment
-//@route  GET /api/v1/find/totalinvestments
-exports.getInvestment = asyncHandler(async (req, res, next) => {
-	let merchantPayment = await MerchantPayment.find();
-	let inv = 0;
-	merchantPayment.forEach((element) => {
-		let investment = element.amount - element.credit;
-		inv += investment;
-	});
-	res.status(200).json({
-		success: true,
-		Total_investments: inv,
 	});
 });

@@ -1,25 +1,24 @@
 /** @format */
-
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const mongoose = require('mongoose');
-const usersSchema = new mongoose.Schema({
-	full_name: {
+const customersSchema = new mongoose.Schema({
+	customer_fname: {
 		type: String,
-		required: [true, 'Please add the Name'],
+		required: [true, 'Please add your full Name'],
 	},
-	username: {
+    customer_lname: {
+		type: String,
+		required: [true, 'Please add your full Name'],
+	},
+	customer_username: {
 		type: String,
 		required: true,
 		unique: true,
 	},
-	photo: {
-		type: String,
-		default: 'photo.jpg',
-	},
-	email: {
+	customer_email: {
 		type: String,
 		required: [true, 'Please add email'],
 		unique: [true, 'Email has already been registered'],
@@ -28,52 +27,48 @@ const usersSchema = new mongoose.Schema({
 			'Please enter a valid email',
 		],
 	},
+    phone: {
+        type: Number,
+        required: [true, 'Please add a number']
+    },
+    address: {
+        type: String,
+        required: [true, 'Please add a number']
+    },
 	password: {
 		type: String,
 		required: [true, 'Please add a password'],
 		minlength: 6,
 		select: false,
 	},
-
 	resetPasswordToken: String,
 	resetPasswordExpire: Date,
-	Status: {
-		type: Boolean,
-	},
 	created_at: {
 		type: Date,
 		default: Date.now,
-	},
-	created_by: {
-		type: mongoose.Schema.ObjectId,
-		ref: 'admin',
-		required: true,
-	},
+	}
 });
 
-usersSchema.pre('save', async function (next) {
-	const salt = await bcrypt.genSalt(10);
+customersSchema.pre('save', async function (next) {
+    const salt = await bcrypt.genSalt(10);
 	this.password = await bcrypt.hash(this.password, salt);
+   
 });
 
 // Sign JWT and return
-usersSchema.methods.getSignedJwtToken = function () {
-	return jwt.sign({ id: this._id }, process.env.JWT_USER_SECRET, {
+customersSchema.methods.getSignedJwtToken = function () {
+	return jwt.sign({ id: this._id }, process.env.JWT_CUSTOMER_SECRET, {
 		expiresIn: process.env.JWT_EXPIRE,
 	});
 };
 
-// Sign JWT Refresh token and return
-usersSchema.methods.generateRefreshToken = function () {
-	return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN_SECRET);
-};
 // Match user entered password to hashed password in database
-usersSchema.methods.matchPassword = async function (enteredPassword) {
+customersSchema.methods.matchPassword = async function (enteredPassword) {
 	return await bcrypt.compare(enteredPassword, this.password);
 };
 
 // Generate and hash password token
-usersSchema.methods.getResetPasswordToken = function () {
+customersSchema.methods.getResetPasswordToken = function () {
 	// Generate token
 	const resetToken = crypto.randomBytes(20).toString('hex');
 
@@ -89,4 +84,4 @@ usersSchema.methods.getResetPasswordToken = function () {
 	return resetToken;
 };
 
-module.exports = mongoose.model('user', usersSchema);
+module.exports = mongoose.model('customer', customersSchema);

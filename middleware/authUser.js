@@ -30,7 +30,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	try {
 		const decoded = jwt.verify(token, process.env.JWT_USER_SECRET);
-		console.log(decoded);
+
 		req.user = await User.findById(decoded.id);
 
 		if (!req.user) {
@@ -40,11 +40,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		}
 		next();
 	} catch (err) {
-		return next(
-			new ErrorResponse(
-				'Internal server error from user authentication',
-				500
-			)
-		);
+		return next(new ErrorResponse('Token Expired', 500));
 	}
 });

@@ -10,6 +10,7 @@ const Invoice = require('../models/invoice.models');
 exports.getAllSPayments = asyncHandler(async (req, res, next) => {
 	res.status(200).json(res.allqueryresults);
 });
+
 // @desc  get single salesPayment
 //@route  GET /api/v1/salespayments/:id
 exports.getSinglePayment = asyncHandler(async (req, res, next) => {
@@ -24,14 +25,14 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 	}
 	res.status(200).json({ success: true, data: spayment1 });
 });
+
 // @desc  create new salesPayment
 //@route  POST /api/v1/salespayments
-
 exports.createSPayment = asyncHandler(async (req, res, next) => {
-	//req.body.created_by = req.user.id;
 	const CSpayment = await SalesPayment.create(req.body);
-	res.status(201).json(res.allqueryresults);
+	res.status(201).json({ success: true, data: CSpayment });
 });
+
 // @desc  update  salesPayment
 //@route  PUT /api/v1/salespayments/:id
 exports.updateSPayment = asyncHandler(async (req, res, next) => {
@@ -77,17 +78,43 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 	});
 });
 
-// @desc  GET  totalSales
-//@route  GET /api/v1/find/totalsales
-exports.getSales = asyncHandler(async (req, res, next) => {
+// // @desc  GET  todaySales
+// //@route  GET /api/v1/find/today/sales
+exports.getTodaySales = asyncHandler(async (req, res, next) => {
 	let invoice = await Invoice.find();
-	let sales = 0;
+	let sales = [];
 	invoice.forEach((element) => {
-		let total_amount = element.total_amount;
-		sales += total_amount;
+		let created_at = element.created_at;
+		let today = new Date().toISOString().slice(0, 10);
+		let saledate = created_at.toISOString().slice(0, 10);
+
+		if (today == saledate) {
+			sales.push(created_at.getHours(), element.total_amount);
+		}
+	});
+
+	res.status(200).json({
+		success: true,
+		sales: sales,
+	});
+});
+
+// // @desc  GET  todaySales
+// //@route  GET /api/v1/find/today/totalsales
+exports.getTodayTotalSales = asyncHandler(async (req, res, next) => {
+	let invoice = await Invoice.find();
+	let totalAmount = 0;
+	invoice.forEach((element) => {
+		let created_at = element.created_at;
+		let today = new Date().toISOString().slice(0, 10);
+		let salesdate = created_at.toISOString().slice(0, 10);
+
+		if (today == salesdate) {
+			totalAmount += element.total_amount;
+		}
 	});
 	res.status(200).json({
 		success: true,
-		Total_Sales: sales,
+		total_amount: totalAmount,
 	});
 });
