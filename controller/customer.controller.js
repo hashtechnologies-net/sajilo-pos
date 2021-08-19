@@ -9,7 +9,7 @@ const sendEmail = require('../utils/sendEmail');
 require('dotenv').config('./env');
 
 // @desc      Register customer
-// @route     POST /api/v1/customers/register
+// @route     POST /api/v1/customers/
 // @access    Customer
 exports.register = asyncHandler(async (req, res, next) => {
 	const {
@@ -194,7 +194,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	});
 	if (!customer) {
 		return next(
-			new ErrorResponse('Customer with given email could not be found', 404)
+			new ErrorResponse(
+				'Customer with given email could not be found',
+				404
+			)
 		);
 	}
 

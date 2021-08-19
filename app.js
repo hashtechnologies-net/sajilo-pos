@@ -16,7 +16,7 @@ const connectDB = require('./db');
 const mongoose = require('mongoose');
 const Pusher = require('pusher');
 
-// //pusher setup
+//pusher setup
 const db = mongoose.connection;
 db.once('open', () => {
 	console.log('db is connected');
