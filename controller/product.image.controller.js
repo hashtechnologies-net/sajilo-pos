@@ -42,8 +42,7 @@ exports.uploadProductImages = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	console.log(products.created_by);
-	console.log(req.creator.id);
+
 	if (products.created_by == req.creator.id) {
 		if (!req.files) {
 			return next(new ErrorResponse(`Please select the files`, 404));
@@ -87,34 +86,44 @@ exports.updateProductImages = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
+	const product = await Product.find({ _id: productImages.product });
 
-	if (!req.files) {
-		return next(new ErrorResponse(`Please select the files`, 404));
+	if (product[0].created_by == req.creator.id) {
+		if (!req.files) {
+			return next(new ErrorResponse(`Please select the files`, 404));
+		} else {
+			let path = '';
+
+			req.files.forEach((files, index, arr) => {
+				path = path + files.path + ',';
+			});
+			path = path.substring(0, path.lastIndexOf(','));
+
+			var data = {
+				imageUrl: path,
+			};
+
+			productImages = await ProductImage.findByIdAndUpdate(
+				req.params.id,
+				data,
+				{
+					new: true,
+					runValidator: true,
+				}
+			);
+			res.status(200).json({
+				status: true,
+				message: 'Successfully updated the images',
+				data: productImages,
+			});
+		}
 	} else {
-		let path = '';
-
-		req.files.productImage.forEach((files, index, arr) => {
-			path = path + files.path + ',';
-		});
-		path = path.substring(0, path.lastIndexOf(','));
-
-		var data = {
-			imageUrl: path,
-		};
-
-		productImages = await ProductImage.findByIdAndUpdate(
-			req.params.id,
-			data,
-			{
-				new: true,
-				runValidator: true,
-			}
+		return next(
+			new ErrorResponse(
+				'Please upload the picture of the product created by you',
+				404
+			)
 		);
-		res.status(200).json({
-			status: true,
-			message: 'Successfully updated the images',
-			data: productImages,
-		});
 	}
 });
 
@@ -122,18 +131,29 @@ exports.updateProductImages = asyncHandler(async (req, res, next) => {
 //@route  DELETE /api/v1/productimages/:id
 exports.deleteProductImages = asyncHandler(async (req, res, next) => {
 	let productImages = await ProductImage.findById(req.params.id);
+	const product = await Product.find({ _id: productImages.product });
 
 	if (!productImages) {
 		return next(
 			new ErrorResponse(
-				`No slide data with id:${req.params.id} was found`,
+				`Prodcut Image with ${req.params.id} has already been deleted`,
 				404
 			)
 		);
 	}
-	await productImages.remove();
-	res.status(200).json({
-		status: true,
-		message: 'Successfully deleted the images',
-	});
+
+	if (product[0].created_by == req.creator.id) {
+		await productImages.remove();
+		res.status(200).json({
+			status: true,
+			message: 'Successfully deleted the images',
+		});
+	} else {
+		return next(
+			new ErrorResponse(
+				'Please delete the picture of the product you created!',
+				404
+			)
+		);
+	}
 });

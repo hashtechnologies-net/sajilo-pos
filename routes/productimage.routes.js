@@ -29,7 +29,11 @@ router.route('/').get(
 router
 	.route('/:id')
 	.get(productImageController.getSingleProductImages)
-	.put(authprotect.protect, productImageController.updateProductImages)
+	.put(
+		authprotect.protect,
+		upload.array('productImage', 3),
+		productImageController.updateProductImages
+	)
 	.delete(authprotect.protect, productImageController.deleteProductImages)
 	.post(
 		authprotect.protect,

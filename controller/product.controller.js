@@ -47,7 +47,7 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	stockController.getStock();
+
 	res.status(200).json({ success: true, data: product });
 });
 
