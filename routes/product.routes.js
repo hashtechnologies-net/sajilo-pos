@@ -31,7 +31,7 @@ router
 router
 	.route('/:id')
 	.get(productController.getSingleProduct)
-	.put(authprotect.protect, productController.updateProduct)
-	.delete(authprotect.protect, productController.deleteProduct);
+	.put(routeprotect.protect, productController.updateProduct)
+	.delete(routeprotect.protect, productController.deleteProduct);
 
 module.exports = router;
