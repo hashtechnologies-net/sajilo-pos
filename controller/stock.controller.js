@@ -47,7 +47,7 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 	});
 });
 
-// @desc  Sales Ajustment
+// @desc  Sales Ajustment for stock Entry
 //@route  POST /api/v1/stocks/adjustments
 exports.stockAdjustment = asyncHandler(async (req, res, next) => {
 	try {
