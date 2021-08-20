@@ -114,3 +114,17 @@ exports.getAdmins = asyncHandler(async (req, res, next) => {
 	const admins = await Admin.find();
 	res.status(200).json({ success: true, data: admins });
 });
+
+exports.getSingleAdmin = asyncHandler(async (req, res, next) => {
+	const admins1 = await Admin.findById(req.params.id);
+
+	if (!admins1) {
+		return next(
+			new ErrorResponse(
+				`Admin not found with id of ${req.params.id}`,
+				404
+			)
+		);
+	}
+	res.status(200).json({ success: true, data: admins1 });
+});

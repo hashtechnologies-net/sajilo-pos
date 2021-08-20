@@ -20,7 +20,7 @@ const multer = require('multer');
 //pusher setup
 const db = mongoose.connection;
 db.once('open', () => {
-
+    console.log('db is connected');
 	const messages = db.collection('products');
 	const changeStream = messages.watch();
 

@@ -43,7 +43,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	} catch (err) {
 		return next(
 			new ErrorResponse(
-				'Internal server error  from admin authentication',
+				'Token has expired',
 				500
 			)
 		);
