@@ -93,7 +93,7 @@ const appsettingRouter = require('./routes/appsetting.routes');
 const vendorRouter = require('./routes/vendor.routes');
 const imageUploadRouter = require('./routes/productimage.routes');
 const reviewRouter = require('./routes/review.routes');
-const imageRouter = require('./routes/imageroutes');
+
 
 // Mount routers
 app.use('/api/v1/users', userRouter);
@@ -116,7 +116,7 @@ app.use('/api/v1/vendors', vendorRouter);
 app.use('/api/v1/productimages', imageUploadRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/vendors', vendorRouter);
-app.use('/api/v1/uploads', imageRouter);
+
 
 //mount errorhandler
 app.use(errorHandler);

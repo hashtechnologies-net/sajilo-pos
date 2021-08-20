@@ -17,9 +17,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	} else {
 		return next(new ErrorResponse('Token not found', 401));
 	}
-	else{
-		return next( new ErrorResponse("Token not found", 404))
-	}
 
 	// Make sure token exists
 	if (!token) {
