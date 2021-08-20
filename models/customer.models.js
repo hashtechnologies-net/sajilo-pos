@@ -5,19 +5,11 @@ const jwt = require('jsonwebtoken');
 
 const mongoose = require('mongoose');
 const customersSchema = new mongoose.Schema({
-	customer_fname: {
+	customer_fullname: {
 		type: String,
 		required: [true, 'Please add your full Name'],
 	},
-    customer_lname: {
-		type: String,
-		required: [true, 'Please add your full Name'],
-	},
-	customer_username: {
-		type: String,
-		required: true,
-		unique: true,
-	},
+
 	customer_email: {
 		type: String,
 		required: [true, 'Please add email'],
@@ -27,14 +19,6 @@ const customersSchema = new mongoose.Schema({
 			'Please enter a valid email',
 		],
 	},
-    phone: {
-        type: Number,
-        required: [true, 'Please add a number']
-    },
-    address: {
-        type: String,
-        required: [true, 'Please add a number']
-    },
 	password: {
 		type: String,
 		required: [true, 'Please add a password'],
@@ -46,13 +30,12 @@ const customersSchema = new mongoose.Schema({
 	created_at: {
 		type: Date,
 		default: Date.now,
-	}
+	},
 });
 
 customersSchema.pre('save', async function (next) {
-    const salt = await bcrypt.genSalt(10);
+	const salt = await bcrypt.genSalt(10);
 	this.password = await bcrypt.hash(this.password, salt);
-   
 });
 
 // Sign JWT and return

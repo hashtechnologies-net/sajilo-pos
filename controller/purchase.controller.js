@@ -45,16 +45,17 @@ exports.createPurchase = asyncHandler(async (req, res, next) => {
 		);
 	}
 
-	const productId = await Product.findById(req.body.description[0].product);
-
-	if (!productId) {
-		return next(
-			new ErrorResponse(
-				`Product with id ${req.body.description[0].product} could not be found`,
-				404
-			)
-		);
-	}
+	req.body.description.forEach(async (obj) => {
+		const productId = await Product.findById(obj.product);
+		if (!productId) {
+			return next(
+				new ErrorResponse(
+					`Product with id ${obj.product} could not be found`,
+					404
+				)
+			);
+		}
+	});
 	const purchases = await Purchase.create(req.body);
 
 	purchases.description.forEach(async (purchase) => {
@@ -82,16 +83,17 @@ exports.updatePurchase = asyncHandler(async (req, res, next) => {
 		);
 	}
 
-	const productId = await Product.findById(req.body.description[0].product);
-
-	if (!productId) {
-		return next(
-			new ErrorResponse(
-				`Product with id ${req.body.description[0].product} could not be found`,
-				404
-			)
-		);
-	}
+	req.body.description.forEach(async (obj) => {
+		const productId = await Product.findById(obj.product);
+		if (!productId) {
+			return next(
+				new ErrorResponse(
+					`Product with id ${obj.product} could not be found`,
+					404
+				)
+			);
+		}
+	});
 
 	purchase = await Purchase.findByIdAndUpdate(req.params.id, req.body, {
 		new: true,

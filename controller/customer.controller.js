@@ -13,35 +13,31 @@ require('dotenv').config('./env');
 // @access    Customer
 exports.register = asyncHandler(async (req, res, next) => {
 	const {
-		customer_fname,
-		customer_lname,
-		customer_username,
+		customer_fullname,
+
 		customer_email,
-		phone,
-		address,
+
 		password,
 	} = req.body;
-	const customerExists = await Customer.findOne({ customer_username });
+	const customerExists = await Customer.findOne({ customer_email });
 	//check duplicate email
 	if (customerExists) {
 		return res.json({
 			Status: false,
-			reason: `${customerExists.customer_username} is already registered`,
+			reason: `${customerExists.customer_email} is already registered`,
 		});
 	}
 
 	// Create customer
 	const customer = await Customer.create({
-		customer_fname,
-		customer_lname,
-		customer_username,
+		customer_fullname,
+
 		customer_email,
-		phone,
-		address,
+
 		password,
 	});
 
-	sendTokenResponse(customer, 200, res);
+	res.status(201).json({ success: true, customer });
 });
 
 // @desc  update  customer
@@ -69,21 +65,21 @@ exports.updateCustomer = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/customers/customer_login
 // @access    Private
 exports.login = asyncHandler(async (req, res, next) => {
-	const { customer_username, password } = req.body;
+	const { customer_email, password } = req.body;
 
 	// Validate email & password
-	if (!customer_username || !password) {
+	if (!customer_email || !password) {
 		return next(
 			new ErrorResponse('Please provide username and password', 400)
 		);
 	}
 
 	// Check for customer
-	const customer = await Customer.findOne({ customer_username }).select(
+	const customer = await Customer.findOne({ customer_email }).select(
 		'+password'
 	);
 	if (!customer) {
-		return next(new ErrorResponse('Invalid username or password', 401));
+		return next(new ErrorResponse('Invalid email or password', 401));
 	}
 
 	// // Check if password matches

@@ -16,6 +16,9 @@ const connectDB = require('./db');
 const mongoose = require('mongoose');
 const Pusher = require('pusher');
 
+var cors = require('cors');
+app.use(cors());
+
 //pusher setup
 const db = mongoose.connection;
 db.once('open', () => {
