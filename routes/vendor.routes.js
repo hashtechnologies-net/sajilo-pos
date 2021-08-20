@@ -19,7 +19,7 @@ router
 
 router.route('/register').post(vendorController.register);
 router.route('/login').post(vendorController.login);
-router.route('/logout').post(vendorController.logout);
+router.route('/logout').post(authvendor.protect, vendorController.logout);
 
 router
 	.route('/updatepassword')

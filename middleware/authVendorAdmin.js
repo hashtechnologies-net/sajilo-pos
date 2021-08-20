@@ -47,7 +47,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 			return next(
 				new ErrorResponse('Please login as an admin or vendor', 404)
 			);
-			next();
 		} else {
 			const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
 			req.creator = await Admin.findById(decoded.id);

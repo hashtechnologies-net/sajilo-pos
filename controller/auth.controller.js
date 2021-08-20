@@ -70,7 +70,6 @@ exports.logout = asyncHandler(async (req, res, next) => {
 		expires: new Date(Date.now() + 10 * 1000),
 		httpOnly: true,
 	});
-	refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
 	res.status(200).json({
 		success: true,
 		message: 'User logged out',
@@ -181,10 +180,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		next();
 	} catch (err) {
 		return next(
-			new ErrorResponse(
-				'Inernal Server Error from user authentication',
-				500
-			)
+			new ErrorResponse('Inernal Server Error from user authentication', 500)
 		);
 	}
 });
@@ -224,8 +220,7 @@ exports.generateAccessToken = (req, res, next) => {
 	console.log(decoded);
 	if (decoded.id === req.user.id) {
 		const token =
-			'user@' +
-			jwt.sign({ id: req.user.id }, process.env.JWT_USER_SECRET);
+			'user@' + jwt.sign({ id: req.user.id }, process.env.JWT_USER_SECRET);
 
 		res.json({ token });
 	} else {
