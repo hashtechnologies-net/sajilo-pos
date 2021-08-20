@@ -15,6 +15,8 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	) {
 		// Set token from Bearer token in header
 		token = req.headers.authorization.split(' ')[1];
+	} else {
+		return next(new ErrorResponse('Token not found', 401));
 	}
 
 	// Make sure token exists

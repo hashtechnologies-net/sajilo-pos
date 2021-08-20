@@ -14,6 +14,8 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	) {
 		// Set token from Bearer token in header
 		token = req.headers.authorization.split('@')[1];
+	} else {
+		return next(new ErrorResponse('Token not found', 401));
 	}
 	else{
 		return next( new ErrorResponse("Token not found", 404))
@@ -35,16 +37,11 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		const vendor = await Vendor.findById(decoded.id);
 
 		if (!vendor) {
-			return next(new ErrorResponse('Vendor could not be found', 401));
+			return next(new ErrorResponse('vendor could not be found', 401));
 		}
 		req.vendor = vendor;
 		next();
 	} catch (err) {
-		return next(
-			new ErrorResponse(
-				'Internal Server Error from vendor authentication',
-				500
-			)
-		);
+		return next(new ErrorResponse('Token Expired', 500));
 	}
 });

@@ -15,7 +15,6 @@ const xss = require('xss-clean');
 const connectDB = require('./db');
 const mongoose = require('mongoose');
 const Pusher = require('pusher');
-const multer = require('multer');
 
 //pusher setup
 const db = mongoose.connection;

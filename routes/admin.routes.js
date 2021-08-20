@@ -9,14 +9,6 @@ const router = express.Router();
 router.route('/adminlogin').post(adminAuth.login);
 router.route('/getadmin').get(authprotect.protect, adminAuth.getMe);
 router.route('/logout').get(adminAuth.logout);
-
-router.route('/')
-.post(adminAuth.register)
-.get(adminAuth.getAdmins);
-
-router
-.route('/:id')
-	.get(adminAuth.getSingleAdmin)
-
+router.route('/').get(adminAuth.getAdmins);
 
 module.exports = router;

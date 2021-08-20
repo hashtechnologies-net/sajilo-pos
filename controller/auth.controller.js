@@ -208,17 +208,7 @@ const sendTokenResponse = async (user, statusCode, res) => {
 	});
 };
 
-// Get refresh token from model, create cookie and send response
-// const generateRefreshToken = (user_id) => {
-// 	// Create token
 
-// 	const refreshToken = jwt.sign(
-// 		{ id: user_id },
-// 		process.env.REFRESH_TOKEN_SECRET
-// 	);
-
-// 	return refreshToken;
-// };
 
 // Generate access token through refresh token, create cookie and send response
 exports.generateAccessToken = (req, res, next) => {
@@ -237,3 +227,6 @@ exports.generateAccessToken = (req, res, next) => {
 		res.json({ token });
 	}
 };
+
+
+

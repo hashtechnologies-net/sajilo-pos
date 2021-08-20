@@ -6,5 +6,6 @@ const router = express.Router();
 const authprotect = require('../middleware/authAdmin');
 
 router.route('/').get(authprotect.protect, stockController.getStock);
+router.route('/adjustments').post(authprotect.protect,stockController.stockAdjustments)
 
 module.exports = router;

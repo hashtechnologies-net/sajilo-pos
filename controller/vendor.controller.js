@@ -127,6 +127,22 @@ exports.login = asyncHandler(async (req, res, next) => {
 	sendTokenResponse(vendor, 200, res);
 });
 
+// @desc      Log vendor out / clear cookie
+// @route     GET /api/v1/vendors/logout
+// @access    Public
+exports.logout = asyncHandler(async (req, res, next) => {
+	res.cookie('token', 'none', {
+		expires: new Date(Date.now() + 10 * 1000),
+		httpOnly: true,
+	});
+
+	res.status(200).json({
+		success: true,
+		message: 'Vendor logged out',
+		data: {},
+	});
+});
+
 // @desc      Get current logged in vendor
 // @route     GET /api/v1/vendors/me
 // @access    Private

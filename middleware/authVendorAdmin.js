@@ -9,7 +9,9 @@ const Vendor = require('../models/vendor.models');
 // Protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
 	let token;
-
+	if (!req.headers.authorization) {
+		return next(new ErrorResponse('No token Found', 401));
+	}
 	if (
 		req.headers.authorization &&
 		req.headers.authorization.startsWith('Bearer vendor@')
@@ -45,7 +47,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 			return next(
 				new ErrorResponse('Please login as an admin or vendor', 404)
 			);
-			next();
 		} else {
 			const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
 			req.creator = await Admin.findById(decoded.id);
@@ -54,13 +55,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 			}
 			next();
 		}
-
 	} catch (err) {
-		return next(
-			new ErrorResponse(
-				'Internal server error from Admin/Vendor authentication',
-				500
-			)
-		);
+		return next(new ErrorResponse('Token Expired', 500));
 	}
 });

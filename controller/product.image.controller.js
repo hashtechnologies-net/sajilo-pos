@@ -43,24 +43,33 @@ exports.uploadProductImages = asyncHandler(async (req, res, next) => {
 		);
 	}
 
-	if (!req.files) {
-		return next(new ErrorResponse(`Please select the files`, 404));
-	} else {
-		let path = '';
-		req.files.forEach((files, index, arr) => {
-			path = path + files.path + ',';
-		});
-		path = path.substring(0, path.lastIndexOf(','));
-		var data = {
-			product: req.params.id,
-			imageUrl: path,
-		};
+	if (products.created_by == req.creator.id) {
+		if (!req.files) {
+			return next(new ErrorResponse(`Please select the files`, 404));
+		} else {
+			let path = '';
+			req.files.forEach((files, index, arr) => {
+				path = path + files.path + ',';
+			});
+			path = path.substring(0, path.lastIndexOf(','));
+			var data = {
+				product: req.params.id,
+				imageUrl: path,
+			};
 
-		const productImages = await ProductImage.create(data);
-		res.status(201).json({
-			status: true,
-			data: productImages,
-		});
+			const productImages = await ProductImage.create(data);
+			res.status(201).json({
+				status: true,
+				data: productImages,
+			});
+		}
+	} else {
+		return next(
+			new ErrorResponse(
+				'Please upload the picture of the product created by you',
+				404
+			)
+		);
 	}
 });
 
@@ -77,33 +86,44 @@ exports.updateProductImages = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	if (!req.files) {
-		return next(new ErrorResponse(`Please select the files`, 404));
+	const product = await Product.find({ _id: productImages.product });
+
+	if (product[0].created_by == req.creator.id) {
+		if (!req.files) {
+			return next(new ErrorResponse(`Please select the files`, 404));
+		} else {
+			let path = '';
+
+			req.files.forEach((files, index, arr) => {
+				path = path + files.path + ',';
+			});
+			path = path.substring(0, path.lastIndexOf(','));
+
+			var data = {
+				imageUrl: path,
+			};
+
+			productImages = await ProductImage.findByIdAndUpdate(
+				req.params.id,
+				data,
+				{
+					new: true,
+					runValidator: true,
+				}
+			);
+			res.status(200).json({
+				status: true,
+				message: 'Successfully updated the images',
+				data: productImages,
+			});
+		}
 	} else {
-		let path = '';
-
-		req.files.productImage.forEach((files, index, arr) => {
-			path = path + files.path + ',';
-		});
-		path = path.substring(0, path.lastIndexOf(','));
-
-		var data = {
-			imageUrl: path,
-		};
-
-		productImages = await ProductImage.findByIdAndUpdate(
-			req.params.id,
-			data,
-			{
-				new: true,
-				runValidator: true,
-			}
+		return next(
+			new ErrorResponse(
+				'Please upload the picture of the product created by you',
+				404
+			)
 		);
-		res.status(200).json({
-			status: true,
-			message: 'Successfully updated the images',
-			data: productImages,
-		});
 	}
 });
 
@@ -115,57 +135,25 @@ exports.deleteProductImages = asyncHandler(async (req, res, next) => {
 	if (!productImages) {
 		return next(
 			new ErrorResponse(
-				`No slide data with id:${req.params.id} was found`,
+				`Prodcut Image with ${req.params.id} has already been deleted`,
 				404
 			)
 		);
 	}
-	await productImages.remove();
-	res.status(200).json({
-		status: true,
-		message: 'Successfully deleted the images',
-	});
-});
+	const product = await Product.find({ _id: productImages.product });
 
-// @desc  uplaod  photo
-//@route  PUT /api/v1/users//photo
-exports.PhotoUpload = asyncHandler(async (req, res, next) => {
-	const product = await ProductImage.findById(req.params.id);
-
-	if (!product) {
+	if (product[0].created_by == req.creator.id) {
+		await productImages.remove();
+		res.status(200).json({
+			status: true,
+			message: 'Successfully deleted the images',
+		});
+	} else {
 		return next(
-			new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
+			new ErrorResponse(
+				'Please delete the picture of the product you created!',
+				404
+			)
 		);
 	}
-	if (!req.files) {
-		return next(new ErrorResponse(`Please upload a file`, 400));
-	}
-	const file = req.files.Photo;
-
-	//Image is photo check
-	if (!file.mimetype.startsWith('image')) {
-		return next(new ErrorResponse(`Please upload an image file`, 400));
-	}
-	//check filesize
-	if (file.size > process.env.FILE_MAX_SIZE) {
-		return next(new ErrorResponse(`file size cannot be more than 1mb`, 400));
-	}
-	//Create custom filename
-	file.name = `photo_${req.params.id}${path.parse(file.name).ext}`;
-
-	file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
-		if (err) {
-			console.error(err);
-			return next(new ErrorResponse(`Problem with file upload`, 500));
-		}
-
-		await product.findByIdAndUpdate(req.params.id, {
-			photo: file.name,
-		});
-
-		res.status(200).json({
-			success: true,
-			data: file.name,
-		});
-	});
 });

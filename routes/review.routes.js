@@ -6,7 +6,7 @@ const allqueryresults = require('../middleware/allqueryresults');
 const Review = require('../models/review.models');
 
 const router = express.Router({ mergeParams: true });
-const { protect } = require('../middleware/vendoradmin');
+const { protect } = require('../middleware/authVendorAdmin');
 const authCustomer = require('../middleware/authCustomer');
 
 const {
