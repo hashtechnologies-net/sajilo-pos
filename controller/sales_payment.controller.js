@@ -127,11 +127,9 @@ exports.getTodayTotalSales = asyncHandler(async (req, res, next) => {
 		{
 			$project: {
 				total_amount: 1,
-
 				created_at: { $substr: ['$created_at', 0, 10] },
 			},
 		},
-
 		{
 			$addFields: {
 				today_date: {
