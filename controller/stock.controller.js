@@ -30,7 +30,7 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 
 		{
 			$sort: {
-				count: -1,
+				totalStock: -1,
 			},
 		},
 		// {

@@ -43,8 +43,8 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`Product with id ${req.params.id} could not be found`,
-				404
-			)
+				404,
+			),
 		);
 	}
 
@@ -55,6 +55,7 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/products
 exports.createProduct = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.creator.id;
+	req.body.QR_link = req.file.path;
 
 	const category = await Category.findById(req.body.category_id);
 
@@ -62,8 +63,8 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`Category with id ${req.body.category_id} could not be found`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	const unit = await Units.findById(req.body.unit_id);
@@ -72,8 +73,8 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`Unit with id ${req.body.unit_id} could not be found`,
-				404
-			)
+				404,
+			),
 		);
 	}
 
@@ -85,8 +86,8 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`The product of code ${productcodeExists.product_code} is already registered`,
-				400
-			)
+				400,
+			),
 		);
 	}
 
@@ -100,16 +101,17 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 // @desc  update  Product
 //@route  PUT /api/v1/products/:id
 exports.updateProduct = asyncHandler(async (req, res, next) => {
-	let product = await Product.findByIdAndUpdate(req.params.id);
+	let product = await Product.findById(req.params.id);
 	if (!product) {
 		return next(
 			new ErrorResponse(
 				`Product with id ${req.params.id} could not be found`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	if (product.created_by == req.creator.id) {
+		req.body.QR_link = req.file.path;
 		product = await Product.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
 			runValidators: true,
@@ -127,8 +129,8 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				'Please update the product created by you!Access Denied!',
-				404
-			)
+				404,
+			),
 		);
 	}
 });
@@ -141,8 +143,8 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`Product with id ${req.params.id} has already been deleted`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	if ((product.created_by = req.creator.id)) {
@@ -156,8 +158,8 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				'Please delete the product created by yourself!Access Denied!',
-				404
-			)
+				404,
+			),
 		);
 	}
 });

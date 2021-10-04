@@ -51,4 +51,12 @@ router
 	.route('/today/totalsales')
 	.get(authprotect.protect, salesPaymentController.getTodayTotalSales);
 
+router
+	.route('/highest/customers')
+	.get(authprotect.protect, queryController.getHighestPurchasingCustomer);
+
+router
+	.route('/customer/purchasehistory')
+	.get(authprotect.protect, queryController.getCustomerPurchaseHistory);
+
 module.exports = router;

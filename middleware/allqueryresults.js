@@ -18,7 +18,7 @@ const allqueryresults = (model, populate) => async (req, res, next) => {
 	// Create operators ($gt, $gte, etc)
 	queryStr = queryStr.replace(
 		/\b(gt|gte|lt|lte|in)\b/g,
-		(match) => `$${match}`
+		(match) => `$${match}`,
 	);
 
 	// Finding resource

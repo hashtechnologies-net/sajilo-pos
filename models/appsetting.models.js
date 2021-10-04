@@ -13,6 +13,16 @@ const AppsettingSchema = new mongoose.Schema({
 		type: Boolean,
 		default: false,
 	},
+	contact: {
+		type: Number,
+		minlength: [10, 'A number should be of 10 digits'],
+		maxlength: [10, 'A number should be of only 10 digits'],
+		required: true,
+	},
+	logo_url: {
+		type: String,
+		required: true,
+	},
 	address: {
 		type: String,
 		required: [true, 'Please add the address'],

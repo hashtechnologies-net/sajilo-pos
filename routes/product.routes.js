@@ -8,6 +8,7 @@ const Product = require('../models/product.models');
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
 const routeprotect = require('../middleware/authVendorAdmin');
+const upload = require('../middleware/QRUpload');
 const router = express.Router();
 
 router
@@ -24,14 +25,22 @@ router
 			},
 		]),
 
-		productController.getAllProducts
+		productController.getAllProducts,
 	)
-	.post(routeprotect.protect, productController.createProduct);
+	.post(
+		routeprotect.protect,
+		upload.single('QRLink'),
+		productController.createProduct,
+	);
 
 router
 	.route('/:id')
 	.get(productController.getSingleProduct)
-	.put(routeprotect.protect, productController.updateProduct)
+	.put(
+		routeprotect.protect,
+		upload.single('QR'),
+		productController.updateProduct,
+	)
 	.delete(routeprotect.protect, productController.deleteProduct);
 
 module.exports = router;

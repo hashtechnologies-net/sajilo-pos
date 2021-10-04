@@ -19,8 +19,8 @@ exports.getSingleSetting = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`App Setting with id ${req.params.id} could not be found`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	res.status(200).json({ success: true, data: app_setting });
@@ -30,6 +30,7 @@ exports.getSingleSetting = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/products
 exports.createSetting = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.admin.id;
+	req.body.logo_url = req.file.path;
 	const app_setting = await Appsetting.create(req.body);
 	res.status(201).json({ success: true, data: app_setting });
 });
@@ -42,8 +43,8 @@ exports.updateSetting = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`App Setting with id ${req.params.id} could not be found`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	app_setting = await Appsetting.findByIdAndUpdate(req.params.id, req.body, {
@@ -69,8 +70,8 @@ exports.deleteSetting = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`App Setting with id ${req.params.id} has already been deleted`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	app_setting.remove();

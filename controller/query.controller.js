@@ -6,6 +6,7 @@ const Purchase = require('../models/purchase.model');
 const SalesPayment = require('../models/sales.payment.models');
 const Invoice = require('../models/invoice.models');
 const Review = require('../models/review.models');
+const Order = require('../models/order.models');
 const MerchantPayment = require('../models/merchant.payment.models');
 
 // @desc  Get Highest Purchase
@@ -246,9 +247,7 @@ exports.getHighestSalesProducts = asyncHandler(async (req, res, next) => {
 		},
 		{
 			$project: {
-				data: {
-					description: 1,
-				},
+				event: 1,
 			},
 		},
 		{
@@ -408,6 +407,90 @@ exports.getInvestment = asyncHandler(async (req, res, next) => {
 		{
 			$addFields: {
 				Investment: { $subtract: ['$totalAmount', '$totalCredit'] },
+			},
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse('Something Bad happened', 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// @desc  Get highest purchasing customer
+//@route  GET /api/v1/find/highest/customer
+exports.getHighestPurchasingCustomer = asyncHandler(async (req, res, next) => {
+	Order.aggregate([
+		{
+			$project: {
+				customer_id: 1,
+			},
+		},
+		{
+			$group: {
+				_id: '$customer_id',
+				Order: { $sum: 1 },
+			},
+		},
+		{
+			$sort: {
+				Order: -1,
+			},
+		},
+		{
+			$limit: 5,
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse('Something Bad happened', 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// @desc  Get customer purchase history
+//@route  GET /api/v1/find/customer/purchasehistory
+exports.getCustomerPurchaseHistory = asyncHandler(async (req, res, next) => {
+	Order.aggregate([
+		{
+			$lookup: {
+				from: 'products',
+				localField: 'description.product',
+				foreignField: '_id',
+				as: 'data',
+			},
+		},
+		{
+			$project: {
+				customer_id: 1,
+				status: 1,
+				data: {
+					product_name: 1,
+					product_code: 1,
+				},
+			},
+		},
+		{
+			$match: {
+				$expr: { $eq: ['$status', 'Delivered'] },
+			},
+		},
+		{
+			$group: {
+				_id: '$customer_id',
+				data: {
+					$push: {
+						Product_name: '$data.product_name',
+						Product_code: '$data.product_code',
+						status: '$status',
+					},
+				},
 			},
 		},
 	]).exec((err, result) => {

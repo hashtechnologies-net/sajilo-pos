@@ -20,10 +20,10 @@ router.route('/').get(
 		{
 			path: 'product',
 			select: 'product_name',
-		}
+		},
 	),
 
-	productImageController.getAllProductImages
+	productImageController.getAllProductImages,
 );
 
 router
@@ -32,13 +32,13 @@ router
 	.put(
 		authprotect.protect,
 		upload.array('productImage', 3),
-		productImageController.updateProductImages
+		productImageController.updateProductImages,
 	)
 	.delete(authprotect.protect, productImageController.deleteProductImages)
 	.post(
 		authprotect.protect,
 		upload.array('productImage', 3),
-		productImageController.uploadProductImages
+		productImageController.uploadProductImages,
 	);
 
 module.exports = router;
