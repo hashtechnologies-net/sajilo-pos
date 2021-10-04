@@ -7,7 +7,7 @@ const Product = require('../models/product.models');
 
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
-const routeprotect = require('../middleware/vendoradmin');
+const routeprotect = require('../middleware/authVendorAdmin');
 const router = express.Router();
 
 router
@@ -31,7 +31,7 @@ router
 router
 	.route('/:id')
 	.get(productController.getSingleProduct)
-	.put(authprotect.protect, productController.updateProduct)
-	.delete(authprotect.protect, productController.deleteProduct);
+	.put(routeprotect.protect, productController.updateProduct)
+	.delete(routeprotect.protect, productController.deleteProduct);
 
 module.exports = router;

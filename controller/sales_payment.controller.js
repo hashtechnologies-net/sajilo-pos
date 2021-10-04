@@ -19,8 +19,8 @@ exports.getSinglePayment = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`Payment with id ${req.params.id} could not be found`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	res.status(200).json({ success: true, data: spayment1 });
@@ -41,8 +41,8 @@ exports.updateSPayment = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`Payment with id ${req.params.id} could not be found`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	USpayment = await SalesPayment.findByIdAndUpdate(req.params.id, req.body, {
@@ -58,6 +58,7 @@ exports.updateSPayment = asyncHandler(async (req, res, next) => {
 		message: 'Successfully Updated!!',
 	});
 });
+
 // @desc  Delete  Payment
 //@route  DELETE /api/v1/salespayments/:id
 exports.deleteSPayment = asyncHandler(async (req, res, next) => {
@@ -66,8 +67,8 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`Payment with id ${req.params.id} has already been deleted`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	deleteSPayment.remove();
@@ -80,41 +81,140 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 
 // // @desc  GET  todaySales
 // //@route  GET /api/v1/find/today/sales
-exports.getTodaySales = asyncHandler(async (req, res, next) => {
-	let invoice = await Invoice.find();
-	let sales = [];
-	invoice.forEach((element) => {
-		let created_at = element.created_at;
-		let today = new Date().toISOString().slice(0, 10);
-		let saledate = created_at.toISOString().slice(0, 10);
+// exports.getTodaySales = asyncHandler(async (req, res, next) => {
+// 	let invoice = await Invoice.find();
+// 	let sales = [];
+// 	invoice.forEach((element) => {
+// 		let created_at = element.created_at;
+// 		let today = new Date().toISOString().slice(0, 10);
+// 		let saledate = created_at.toISOString().slice(0, 10);
 
-		if (today == saledate) {
-			sales.push(created_at.getHours(), element.total_amount);
-		}
-	});
+// 		if (today == saledate) {
+// 			sales.push(created_at.getHours(), element.total_amount);
+// 		}
+// 	});
 
-	res.status(200).json({
-		success: true,
-		sales: sales,
-	});
-});
+// 	res.status(200).json({
+// 		success: true,
+// 		sales: sales,
+// 	});
+// });
+
+// // @desc  GET  todaySales
+// //@route  GET /api/v1/find/today/totalsales
+// exports.getTodayTotalSales = asyncHandler(async (req, res, next) => {
+// 	let invoice = await Invoice.find();
+// 	let totalAmount = 0;
+// 	invoice.forEach((element) => {
+// 		let created_at = element.created_at;
+// 		let today = new Date().toISOString().slice(0, 10);
+// 		let salesdate = created_at.toISOString().slice(0, 10);
+
+// 		if (today == salesdate) {
+// 			totalAmount += element.total_amount;
+// 		}
+// 	});
+// 	res.status(200).json({
+// 		success: true,
+// 		total_amount: totalAmount,
+// 	});
+// });
 
 // // @desc  GET  todaySales
 // //@route  GET /api/v1/find/today/totalsales
 exports.getTodayTotalSales = asyncHandler(async (req, res, next) => {
-	let invoice = await Invoice.find();
-	let totalAmount = 0;
-	invoice.forEach((element) => {
-		let created_at = element.created_at;
-		let today = new Date().toISOString().slice(0, 10);
-		let salesdate = created_at.toISOString().slice(0, 10);
-
-		if (today == salesdate) {
-			totalAmount += element.total_amount;
+	Invoice.aggregate([
+		{
+			$project: {
+				total_amount: 1,
+				created_at: { $substr: ['$created_at', 0, 10] },
+			},
+		},
+		{
+			$addFields: {
+				today_date: {
+					$substr: [new Date().toISOString(), 0, 10],
+				},
+			},
+		},
+		{
+			$match: {
+				$expr: { $eq: ['$created_at', '$today_date'] },
+			},
+		},
+		{
+			$group: {
+				_id: '$created_at',
+				totalAmount: {
+					$sum: '$total_amount',
+				},
+			},
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse(err, 500));
 		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
 	});
-	res.status(200).json({
-		success: true,
-		total_amount: totalAmount,
+});
+
+// @desc  GET  todaySales
+//@route  GET /api/v1/find/today/sales
+exports.getTodaySales = asyncHandler(async (req, res, next) => {
+	SalesPayment.aggregate([
+		{
+			$lookup: {
+				from: 'invoices',
+				localField: 'invoice_id',
+				foreignField: '_id',
+				as: 'data',
+			},
+		},
+		{
+			$project: {
+				data: {
+					total_amount: 1,
+				},
+
+				created_at: { $substr: ['$created_at', 0, 10] },
+				hour: { $hour: { date: '$created_at', timezone: '+0530' } },
+			},
+		},
+
+		{
+			$addFields: {
+				today_sale: {
+					$substr: [new Date().toISOString(), 0, 10],
+				},
+			},
+		},
+		{
+			$match: {
+				$expr: { $eq: ['$created_at', '$today_sale'] },
+			},
+		},
+		{
+			$group: {
+				_id: null,
+
+				salesHistory: {
+					$push: {
+						hour: '$hour',
+						sales: '$data.total_amount',
+					},
+				},
+			},
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse(err, 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
 	});
 });

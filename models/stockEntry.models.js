@@ -25,5 +25,9 @@ const StockEntrySchema = new mongoose.Schema({
 		type: mongoose.Schema.ObjectId,
 		ref: 'invoice',
 	},
-}, {timestamps:true});
+	status: {
+		type: String,
+		enum: ['stockIn', 'stockOut'],
+	},
+});
 module.exports = mongoose.model('stockentry', StockEntrySchema);

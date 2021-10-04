@@ -6,7 +6,7 @@ const multer = require('multer');
 const ProductImage = require('../models/product.image.models');
 
 const allqueryresults = require('../middleware/allqueryresults');
-const authprotect = require('../middleware/authAdmin');
+const authprotect = require('../middleware/authVendorAdmin');
 const router = express.Router();
 const upload = multer({ dest: './uploads/' });
 
@@ -29,12 +29,16 @@ router.route('/').get(
 router
 	.route('/:id')
 	.get(productImageController.getSingleProductImages)
-	.put(productImageController.updateProductImages)
-	.delete(productImageController.deleteProductImages)
+	.put(
+		authprotect.protect,
+		upload.array('productImage', 3),
+		productImageController.updateProductImages
+	)
+	.delete(authprotect.protect, productImageController.deleteProductImages)
 	.post(
+		authprotect.protect,
 		upload.array('productImage', 3),
 		productImageController.uploadProductImages
 	);
-router.route('/photo/:id').put(productImageController.PhotoUpload);
 
 module.exports = router;

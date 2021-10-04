@@ -27,6 +27,7 @@ exports.getAllProducts = asyncHandler(async (req, res, next) => {
 		res.status(200).json({
 			status: true,
 			data: result,
+			//products,
 		});
 	});
 
@@ -46,7 +47,6 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	// stockController.getStock();
 	res.status(200).json({ success: true, data: product });
 });
 
@@ -108,19 +108,28 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-		new: true,
-		runValidators: true,
-	});
+	if (product.created_by == req.creator.id) {
+		product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+			new: true,
+			runValidators: true,
+		});
 
-	if (Object.keys(req.body).length === 0) {
-		return next(new ErrorResponse(`Nothing to update`, 200));
+		if (Object.keys(req.body).length === 0) {
+			return next(new ErrorResponse(`Nothing to update`, 200));
+		}
+		res.status(200).json({
+			success: true,
+			data: product,
+			message: 'Successfully Updated!!',
+		});
+	} else {
+		return next(
+			new ErrorResponse(
+				'Please update the product created by you!Access Denied!',
+				404
+			)
+		);
 	}
-	res.status(200).json({
-		success: true,
-		data: product,
-		message: 'Successfully Updated!!',
-	});
 });
 
 // @desc  Delete  Product
@@ -135,10 +144,19 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	product.remove();
-	res.status(200).json({
-		success: true,
-		data: {},
-		message: 'Successfully deleted !!',
-	});
+	if ((product.created_by = req.creator.id)) {
+		product.remove();
+		res.status(200).json({
+			success: true,
+			data: {},
+			message: 'Successfully deleted !!',
+		});
+	} else {
+		return next(
+			new ErrorResponse(
+				'Please delete the product created by yourself!Access Denied!',
+				404
+			)
+		);
+	}
 });

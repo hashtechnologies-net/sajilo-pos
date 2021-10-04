@@ -185,7 +185,9 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/customers/forgotpassword
 // @access    Public
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
-	const customer = await Customer.findOne({ email: req.body.customer_email });
+	const customer = await Customer.findOne({
+		customer_email: req.body.customer_email,
+	});
 	if (!customer) {
 		return next(
 			new ErrorResponse(
@@ -244,7 +246,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	console.logout(token);
 
 	try {
 		// Verify token

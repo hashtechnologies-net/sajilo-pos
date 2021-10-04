@@ -43,7 +43,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 	// Validate emil & password
 	if (!username || !password) {
 		return next(
-			new ErrorResponse('Please provide username and password', 400)
+			new ErrorResponse('Please provide username and password', 400),
 		);
 	}
 
@@ -69,6 +69,11 @@ exports.logout = asyncHandler(async (req, res, next) => {
 	res.cookie('token', 'none', {
 		expires: new Date(Date.now() + 10 * 1000),
 		httpOnly: true,
+	});
+	res.status(200).json({
+		success: true,
+		message: 'User logged out',
+		data: {},
 	});
 });
 
@@ -108,7 +113,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	const user = await User.findOne({ email: req.body.email });
 	if (!user) {
 		return next(
-			new ErrorResponse('User with given email could not be found', 404)
+			new ErrorResponse('User with given email could not be found', 404),
 		);
 	}
 
@@ -158,8 +163,8 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				'Please login as a user to access this resource.',
-				401
-			)
+				401,
+			),
 		);
 	}
 
@@ -177,8 +182,8 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				'Inernal Server Error from user authentication',
-				500
-			)
+				500,
+			),
 		);
 	}
 });
@@ -191,7 +196,9 @@ const sendTokenResponse = async (user, statusCode, res) => {
 	const refreshToken = user.generateRefreshToken();
 
 	const options = {
-		expires: new Date(Date.now() + 15000),
+		expires: new Date(
+			Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
+		),
 		httpOnly: true,
 	};
 
@@ -218,9 +225,12 @@ exports.generateAccessToken = (req, res, next) => {
 	console.log(decoded);
 	if (decoded.id === req.user.id) {
 		const token =
-			'user@' +
-			jwt.sign({ id: req.user.id }, process.env.JWT_USER_SECRET);
+			'user@' + jwt.sign({ id: req.user.id }, process.env.JWT_USER_SECRET);
 
 		res.json({ token });
+	} else {
+		return next(
+			new ErrorResponse('Unauthorized!Please enter the valid token', 401),
+		);
 	}
 };
