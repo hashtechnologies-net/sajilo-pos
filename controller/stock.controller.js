@@ -31,12 +31,12 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 
 			{
 				$sort: {
-					count: -1,
+					totalStock: -1,
 				},
 			},
-			{
-				$limit: 5,
-			},
+			// {
+			// 	// $limit: 5,
+			// },
 		])
 		.exec((err, result) => {
 			if (err) {

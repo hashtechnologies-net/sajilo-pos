@@ -25,5 +25,5 @@ const StockEntrySchema = new mongoose.Schema({
 		type: mongoose.Schema.ObjectId,
 		ref: 'invoice',
 	},
-});
+}, {timestamps:true});
 module.exports = mongoose.model('stockentry', StockEntrySchema);
