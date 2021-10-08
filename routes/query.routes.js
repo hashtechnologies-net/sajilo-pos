@@ -58,5 +58,8 @@ router
 router
 	.route('/customer/purchasehistory')
 	.get(authprotect.protect, queryController.getCustomerPurchaseHistory);
+router
+	.route('/productdetail')
+	.get(authprotect.protect, queryController.getProductDetail);
 
 module.exports = router;

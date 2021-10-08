@@ -51,6 +51,7 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 
 			req.body.description.map((sales) => {
 				found = elements.find((item) => item._id == sales.product);
+
 				try {
 					if (!found) {
 						return next(new ErrorResponse('Product not found', 404));
@@ -59,8 +60,8 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 							return next(
 								new ErrorResponse(
 									`Only ${found.totalStock} products are available`,
-									400
-								)
+									400,
+								),
 							);
 						}
 						next();
@@ -69,8 +70,8 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 					return next(
 						new ErrorResponse(
 							'Internal Server Error from Stock Check',
-							500
-						)
+							500,
+						),
 					);
 				}
 			});

@@ -4,6 +4,7 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Purchase = require('../models/purchase.model');
 const SalesPayment = require('../models/sales.payment.models');
+const StockEntry = require('../models/stockEntry.models.js');
 const Invoice = require('../models/invoice.models');
 const Review = require('../models/review.models');
 const Order = require('../models/order.models');
@@ -496,6 +497,69 @@ exports.getCustomerPurchaseHistory = asyncHandler(async (req, res, next) => {
 	]).exec((err, result) => {
 		if (err) {
 			return next(new ErrorResponse('Something Bad happened', 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// @desc  Get product detail
+// @route  GET /api/v1/find/productdetail
+exports.getProductDetail = asyncHandler(async (req, res, next) => {
+	StockEntry.aggregate([
+		{
+			$lookup: {
+				from: 'products',
+				localField: 'product_id',
+				foreignField: '_id',
+				as: 'product',
+			},
+		},
+		{
+			$project: {
+				product_id: 1,
+				stockIn: 1,
+				stockOut: 1,
+				order_id: 1,
+				purchase_id: 1,
+				invoice_id: 1,
+				createdAt: 1,
+				updatedAt: 1,
+				product: {
+					product_name: 1,
+					product_code: 1,
+				},
+			},
+		},
+
+		{
+			$group: {
+				_id: '$product_id',
+				data: {
+					$push: {
+						stockIn: { $sum: '$stockIn' },
+						stockOut: { $sum: '$stockOut' },
+						invoice_id: '$invoice_id',
+						purchase_id: '$purchase_id',
+						order_id: '$order_id',
+						product_name: '$product.product_name',
+						product_code: '$product.product_code',
+						created_at: '$createdAt',
+						updated_at: '$updatedAt',
+					},
+				},
+			},
+		},
+		{
+			$sort: {
+				created_at: -1,
+			},
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse(err, 500));
 		}
 		res.status(200).json({
 			status: true,
