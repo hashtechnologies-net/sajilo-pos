@@ -8,7 +8,7 @@ const Product = require('../models/product.models');
 // @desc  get all Product Category
 //@route  GET /api/v1/category
 exports.getAllCategory = asyncHandler(async (req, res, next) => {
-	res.status(200).json(res.allqueryresults)
+	res.status(200).json(res.allqueryresults);
 });
 
 // @desc  get a single Product Category

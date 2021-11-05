@@ -33,8 +33,6 @@ exports.getSingleProductImages = asyncHandler(async (req, res, next) => {
 // @desc  upload product images
 //@route  POST /api/v1/productimages
 exports.uploadProductImages = asyncHandler(async (req, res, next) => {
-	// console.log(req.body);
-	// console.log(req);
 	const products = await Product.findById(req.params.id);
 	if (!products) {
 		return next(
@@ -44,25 +42,34 @@ exports.uploadProductImages = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	if (!req.files) {
-		return next(new ErrorResponse(`Please select the files`, 404));
-	} else {
-		let path = '';
-		console.log(req.files);
-		req.files.productImage.forEach((files, index, arr) => {
-			path = path + files.path + ',';
-		});
-		path = path.substring(0, path.lastIndexOf(','));
-		var data = {
-			product: req.body.product,
-			imageUrl: path,
-		};
 
-		const productImages = await ProductImage.create(data);
-		res.status(201).json({
-			status: true,
-			data: productImages,
-		});
+	if (products.created_by == req.creator.id) {
+		if (!req.files) {
+			return next(new ErrorResponse(`Please select the files`, 404));
+		} else {
+			let path = '';
+			req.files.forEach((files, index, arr) => {
+				path = path + files.path + ',';
+			});
+			path = path.substring(0, path.lastIndexOf(','));
+			var data = {
+				product: req.params.id,
+				imageUrl: path,
+			};
+
+			const productImages = await ProductImage.create(data);
+			res.status(201).json({
+				status: true,
+				data: productImages,
+			});
+		}
+	} else {
+		return next(
+			new ErrorResponse(
+				'Please upload the picture of the product created by you',
+				404
+			)
+		);
 	}
 });
 
@@ -79,33 +86,44 @@ exports.updateProductImages = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	if (!req.files) {
-		return next(new ErrorResponse(`Please select the files`, 404));
+	const product = await Product.find({ _id: productImages.product });
+
+	if (product[0].created_by == req.creator.id) {
+		if (!req.files) {
+			return next(new ErrorResponse(`Please select the files`, 404));
+		} else {
+			let path = '';
+
+			req.files.forEach((files, index, arr) => {
+				path = path + files.path + ',';
+			});
+			path = path.substring(0, path.lastIndexOf(','));
+
+			var data = {
+				imageUrl: path,
+			};
+
+			productImages = await ProductImage.findByIdAndUpdate(
+				req.params.id,
+				data,
+				{
+					new: true,
+					runValidator: true,
+				}
+			);
+			res.status(200).json({
+				status: true,
+				message: 'Successfully updated the images',
+				data: productImages,
+			});
+		}
 	} else {
-		let path = '';
-
-		req.files.productImage.forEach((files, index, arr) => {
-			path = path + files.path + ',';
-		});
-		path = path.substring(0, path.lastIndexOf(','));
-
-		var data = {
-			imageUrl: path,
-		};
-
-		productImages = await ProductImage.findByIdAndUpdate(
-			req.params.id,
-			data,
-			{
-				new: true,
-				runValidator: true,
-			}
+		return next(
+			new ErrorResponse(
+				'Please upload the picture of the product created by you',
+				404
+			)
 		);
-		res.status(200).json({
-			status: true,
-			message: 'Successfully updated the images',
-			data: productImages,
-		});
 	}
 });
 
@@ -117,14 +135,25 @@ exports.deleteProductImages = asyncHandler(async (req, res, next) => {
 	if (!productImages) {
 		return next(
 			new ErrorResponse(
-				`No slide data with id:${req.params.id} was found`,
+				`Prodcut Image with ${req.params.id} has already been deleted`,
 				404
 			)
 		);
 	}
-	await productImages.remove();
-	res.status(200).json({
-		status: true,
-		message: 'Successfully deleted the images',
-	});
+	const product = await Product.find({ _id: productImages.product });
+
+	if (product[0].created_by == req.creator.id) {
+		await productImages.remove();
+		res.status(200).json({
+			status: true,
+			message: 'Successfully deleted the images',
+		});
+	} else {
+		return next(
+			new ErrorResponse(
+				'Please delete the picture of the product you created!',
+				404
+			)
+		);
+	}
 });

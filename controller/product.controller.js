@@ -10,7 +10,7 @@ const stockEntry = require('../models/stockEntry.models');
 // @desc  get all products
 //@route  GET /api/v1/products
 exports.getAllProducts = asyncHandler(async (req, res, next) => {
-	const products = await Product.find();
+
 	Product.aggregate([
 		{
 			$lookup: {
@@ -27,7 +27,7 @@ exports.getAllProducts = asyncHandler(async (req, res, next) => {
 		res.status(200).json({
 			status: true,
 			data: result,
-			products,
+			
 		});
 	});
 
@@ -47,14 +47,14 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	stockController.getStock();
+
 	res.status(200).json({ success: true, data: product });
 });
 
 // @desc  create new Product
 //@route  POST /api/v1/products
 exports.createProduct = asyncHandler(async (req, res, next) => {
-	req.body.created_by = req.admin.id;
+	req.body.created_by = req.creator.id;
 
 	const category = await Category.findById(req.body.category_id);
 
@@ -91,27 +91,10 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 	}
 
 	const product = await Product.create(req.body);
-
-	// Node.js WebSocket server script
-	const http = require('http');
-	const WebSocketServer = require('websocket').server;
-	const server = http.createServer();
-	server.listen(9898);
-	const wsServer = new WebSocketServer({
-		httpServer: server,
+	res.status(201).json({
+		success: true,
+		data: product,
 	});
-	wsServer.on('request', function (request) {
-		const connection = request.accept(null, request.origin);
-		connection.on('message', function (message) {
-			console.log('Received Message:', message.utf8Data);
-			connection.sendUTF('Hi this is WebSocket server!');
-		});
-		connection.on('close', function (reasonCode, description) {
-			console.log('Client has disconnected.');
-		});
-	});
-
-	res.status(201).json({ success: true, data: product });
 });
 
 // @desc  update  Product
@@ -126,19 +109,28 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-		new: true,
-		runValidators: true,
-	});
+	if (product.created_by == req.creator.id) {
+		product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+			new: true,
+			runValidators: true,
+		});
 
-	if (Object.keys(req.body).length === 0) {
-		return next(new ErrorResponse(`Nothing to update`, 200));
+		if (Object.keys(req.body).length === 0) {
+			return next(new ErrorResponse(`Nothing to update`, 200));
+		}
+		res.status(200).json({
+			success: true,
+			data: product,
+			message: 'Successfully Updated!!',
+		});
+	} else {
+		return next(
+			new ErrorResponse(
+				'Please update the product created by you!Access Denied!',
+				404
+			)
+		);
 	}
-	res.status(200).json({
-		success: true,
-		data: product,
-		message: 'Successfully Updated!!',
-	});
 });
 
 // @desc  Delete  Product
@@ -153,10 +145,19 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 			)
 		);
 	}
-	product.remove();
-	res.status(200).json({
-		success: true,
-		data: {},
-		message: 'Successfully deleted !!',
-	});
+	if ((product.created_by = req.creator.id)) {
+		product.remove();
+		res.status(200).json({
+			success: true,
+			data: {},
+			message: 'Successfully deleted !!',
+		});
+	} else {
+		return next(
+			new ErrorResponse(
+				'Please delete the product created by yourself!Access Denied!',
+				404
+			)
+		);
+	}
 });

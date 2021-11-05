@@ -18,7 +18,7 @@ exports.getSingleSetting = asyncHandler(async (req, res, next) => {
 	if (!app_setting) {
 		return next(
 			new ErrorResponse(
-				`Product with id ${req.params.id} could not be found`,
+				`App Setting with id ${req.params.id} could not be found`,
 				404
 			)
 		);
@@ -41,7 +41,7 @@ exports.updateSetting = asyncHandler(async (req, res, next) => {
 	if (!app_setting) {
 		return next(
 			new ErrorResponse(
-				`Product with id ${req.params.id} could not be found`,
+				`App Setting with id ${req.params.id} could not be found`,
 				404
 			)
 		);
@@ -68,7 +68,7 @@ exports.deleteSetting = asyncHandler(async (req, res, next) => {
 	if (!app_setting) {
 		return next(
 			new ErrorResponse(
-				`Product with id ${req.params.id} has already been deleted`,
+				`App Setting with id ${req.params.id} has already been deleted`,
 				404
 			)
 		);

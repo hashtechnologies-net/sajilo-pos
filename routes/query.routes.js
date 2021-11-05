@@ -38,13 +38,17 @@ router
 	.get(authprotect.protect, queryController.getLowestSalesProducts);
 router
 	.route('/totalinvestments')
-	.get(authprotect.protect, merchantPaymentController.getInvestment);
-router
-	.route('/totalsales')
-	.get(authprotect.protect, salesPaymentController.getSales);
+	.get(authprotect.protect, queryController.getInvestment);
+router.route('/totalsales').get(authprotect.protect, queryController.getSales);
 
+router
+	.route('/averagerating')
+	.get(authprotect.protect, queryController.getAverageRating);
 router
 	.route('/today/sales')
 	.get(authprotect.protect, salesPaymentController.getTodaySales);
+router
+	.route('/today/totalsales')
+	.get(authprotect.protect, salesPaymentController.getTodayTotalSales);
 
 module.exports = router;

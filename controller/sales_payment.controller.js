@@ -78,41 +78,10 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 	});
 });
 
-// @desc  GET  totalSales
-//@route  GET /api/v1/find/totalsales
-exports.getSales = asyncHandler(async (req, res, next) => {
-	let invoice = await Invoice.find();
-	let sales = 0;
-	invoice.forEach((element) => {
-		let total_amount = element.total_amount;
-		sales += total_amount;
-	});
-	res.status(200).json({
-		success: true,
-		Total_Sales: sales,
-	});
-});
-
-// @desc  GET  totalSales
-//@route  GET /api/v1/find/totalsales
-exports.getSales = asyncHandler(async (req, res, next) => {
-	let invoice = await Invoice.find();
-	let sales = 0;
-	invoice.forEach((element) => {
-		let total_amount = element.total_amount;
-		sales += total_amount;
-	});
-	res.status(200).json({
-		success: true,
-		Total_Sales: sales,
-	});
-});
-
 // // @desc  GET  todaySales
-// //@route  GET /api/v1/find/totalsales
+// //@route  GET /api/v1/find/today/sales
 exports.getTodaySales = asyncHandler(async (req, res, next) => {
 	let invoice = await Invoice.find();
-	0;
 	let sales = [];
 	invoice.forEach((element) => {
 		let created_at = element.created_at;
@@ -127,5 +96,25 @@ exports.getTodaySales = asyncHandler(async (req, res, next) => {
 	res.status(200).json({
 		success: true,
 		sales: sales,
+	});
+});
+
+// // @desc  GET  todaySales
+// //@route  GET /api/v1/find/today/totalsales
+exports.getTodayTotalSales = asyncHandler(async (req, res, next) => {
+	let invoice = await Invoice.find();
+	let totalAmount = 0;
+	invoice.forEach((element) => {
+		let created_at = element.created_at;
+		let today = new Date().toISOString().slice(0, 10);
+		let salesdate = created_at.toISOString().slice(0, 10);
+
+		if (today == salesdate) {
+			totalAmount += element.total_amount;
+		}
+	});
+	res.status(200).json({
+		success: true,
+		total_amount: totalAmount,
 	});
 });

@@ -7,6 +7,7 @@ const Product = require('../models/product.models');
 
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
+const routeprotect = require('../middleware/authVendorAdmin');
 const router = express.Router();
 
 router
@@ -21,20 +22,16 @@ router
 				path: 'category_id',
 				select: 'category_name',
 			},
-			{
-				path: 'created_by',
-				select: 'username',
-			},
 		]),
 
 		productController.getAllProducts
 	)
-	.post(authprotect.protect, productController.createProduct);
+	.post(routeprotect.protect, productController.createProduct);
 
 router
 	.route('/:id')
 	.get(productController.getSingleProduct)
-	.put(authprotect.protect, productController.updateProduct)
-	.delete(authprotect.protect, productController.deleteProduct);
+	.put(routeprotect.protect, productController.updateProduct)
+	.delete(routeprotect.protect, productController.deleteProduct);
 
 module.exports = router;

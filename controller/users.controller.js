@@ -17,7 +17,7 @@ exports.getSingleUser = asyncHandler(async (req, res, next) => {
 
 	if (!user1) {
 		return next(
-			new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
+			new ErrorResponse(`User not found with id of ${req.params.id}`, 404)
 		);
 	}
 	res.status(200).json({ success: true, data: user1 });
@@ -48,11 +48,11 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 // @desc  update  user
 //@route  PUT /api/v1/users/:id
 exports.updateUser = asyncHandler(async (req, res, next) => {
-	const Uuser = await User.findByIdAndUpdate(req.params.id, req.body, {
+	const user = await User.findByIdAndUpdate(req.params.id, req.body, {
 		new: true,
 		runValidators: true,
 	});
-	if (!Uuser) {
+	if (!user) {
 		return next(
 			new ErrorResponse(`User not found with id of ${req.params.id}`, 404)
 		);
@@ -61,7 +61,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 	if (Object.keys(req.body).length === 0) {
 		return next(new ErrorResponse(`Nothing to update`, 200));
 	}
-	res.status(200).json({ success: true, data: Uuser });
+	res.status(200).json({ success: true, data: user });
 });
 // @desc  Delete  user
 //@route  DELETE /api/v1/users/:id
@@ -85,40 +85,28 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 // @desc  uplaod  photo
 //@route  PUT /api/v1/users//photo
 exports.userPhotoUpload = asyncHandler(async (req, res, next) => {
-	const user = await User.findById(req.user.id);
+	let user = await User.findById(req.user.id);
 
 	if (!user) {
 		return next(
 			new ErrorResponse(` User not found with id of ${req.user.id}`, 404)
 		);
 	}
-	if (!req.files) {
+	if (!req.file) {
 		return next(new ErrorResponse(`Please upload a file`, 400));
 	}
-	const file = req.files.Photo;
+	var data = {
+		photo: req.file.path,
+	};
 
-	//Image is photo check
-	if (!file.mimetype.startsWith('image')) {
-		return next(new ErrorResponse(`Please upload an image file`, 400));
-	}
-	//check filesize
-	if (file.size > process.env.FILE_MAX_SIZE) {
-		return next(new ErrorResponse(`file size cannot be more than 1mb`, 400));
-	}
-	//Create custom filename
-	file.name = `photo_${user._id}${path.parse(file.name).ext}`;
-
-	file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
-		if (err) {
-			console.error(err);
-			return next(new ErrorResponse(`Problem with file upload`, 500));
-		}
-
-		await User.findByIdAndUpdate(req.user.id, { photo: file.name });
-
-		res.status(200).json({
-			success: true,
-			data: file.name,
-		});
+	//Adding both the body and the images in the monuments
+	user = await User.findByIdAndUpdate(req.user.id, data, {
+		runValidators: true,
+		new: true,
+	});
+	res.status(201).json({
+		status: true,
+		message: 'Sucessfully added new image',
+		data: user,
 	});
 });

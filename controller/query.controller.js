@@ -4,7 +4,9 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Purchase = require('../models/purchase.model');
 const SalesPayment = require('../models/sales.payment.models');
-const Product = require('../models/product.models');
+const Invoice = require('../models/invoice.models');
+const Review = require('../models/review.models');
+const MerchantPayment = require('../models/merchant.payment.models');
 
 // @desc  Get Highest Purchase
 //@route  GET /api/v1/find/highest/purchases
@@ -318,34 +320,32 @@ exports.getLowestSalesProducts = asyncHandler(async (req, res, next) => {
 	});
 });
 
-// @desc  Get sales done within the hour
-//@route  GET /api/v1/find/hourly/sales
-exports.getHourlySales = asyncHandler(async (req, res, next) => {
-	SalesPayment.aggregate([
-		{
-			$lookup: {
-				from: 'invoices',
-				localField: 'invoice_id',
-				foreignField: '_id',
-				as: 'data',
-			},
-		},
+// // @desc  Get Average Rating
+// //@route  GET /api/v1/find/averagerating
+exports.getAverageRating = asyncHandler(async (req, res, next) => {
+	Review.aggregate([
 		{
 			$project: {
-				data: {
-					description: 1,
-				},
+				product: 1,
+				rating: 1,
+				customer: 1,
 			},
 		},
 		{
 			$group: {
-				_id: '$data.description.product',
-				Items_sold: { $sum: 1 },
+				_id: '$product',
+				rating: { $sum: '$rating' },
+				count: { $sum: 1 },
+			},
+		},
+		{
+			$addFields: {
+				AverageRating: { $divide: ['$rating', '$count'] },
 			},
 		},
 		{
 			$sort: {
-				Items_sold: 1,
+				AverageRating: -1,
 			},
 		},
 		{
@@ -362,38 +362,53 @@ exports.getHourlySales = asyncHandler(async (req, res, next) => {
 	});
 });
 
-// @desc  Get sales done within the hour
-//@route  GET /api/v1/find/category/totalproducts
-exports.getTotalProducts = asyncHandler(async (req, res, next) => {
-	Product.aggregate([
-		{
-			$lookup: {
-				from: 'categories',
-				localField: 'category_id',
-				foreignField: '_id',
-				as: 'data',
-			},
-		},
+// @desc  GET  totalSales
+//@route  GET /api/v1/find/totalsales
+exports.getSales = asyncHandler(async (req, res, next) => {
+	Invoice.aggregate([
 		{
 			$project: {
-				data: {
-					_id: 1,
-				},
+				total_amount: 1,
 			},
 		},
 		{
 			$group: {
-				_id: '$data._id',
-				products: { $sum: 1 },
+				_id: null,
+				totalSales: { $sum: '$total_amount' },
+			},
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse('Something Bad happened', 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// @desc  GET  totalinvetsment
+//@route  GET /api/v1/find/totalinvestments
+exports.getInvestment = asyncHandler(async (req, res, next) => {
+	MerchantPayment.aggregate([
+		{
+			$project: {
+				amount: 1,
+				credit: 1,
 			},
 		},
 		{
-			$sort: {
-				products: -1,
+			$group: {
+				_id: null,
+				totalAmount: { $sum: '$amount' },
+				totalCredit: { $sum: '$credit' },
 			},
 		},
 		{
-			$limit: 5,
+			$addFields: {
+				Investment: { $subtract: ['$totalAmount', '$totalCredit'] },
+			},
 		},
 	]).exec((err, result) => {
 		if (err) {

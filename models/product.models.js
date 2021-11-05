@@ -18,6 +18,7 @@ const ProductSchema = new mongoose.Schema({
 		ref: 'units',
 		required: true,
 	},
+
 	unit_price: {
 		type: Number,
 		required: true,
@@ -33,7 +34,6 @@ const ProductSchema = new mongoose.Schema({
 	},
 	created_by: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'admin',
 		required: true,
 	},
 	created_at: {

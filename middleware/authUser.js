@@ -11,10 +11,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	if (
 		req.headers.authorization &&
-		req.headers.authorization.startsWith('Bearer user-')
+		req.headers.authorization.startsWith('Bearer user@')
 	) {
 		// Set token from Bearer token in header
-		token = req.headers.authorization.split('-')[1];
+		token = req.headers.authorization.split('@')[1];
+	} else {
+		return next(new ErrorResponse('Token not found', 401));
 	}
 	// Make sure token exists
 	if (!token) {
@@ -28,7 +30,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	try {
 		const decoded = jwt.verify(token, process.env.JWT_USER_SECRET);
-		console.log(decoded);
+
 		req.user = await User.findById(decoded.id);
 
 		if (!req.user) {
@@ -38,11 +40,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		}
 		next();
 	} catch (err) {
-		return next(
-			new ErrorResponse(
-				'Internal server error from user authentication',
-				500
-			)
-		);
+		return next(new ErrorResponse('Token Expired', 500));
 	}
 });

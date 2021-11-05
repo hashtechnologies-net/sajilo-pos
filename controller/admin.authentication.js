@@ -5,6 +5,7 @@ const asyncHandler = require('../middleware/async');
 const bcrypt = require('bcrypt');
 const Admin = require('../models/admin.models');
 require('dotenv').config('./env');
+const sendEmail = require('../utils/sendEmail');
 
 // @desc      Register admin
 // @route     POST /api/v1/admin/register
@@ -76,6 +77,47 @@ exports.logout = asyncHandler(async (req, res, next) => {
 	});
 });
 
+// @desc      Forgot password
+// @route     POST /api/v1/admin/forgotpassword
+// @access    Public
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+	const admin = await Admin.findOne({ email: req.body.email });
+	if (!admin) {
+		return next(
+			new ErrorResponse('Admin with given email could not be found', 404)
+		);
+	}
+
+	// Get reset token
+	const resetToken = admin.getResetPasswordToken();
+
+	// await user.save({ validateBeforeSave: false });
+
+	// Create reset url
+	const resetUrl = `${req.protocol}://${process.env.CLIENT_URL}/resetpassword/${resetToken}`;
+
+	// const resetUrl = `${process.env.CLIENT_URL}/resetpassword/${resetToken}`;
+
+	const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+
+	try {
+		await sendEmail({
+			email: admin.email,
+			subject: 'Password reset token',
+			message,
+		});
+
+		res.status(200).json({ success: true, data: 'Email sent' });
+	} catch (err) {
+		admin.resetPasswordToken = undefined;
+		admin.resetPasswordExpire = undefined;
+
+		// await user.save({ validateBeforeSave: false });
+
+		return next(new ErrorResponse('Email could not be sent', 500));
+	}
+});
+
 // Get token from model, create cookie and send response
 const sendTokenResponse = (admin, statusCode, res) => {
 	// Create token
@@ -114,4 +156,18 @@ exports.getAdmins = asyncHandler(async (req, res, next) => {
 	const admins = await Admin.find();
 	const exist = (admins.length > 0 ? true : false)
 	res.status(200).json({ success: true, exist });
+});
+
+exports.getSingleAdmin = asyncHandler(async (req, res, next) => {
+	const admins1 = await Admin.findById(req.params.id);
+
+	if (!admins1) {
+		return next(
+			new ErrorResponse(
+				`Admin not found with id of ${req.params.id}`,
+				404
+			)
+		);
+	}
+	res.status(200).json({ success: true, data: admins1 });
 });

@@ -1,3 +1,5 @@
+/** @format */
+
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('./async');
 const ErrorResponse = require('../utils/errorResponse');
@@ -8,10 +10,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 	if (
 		req.headers.authorization &&
-		req.headers.authorization.startsWith('Bearer vendor-')
+		req.headers.authorization.startsWith('Bearer vendor@')
 	) {
 		// Set token from Bearer token in header
-		token = req.headers.authorization.split('-')[1];
+		token = req.headers.authorization.split('@')[1];
+	} else {
+		return next(new ErrorResponse('Token not found', 401));
 	}
 
 	// Make sure token exists
@@ -35,11 +39,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		req.vendor = vendor;
 		next();
 	} catch (err) {
-		return next(
-			new ErrorResponse(
-				'Inernal Server Error from vendor authentication',
-				500
-			)
-		);
+		return next(new ErrorResponse('Token Expired', 500));
 	}
 });

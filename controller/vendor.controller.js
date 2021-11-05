@@ -1,3 +1,5 @@
+/** @format */
+
 const bcrypt = require('bcrypt');
 require('dotenv').config('./env');
 const jwt = require('jsonwebtoken');
@@ -125,6 +127,22 @@ exports.login = asyncHandler(async (req, res, next) => {
 	sendTokenResponse(vendor, 200, res);
 });
 
+// @desc      Log vendor out / clear cookie
+// @route     GET /api/v1/vendors/logout
+// @access    Public
+exports.logout = asyncHandler(async (req, res, next) => {
+	res.cookie('token', 'none', {
+		expires: new Date(Date.now() + 10 * 1000),
+		httpOnly: true,
+	});
+
+	res.status(200).json({
+		success: true,
+		message: 'Vendor logged out',
+		data: {},
+	});
+});
+
 // @desc      Get current logged in vendor
 // @route     GET /api/v1/vendors/me
 // @access    Private
@@ -161,7 +179,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	const vendor = await Vendor.findOne({ email: req.body.email });
 	if (!vendor) {
 		return next(
-			new ErrorResponse('vendor with given email could not be found', 404)
+			new ErrorResponse('Vendor with given email could not be found', 404)
 		);
 	}
 
@@ -183,6 +201,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 			subject: 'Password reset token',
 			message,
 		});
+		
 
 		res.status(200).json({ success: true, data: 'Email sent' });
 	} catch (err) {
@@ -198,7 +217,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 // Get token from model, create cookie and send response
 const sendTokenResponse = (vendor, statusCode, res) => {
 	// Create token
-	const token = 'vendor-' + vendor.getSignedJwtToken();
+	const token = 'vendor@' + vendor.getSignedJwtToken();
 
 	const options = {
 		expires: new Date(
