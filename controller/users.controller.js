@@ -43,7 +43,7 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 		password,
 		email,
 	};
-	res.status(201).json({ success: true, data });
+	res.status(201).json({ success: true, data: Cuser });
 });
 // @desc  update  user
 //@route  PUT /api/v1/users/:id
