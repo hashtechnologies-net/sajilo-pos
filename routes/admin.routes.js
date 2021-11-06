@@ -7,6 +7,7 @@ const authprotect = require('../middleware/authAdmin');
 const router = express.Router();
 
 router.route('/adminlogin').post(adminAuth.login);
+router.route('/register').post(adminAuth.register);
 router.route('/getadmin').get(authprotect.protect, adminAuth.getMe);
 router.route('/logout').get(adminAuth.logout);
 router.route('/').get(adminAuth.getAdmins);

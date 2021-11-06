@@ -11,24 +11,32 @@ const sendEmail = require('../utils/sendEmail');
 // @route     POST /api/v1/admin/register
 // @access    Admin
 exports.register = asyncHandler(async (req, res, next) => {
+	
 	const { full_name, username, email, password } = req.body;
-	const userExists = await Admin.findOne({ username });
+	const userExistsByUsername = await Admin.findOne({ username })
+	const userExistsByEmail =  await Admin.findOne({ email})
 
 	//check duplicate email
-	if (userExists) {
+	if (userExistsByUsername) {
 		return res.json({
 			Status: false,
-			reason: `${userExists.username} is already registered`,
+			reason: `${userExistsByUsername.username } is already registered`,
 		});
 	}
-
+	if (userExistsByEmail) {
+		return res.json({
+			Status: false,
+			reason: `${userExistsByEmail.email } is already registered`,
+		});
+	}
+	
 	// Create admin
 	const admin = await Admin.create({
 		full_name,
 		username,
 		email,
 		password,
-	});
+	}).catch(err =>{ console.log(err.message) })
 
 	sendTokenResponse(admin, 200, res);
 });
