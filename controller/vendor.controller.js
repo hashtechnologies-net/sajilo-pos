@@ -23,8 +23,8 @@ exports.getSingleVendor = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`vendor with id ${req.params.id} could not be found`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	res.status(200).json({ success: true, data: vendor1 });
@@ -62,8 +62,8 @@ exports.updateVendor = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`vendor with id ${req.params.id} could not be found`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	if (Object.keys(req.body).length === 0) {
@@ -88,8 +88,8 @@ exports.deleteVendor = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`vendor with id ${req.params.id} has already been deleted`,
-				404
-			)
+				404,
+			),
 		);
 	}
 	deletevendor.remove();
@@ -108,7 +108,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 	// Validate emil & password
 	if (!email || !password) {
 		return next(
-			new ErrorResponse('Please provide an email and password', 400)
+			new ErrorResponse('Please provide an email and password', 400),
 		);
 	}
 
@@ -179,7 +179,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	const vendor = await Vendor.findOne({ email: req.body.email });
 	if (!vendor) {
 		return next(
-			new ErrorResponse('Vendor with given email could not be found', 404)
+			new ErrorResponse('Vendor with given email could not be found', 404),
 		);
 	}
 
@@ -220,7 +220,7 @@ const sendTokenResponse = (vendor, statusCode, res) => {
 
 	const options = {
 		expires: new Date(
-			Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+			Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
 		),
 		httpOnly: true,
 	};
