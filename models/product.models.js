@@ -27,6 +27,9 @@ const ProductSchema = new mongoose.Schema({
 		type: Boolean,
 		default: false,
 	},
+	description: {
+		type: String,
+	},
 	QR_link: {
 		type: String,
 		default: 'no_img.jpg',

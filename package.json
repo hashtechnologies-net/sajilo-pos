@@ -11,7 +11,7 @@
     "type": "git",
     "url": "Sajilo_Backend"
   },
-  "author": "Pawan,Nirajan",
+  "author": "Pawan,Nirajan,Sanu",
   "license": "ISC",
   "dependencies": {
     "append-field": "^1.0.0",

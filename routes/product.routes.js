@@ -38,7 +38,7 @@ router
 	.get(productController.getSingleProduct)
 	.put(
 		routeprotect.protect,
-		upload.single('QR'),
+		upload.single('QRLink'),
 		productController.updateProduct,
 	)
 	.delete(routeprotect.protect, productController.deleteProduct);
