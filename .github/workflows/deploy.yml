@@ -1,10 +1,8 @@
 name: Deploy using AWS SSM Send-Command 
-
 on: push
-
 jobs:
-start:
-runs-on: ubuntu-latest 
+	start:
+	runs-on: ubuntu-latest 
 
 steps:
 - uses: actions/checkout@v2
