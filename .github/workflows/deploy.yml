@@ -14,4 +14,4 @@ jobs:
             instance-ids: ${{ secrets.INSTANCE_ID  }}
             comment: Deploy the main branch
             working-directory: /home/ubuntu/sajilo-pos
-            command: /home/ubuntu/sajilo-pos ./deployment.sh
+            command: bash /home/ubuntu/sajilo-pos/deployment.sh
