@@ -23,18 +23,16 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	if (!token) {
 		return next(
 			new ErrorResponse(
-				'Please login as admin to access this resources',
-				401
-			)
+				'Please login as an admin to access this resources',
+				401,
+			),
 		);
 	}
 
 	try {
 		// Verify token
 		if (token.startsWith('user')) {
-			return next(
-				new ErrorResponse('Please login as an Admin not User', 404)
-			);
+			return next(new ErrorResponse('Please login as an Admin', 404));
 		}
 		const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
 		req.admin = await Admin.findById(decoded.id);

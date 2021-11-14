@@ -23,9 +23,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
 	if (!token) {
 		return next(
 			new ErrorResponse(
-				'Please login as customer to access this resources',
-				401
-			)
+				'Please login as a customer to access this resources',
+				401,
+			),
 		);
 	}
 

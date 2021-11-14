@@ -46,17 +46,15 @@ exports.getTotalProducts = asyncHandler(async (req, res, next) => {
 		});
 
 		req.body.total.map(async (element) => {
-			console.log(element);
 			const product = await Product.findById({ category_id: element._id });
 			try {
 				if (product.category_id == element._id) {
 					req.total = element;
-					console.log(req.total);
 					next();
 				}
 			} catch (error) {
 				return next(
-					new ErrorResponse('Internal Server Error from Total Stock', 500)
+					new ErrorResponse('Internal Server Error from Total Stock', 500),
 				);
 			}
 		});
