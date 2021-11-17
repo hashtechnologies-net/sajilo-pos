@@ -7,7 +7,6 @@ const AppsettingController = require('../controller/app_setting.controller');
 const AppSetting = require('../models/appsetting.models');
 const allqueryresults = require('../middleware/allqueryresults');
 const authprotect = require('../middleware/authAdmin');
-const upload = require('../middleware/logoUpload');
 
 router
 	.route('/')
@@ -25,7 +24,7 @@ router
 	)
 	.post(
 		authprotect.protect,
-		upload.single('logo'),
+
 		AppsettingController.createSetting,
 	);
 

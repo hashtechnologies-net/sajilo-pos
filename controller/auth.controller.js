@@ -222,7 +222,7 @@ exports.generateAccessToken = (req, res, next) => {
 	}
 
 	const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-	console.log(decoded);
+
 	if (decoded.id === req.user.id) {
 		const token =
 			'user@' + jwt.sign({ id: req.user.id }, process.env.JWT_USER_SECRET);

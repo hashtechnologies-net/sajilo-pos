@@ -30,7 +30,7 @@ exports.getSingleSetting = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/products
 exports.createSetting = asyncHandler(async (req, res, next) => {
 	req.body.created_by = req.admin.id;
-	req.body.logo_url = req.file.path;
+
 	const app_setting = await Appsetting.create(req.body);
 	res.status(201).json({ success: true, data: app_setting });
 });

@@ -134,6 +134,7 @@ exports.getLowestCounterUser = asyncHandler(async (req, res, next) => {
 				as: 'data',
 			},
 		},
+
 		{
 			$project: {
 				data: {
