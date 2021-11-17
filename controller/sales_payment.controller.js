@@ -120,8 +120,8 @@ exports.deleteSPayment = asyncHandler(async (req, res, next) => {
 // 	});
 // });
 
-// // @desc  GET  todaySales
-// //@route  GET /api/v1/find/today/totalsales
+// @desc  GET  todaySales
+//@route  GET /api/v1/find/today/totalsales
 exports.getTodayTotalSales = asyncHandler(async (req, res, next) => {
 	Invoice.aggregate([
 		{
@@ -203,8 +203,61 @@ exports.getTodaySales = asyncHandler(async (req, res, next) => {
 				salesHistory: {
 					$push: {
 						hour: '$hour',
-						sales: '$data.total_amount',
+						sales: { $sum: 1 },
+						total_sales: '$data.total_amount',
 					},
+				},
+			},
+		},
+	]).exec((err, result) => {
+		if (err) {
+			return next(new ErrorResponse(err, 500));
+		}
+		res.status(200).json({
+			status: true,
+			data: result,
+		});
+	});
+});
+
+// @desc  GET  todaySales
+//@route  GET /api/v1/find/today/totalsales
+exports.getTodayTotalSales = asyncHandler(async (req, res, next) => {
+	Invoice.aggregate([
+		{
+			$project: {
+				total_amount: 1,
+				created_at: { $substr: ['$created_at', 0, 10] },
+				description: 1,
+			},
+		},
+		{
+			$addFields: {
+				today_date: {
+					$substr: [new Date().toISOString(), 0, 10],
+				},
+			},
+		},
+		{
+			$match: {
+				$expr: { $eq: ['$created_at', '$today_date'] },
+			},
+		},
+		{
+			$group: {
+				_id: '$created_at',
+				Revenue: {
+					$sum: '$total_amount',
+				},
+				Sales: {
+					$sum: 1,
+				},
+			},
+		},
+		{
+			$addFields: {
+				AverageTicketSize: {
+					$divide: ['$Revenue', '$Sales'],
 				},
 			},
 		},

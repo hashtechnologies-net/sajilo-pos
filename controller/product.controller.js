@@ -40,12 +40,7 @@ exports.getSingleProduct = asyncHandler(async (req, res, next) => {
 	const product = await Product.findById(req.params.id);
 
 	if (!product) {
-		return next(
-			new ErrorResponse(
-				`Product with id ${req.params.id} could not be found`,
-				404,
-			),
-		);
+		return next(new ErrorResponse(`This product could not be found`, 404));
 	}
 
 	res.status(200).json({ success: true, data: product });
@@ -62,20 +57,14 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 
 	if (!category) {
 		return next(
-			new ErrorResponse(
-				`Category with id ${req.body.category_id} could not be found`,
-				404,
-			),
+			new ErrorResponse(`Category of this product could not be found`, 404),
 		);
 	}
 	const unit = await Units.findById(req.body.unit_id);
 
 	if (!unit) {
 		return next(
-			new ErrorResponse(
-				`Unit with id ${req.body.unit_id} could not be found`,
-				404,
-			),
+			new ErrorResponse(`Unit of this product could not be found`, 404),
 		);
 	}
 
@@ -85,10 +74,7 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 	// Check for duplicate product
 	if (productcodeExists) {
 		return next(
-			new ErrorResponse(
-				`The product of code ${productcodeExists.product_code} is already registered`,
-				400,
-			),
+			new ErrorResponse(`This product code is already registered`, 400),
 		);
 	}
 
@@ -104,12 +90,7 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 exports.updateProduct = asyncHandler(async (req, res, next) => {
 	let product = await Product.findById(req.params.id);
 	if (!product) {
-		return next(
-			new ErrorResponse(
-				`Product with id ${req.params.id} could not be found`,
-				404,
-			),
-		);
+		return next(new ErrorResponse(`This product could not be found`, 404));
 	}
 	if (product.created_by == req.creator.id) {
 		req.body.QR_link = req.file.path;
@@ -142,10 +123,7 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 	let product = await Product.findById(req.params.id);
 	if (!product) {
 		return next(
-			new ErrorResponse(
-				`Product with id ${req.params.id} has already been deleted`,
-				404,
-			),
+			new ErrorResponse(`This product has already been deleted`, 404),
 		);
 	}
 	if ((product.created_by = req.creator.id)) {

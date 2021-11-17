@@ -9,6 +9,7 @@ const Invoice = require('../models/invoice.models');
 const Review = require('../models/review.models');
 const Order = require('../models/order.models');
 const MerchantPayment = require('../models/merchant.payment.models');
+const invoiceModels = require('../models/invoice.models');
 
 // @desc  Get Highest Purchase
 //@route  GET /api/v1/find/highest/purchases
@@ -81,26 +82,32 @@ exports.getLowestPurchase = asyncHandler(async (req, res, next) => {
 // @desc  Get User
 //@route  GET /api/v1/find/highest/counterusers
 exports.getHighestCounterUser = asyncHandler(async (req, res, next) => {
-	SalesPayment.aggregate([
+	Invoice.aggregate([
 		{
 			$lookup: {
-				from: 'invoices',
-				localField: 'invoice_id',
+				from: 'users',
+				localField: 'created_by',
 				foreignField: '_id',
 				as: 'data',
 			},
 		},
 		{
 			$project: {
+				created_by: 1,
 				data: {
-					created_by: 1,
+					username: 1,
 				},
 			},
 		},
 		{
 			$group: {
-				_id: '$data.created_by',
+				_id: '$created_by',
 				sales: { $sum: 1 },
+				data: {
+					$push: {
+						Username: '$data.username',
+					},
+				},
 			},
 		},
 		{
@@ -109,7 +116,7 @@ exports.getHighestCounterUser = asyncHandler(async (req, res, next) => {
 			},
 		},
 		{
-			$limit: 5,
+			$limit: 1,
 		},
 	]).exec((err, result) => {
 		if (err) {
@@ -125,27 +132,34 @@ exports.getHighestCounterUser = asyncHandler(async (req, res, next) => {
 // @desc  Get Lowest Selling User
 //@route  GET /api/v1/find/lowest/counterusers
 exports.getLowestCounterUser = asyncHandler(async (req, res, next) => {
-	SalesPayment.aggregate([
+	Invoice.aggregate([
 		{
 			$lookup: {
-				from: 'invoices',
-				localField: 'invoice_id',
+				from: 'users',
+				localField: 'created_by',
 				foreignField: '_id',
-				as: 'data',
+				as: 'users',
 			},
 		},
 
 		{
 			$project: {
-				data: {
-					created_by: 1,
+				created_by: 1,
+
+				users: {
+					username: 1,
 				},
 			},
 		},
 		{
 			$group: {
-				_id: '$data.created_by',
+				_id: '$created_by',
 				sales: { $sum: 1 },
+				data: {
+					$push: {
+						Username: '$users.username',
+					},
+				},
 			},
 		},
 		{
@@ -154,7 +168,7 @@ exports.getLowestCounterUser = asyncHandler(async (req, res, next) => {
 			},
 		},
 		{
-			$limit: 5,
+			$limit: 1,
 		},
 	]).exec((err, result) => {
 		if (err) {
@@ -238,24 +252,34 @@ exports.getLowestPurchaseProducts = asyncHandler(async (req, res, next) => {
 // @desc  Get highest sold products
 //@route  GET /api/v1/find/highest/soldproducts
 exports.getHighestSalesProducts = asyncHandler(async (req, res, next) => {
-	SalesPayment.aggregate([
+	Invoice.aggregate([
 		{
 			$lookup: {
-				from: 'invoices',
-				localField: 'invoice_id',
+				from: 'products',
+				localField: 'description.product',
 				foreignField: '_id',
 				as: 'data',
 			},
 		},
 		{
 			$project: {
-				event: 1,
+				total_amount: 1,
+				description: 1,
+				data: {
+					product_name: 1,
+				},
 			},
 		},
 		{
 			$group: {
-				_id: '$data.description.product',
+				_id: '$description.product',
 				Items_sold: { $sum: 1 },
+				Total_sales: { $sum: '$total_amount' },
+				data: {
+					$push: {
+						Product_name: '$data.product_name',
+					},
+				},
 			},
 		},
 		{
@@ -264,11 +288,11 @@ exports.getHighestSalesProducts = asyncHandler(async (req, res, next) => {
 			},
 		},
 		{
-			$limit: 5,
+			$limit: 1,
 		},
 	]).exec((err, result) => {
 		if (err) {
-			return next(new ErrorResponse(err, 500));
+			return next(new ErrorResponse('Something Bad happened', 500));
 		}
 		res.status(200).json({
 			status: true,
@@ -280,26 +304,34 @@ exports.getHighestSalesProducts = asyncHandler(async (req, res, next) => {
 // @desc  Get highest sold products
 //@route  GET /api/v1/find/lowest/soldproducts
 exports.getLowestSalesProducts = asyncHandler(async (req, res, next) => {
-	SalesPayment.aggregate([
+	Invoice.aggregate([
 		{
 			$lookup: {
-				from: 'invoices',
-				localField: 'invoice_id',
+				from: 'products',
+				localField: 'description.product',
 				foreignField: '_id',
 				as: 'data',
 			},
 		},
 		{
 			$project: {
+				total_amount: 1,
+				description: 1,
 				data: {
-					description: 1,
+					product_name: 1,
 				},
 			},
 		},
 		{
 			$group: {
-				_id: '$data.description.product',
+				_id: '$description.product',
 				Items_sold: { $sum: 1 },
+				Total_sales: { $sum: '$total_amount' },
+				data: {
+					$push: {
+						Product_name: '$data.product_name',
+					},
+				},
 			},
 		},
 		{
@@ -308,7 +340,7 @@ exports.getLowestSalesProducts = asyncHandler(async (req, res, next) => {
 			},
 		},
 		{
-			$limit: 5,
+			$limit: 1,
 		},
 	]).exec((err, result) => {
 		if (err) {
@@ -370,11 +402,13 @@ exports.getSales = asyncHandler(async (req, res, next) => {
 		{
 			$project: {
 				total_amount: 1,
+				_id: 1,
 			},
 		},
 		{
 			$group: {
 				_id: null,
+				sales: { $sum: 1 },
 				totalSales: { $sum: '$total_amount' },
 			},
 		},
@@ -485,7 +519,7 @@ exports.getCustomerPurchaseHistory = asyncHandler(async (req, res, next) => {
 		},
 		{
 			$group: {
-				_id: '$customer_id',
+				_id: '$customer_i d',
 				data: {
 					$push: {
 						Product_name: '$data.product_name',

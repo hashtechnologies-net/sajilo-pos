@@ -9,10 +9,22 @@ const StockEntry = require('../models/stockEntry.models');
 exports.getStock = asyncHandler(async (req, res, next) => {
 	StockEntry.aggregate([
 		{
+			$lookup: {
+				from: 'products',
+				localField: 'product_id',
+				foreignField: '_id',
+				as: 'products',
+			},
+		},
+		{
 			$project: {
 				product_id: 1,
 				stockIn: 1,
 				stockOut: 1,
+				products: {
+					product_name: 1,
+					product_code: 1,
+				},
 			},
 		},
 		{
@@ -20,6 +32,12 @@ exports.getStock = asyncHandler(async (req, res, next) => {
 				_id: '$product_id',
 				stockIn: { $sum: '$stockIn' },
 				stockOut: { $sum: '$stockOut' },
+				product_detail: {
+					$push: {
+						Product_name: '$products.product_name',
+						Product_code: '$products.product_code',
+					},
+				},
 			},
 		},
 		{
