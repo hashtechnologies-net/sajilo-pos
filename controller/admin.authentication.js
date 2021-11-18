@@ -46,17 +46,17 @@ exports.register = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/admin/admin_login
 // @access    Private
 exports.login = asyncHandler(async (req, res, next) => {
-	const { username, password } = req.body;
+	const { email, password } = req.body;
 
 	// Validate emil & password
-	if (!username || !password) {
+	if (!email || !password) {
 		return next(
 			new ErrorResponse('Please provide username and password', 400)
 		);
 	}
 
 	// Check for admin
-	const admin = await Admin.findOne({ username }).select('+password');
+	const admin = await Admin.findOne({ email }).select('+password');
 	if (!admin) {
 		return next(new ErrorResponse('Invalid username or password', 401));
 	}
