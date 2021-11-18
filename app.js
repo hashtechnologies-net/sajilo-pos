@@ -1,6 +1,5 @@
 /** @format */
-
-//const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
@@ -43,22 +42,19 @@ const db = mongoose.connection;
 // 	});
 // });
 
-const pusher = new Pusher({
-	appId: '1202226',
-	key: '2142cda6d39765cba2a9',
-	secret: '93c2b88777c4c5d29975',
-	cluster: 'ap2',
-	useTLS: true,
-});
+const DB = process.env.LOCAL_DB;
 
 //connect database
-connectDB();
+connectDB(DB);
 
 //Using the imageupload middleware
 app.use('/uploads', express.static('uploads'));
 
 // Body parser
 app.use(express.json());
+app.use(bodyParser.urlencoded({
+	extended: true
+  }));
 
 //cookie parser
 app.use(cookieParser());
@@ -99,6 +95,7 @@ const appsettingRouter = require('./routes/appsetting.routes');
 const vendorRouter = require('./routes/vendor.routes');
 const imageUploadRouter = require('./routes/productimage.routes');
 const reviewRouter = require('./routes/review.routes');
+
 
 
 // Mount routers

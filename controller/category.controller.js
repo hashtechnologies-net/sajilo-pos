@@ -31,7 +31,7 @@ exports.getSingleCategory = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/category
 
 exports.createCategory = asyncHandler(async (req, res, next) => {
-	req.body.created_by = req.admin.id;
+	req.body.created_by = '61960cce179016432072cc78';
 	const category = await Category.create(req.body);
 	res.status(201).json({
 		status: true,

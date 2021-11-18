@@ -11,8 +11,9 @@ const sendEmail = require('../utils/sendEmail');
 // @route     POST /api/v1/admin/register
 // @access    Admin
 exports.register = asyncHandler(async (req, res, next) => {
-	
+	// console.log(req.body);
 	const { full_name, username, email, password } = req.body;
+	
 	const userExistsByUsername = await Admin.findOne({ username })
 	const userExistsByEmail =  await Admin.findOne({ email})
 

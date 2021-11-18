@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('./async');
 const ErrorResponse = require('../utils/errorResponse');
 const Admin = require('../models/admin.models');
+const connectDB = require('../db');
 
 // Protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
@@ -41,6 +42,8 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		req.admin = await Admin.findById(decoded.id);
 		if (!req.admin) {
 			return next(new ErrorResponse('Admin not found', 401));
+		}if (req.admin) {
+			await connectDB(`mongodb://localhost:27017/${decoded.id}`)
 		}
 		next();
 	} catch (err) {

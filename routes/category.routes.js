@@ -11,11 +11,10 @@ const authprotect = require('../middleware/authAdmin');
 router
 	.route('/')
 	.get(
-		
 		allqueryresults(Category, { path: 'created_by', select: 'username' }),
 		categoryController.getAllCategory
 	)
-	.post(authprotect.protect, categoryController.createCategory);
+	.post( categoryController.createCategory);
 
 router
 	.route('/:id')
