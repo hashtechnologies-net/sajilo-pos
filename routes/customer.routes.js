@@ -10,7 +10,7 @@ const { protect } = require('../middleware/authCustomer');
 
 router.route('/login').post(customerController.login);
 router.route('/me').get(protect, customerController.getMe);
-router.route('/logout').post(customerController.logout);
+router.route('/logout').post(protect,customerController.logout);
 
 router
 	.route('/')

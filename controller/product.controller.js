@@ -10,7 +10,7 @@ const stockEntry = require('../models/stockEntry.models');
 // @desc  get all products
 //@route  GET /api/v1/products
 exports.getAllProducts = asyncHandler(async (req, res, next) => {
-	const products = await Product.find();
+
 	Product.aggregate([
 		{
 			$lookup: {
@@ -27,7 +27,7 @@ exports.getAllProducts = asyncHandler(async (req, res, next) => {
 		res.status(200).json({
 			status: true,
 			data: result,
-			//products,
+			
 		});
 	});
 

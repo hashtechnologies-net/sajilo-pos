@@ -4,9 +4,9 @@ const express = require('express');
 const orderController = require('../controller/order.controller');
 const Invoice = require('../models/invoice.models');
 const allqueryresults = require('../middleware/allqueryresults');
-const { protect } = require('../middleware/authCustomer');
+//const { protect } = require('../middleware/authCustomer');
 const { getStock } = require('../middleware/stockCheck');
-const Order= require('../models/order.models');
+const Order = require('../models/order.models');
 
 const router = express.Router();
 
@@ -17,14 +17,14 @@ router
 			path: 'description.product',
 			select: 'product_name',
 		}),
-		orderController.getAllOrders
+		orderController.getAllOrders,
 	)
-	.post(protect, getStock, orderController.createOrder);
+	.post(getStock, orderController.createOrder);
 
 router
 	.route('/:id')
 	.get(orderController.getSingleOrder)
-	.put(protect, orderController.updateOrder)
-	.delete(protect, orderController.deleteOrder);
+	.put(orderController.updateOrder)
+	.delete(orderController.deleteOrder);
 
 module.exports = router;

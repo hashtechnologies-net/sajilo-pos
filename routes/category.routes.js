@@ -6,21 +6,17 @@ const categoryController = require('../controller/category.controller');
 
 const Category = require('../models/category.models');
 const allqueryresults = require('../middleware/allqueryresults');
-const authprotect = require('../middleware/authAdmin');
+//const authprotect = require('../middleware/authAdmin');
 
 router
 	.route('/')
-	.get(
-		authprotect.protect,
-		allqueryresults(Category, { path: 'created_by', select: 'username' }),
-		categoryController.getAllCategory
-	)
-	.post(authprotect.protect, categoryController.createCategory);
+	.get(allqueryresults(Category), categoryController.getAllCategory)
+	.post(categoryController.createCategory);
 
 router
 	.route('/:id')
-	.get(authprotect.protect, categoryController.getSingleCategory)
-	.put(authprotect.protect, categoryController.updateCategory)
-	.delete(authprotect.protect, categoryController.deleteCategory);
+	.get(categoryController.getSingleCategory)
+	.put(categoryController.updateCategory)
+	.delete(categoryController.deleteCategory);
 
 module.exports = router;

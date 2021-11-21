@@ -8,11 +8,14 @@ const CategorySchema = new mongoose.Schema({
 		required: [true, 'Please add a category_name'],
 		maxlength: [50, 'Name cannot be more than of 30 characters'],
 	},
-	created_by: {
-		type: mongoose.Schema.ObjectId,
-		ref: 'admin',
-		required: true,
+	icon: {
+		type: String,
 	},
+	// created_by: {
+	// 	type: mongoose.Schema.ObjectId,
+	// 	ref: 'admin',
+	// 	required: true,
+	// },
 	totalStock: {
 		type: Number,
 	},

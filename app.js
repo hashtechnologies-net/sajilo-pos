@@ -1,6 +1,5 @@
 /** @format */
-
-//const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
@@ -13,48 +12,51 @@ const upload = require('./middleware/upload');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const connectDB = require('./db');
+const cors = require('cors');
+
+// const mongoose = require('mongoose');
+// const Pusher = require('pusher');
 const mongoose = require('mongoose');
 const Pusher = require('pusher');
 
 //pusher setup
 const db = mongoose.connection;
-db.once('open', () => {
-	console.log('db is connected');
-	const messages = db.collection('products');
-	const changeStream = messages.watch();
+// db.once('open', () => {
+//     console.log('db is connected');
+// 	const messages = db.collection('products');
+// 	const changeStream = messages.watch();
 
-	changeStream.on('change', (change) => {
-		if (change.operationType === 'insert') {
-			const details = change.fullDocument;
-			pusher.trigger('products', 'inserted', {
-				sender: details.sender,
-				message: details.message,
-				timestamp: details.timestamp,
-				status: 0,
-				threadId: details.threadId,
-			});
-		} else {
-			console.log('error on pusher');
-		}
-	});
-});
+// 	changeStream.on('change', (change) => {
+// 		if (change.operationType === 'insert') {
+// 			const details = change.fullDocument;
+// 			pusher.trigger('products', 'inserted', {
+// 				sender: details.sender,
+// 				message: details.message,
+// 				timestamp: details.timestamp,
+// 				status: 0,
+// 				threadId: details.threadId,
+// 			});
+// 		} else {
+// 			console.log('error on pusher');
+// 		}
+// 	});
+// });
 
-const pusher = new Pusher({
-	appId: '1202226',
-	key: '2142cda6d39765cba2a9',
-	secret: '93c2b88777c4c5d29975',
-	cluster: 'ap2',
-	useTLS: true,
-});
+const DB = process.env.LOCAL_DB;
 
 //connect database
-connectDB();
+connectDB(DB);
 
 //Using the imageupload middleware
 app.use('/uploads', express.static('uploads'));
 
 // Body parser
 app.use(express.json());
+app.use(
+	bodyParser.urlencoded({
+		extended: true,
+	}),
+);
 
 //cookie parser
 app.use(cookieParser());
@@ -72,6 +74,8 @@ app.use(helmet());
 app.use(xss());
 
 app.use(morgan('dev'));
+
+app.use(cors());
 
 // Route files
 const userRouter = require('./routes/users.routes');
@@ -118,6 +122,7 @@ app.use('/api/v1/productimages', imageUploadRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/productmetadata', productMetadataRouter);
 app.use('/api/v1/businessinfo', businessInfoRouter);
+app.use('/api/v1/vendors', vendorRouter);
 
 //mount errorhandler
 app.use(errorHandler);
